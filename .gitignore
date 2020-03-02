@@ -50,3 +50,11 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Latex Compilation
+*.out
+*.synctex.gz
+*.pdf
+*.toc
+*.aux
+*.log
