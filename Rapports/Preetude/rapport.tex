@@ -2,11 +2,31 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-%\usepackage[french]{babel}
+\usepackage[french]{babel}
 \usepackage[top=20mm, bottom=25mm, left=15mm, right=15mm]{geometry}
 
-\title{Rapport de Pré-étude projet GE II\\Aéroglisseur}
-\author{Tristan DRUSSEL - Floriant POUTHIER \\ \\ Génie Électrique 4ème année\\ INSA Strasbourg}
+\usepackage{mathpazo}
+
+\usepackage{fancyhdr}
+
+\setlength{\parindent}{3em}
+\setlength{\parskip}{1em}
+
+\setcounter{secnumdepth}{3}
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}
+%\titleformat{\subsubsection}[runin]{\normalfont\bfseries}{\thesubsubsection}{0em}{}
+
+\pagestyle{fancy}
+\fancyhead[L]{Projet GE2}
+\fancyhead[C]{\textit{Aéroglisseur radiocommandé}}
+\fancyhead[R]{Pré-étude}
+\fancyfoot[L]{INSA Strasbourg}
+\fancyfoot[R]{Tristan DRUSSEL - Florian POUTHIER}
+\headheight=14.5pt
+
+\title{Rapport de Pré-étude Projet GE II\\Aéroglisseur radiocommandé}
+\author{Tristan DRUSSEL - Florian POUTHIER \\ \\ Génie Électrique 4ème année\\ INSA Strasbourg}
 \date{Année scolaire 2019-2020}
 
 \begin{document}
@@ -15,4 +35,81 @@
 	\end{titlepage}
 	\tableofcontents
 	\newpage
+	
+	\section{Introduction}
+	
+	Dans le cadre de notre formation Génie Électrique à l'INSA Strasbourg, le \textbf{projet GE II} du semestre 8 a pour objectif la conception d'un système électrique comprenant des éléments de conversion statique et de commande électronique programmable. Ce projet sera notamment l'occasion de mettre en oeuvre nos connaissances acquises en électronique de puissance, en électronique numérique, en informatique industrielle et en automatique tout au long de notre cursus. 
+	
+	Le thème retenu cette année consiste en une compétition baptisée "La nuit de la glisse". L'objectif sera de présenter pour cette compétition un \textbf{aéroglisseur radiocommandé} qui devra répondre à un certain nombre d'exigences pour pouvoir être homologué et ainsi participer à l'épreuve finale. En vue de réaliser un tel système, nous partirons d'un cahier des charges succinct pour mener une analyse fonctionnelle du dispositif, rédiger un cahier des charges complet et finalement concevoir, simuler, tester et fabriquer l'aéroglisseur attendu.
+	
+	Ce projet sera également pour nous l'occasion de développer nos compétences linguistiques dans la langue anglaise par le biais de rapports oraux ponctuels lors des différentes étapes de développement du système. Les aspects linguistiques ciblés sont notamment la maîtrise du vocabulaire technique relatif au thème du projet ainsi que la maîtrise de formes classiques comme les formes passives. Nous serons également amenés à travailler avec des documents techniques et des ressources bibliographiques en langue anglaise tout au long du projet.
+	
+	Le projet intégrera finalement les aspects humains de gestion de projet et de communication orale et écrite. Nous ferons vérifier dans un premier temps nos lettres de motivation et CV, pour ensuite définir une stratégie de projet basée autour d'un planning de travail. Les présentations orales de pré-étude, de définition de solution, d'étude... seront réalisées en salle banalisée et filmées afin d'obtenir un meilleur débriefing sur nos méthodes de communication et sur l'amélioration de celles-ci.
+	
+	\section{Analyse fonctionnelle du système}
+	
+	
+	
+	\section{Cahier des Charges}
+	
+	Le Cahier des Charges (CdC) développé ci-dessous va nous servir de base en répertoriant toutes les contraintes à respecter afin de mener à bien notre projet et de proposer un système homologable à la compétition finale. Les contraintes du projet sont multiples, qu'elles soient mécaniques, électroniques ou bien temporelles.
+	
+		\subsection{Partie mécanique de l'aéroglisseur}
+		
+		La structure de l'aéroglisseur va être le support de tout le développement électronique du projet. Bien que cette partie ne soit pas ciblée dans l'évaluation des compétences mises en oeuvre, il n'en demeure pas moins que l'aéroglisseur doit respecter certaines contraintes évidentes de conception et d'encombrement.
+		
+%		\begin{itemize}
+%		\item[$\bullet$]
+%		\end{itemize}
+		
+		\subsection{Composants électroniques imposés}
+		
+		\subsection{Principales échéances et délivrables attendus}
+		
+		%Un certain rythme
+	
+	\section{Développement des sous-fonctions du système}
+	
+		%En vue de poursuivre l'étude du dispositif à réaliser, nous allons développer dans cette partie les différentes sous-fonctions à mettre
+		
+		\subsection{Contrôle du moteur Brushless DC de propulsion}
+		
+			\subsubsection{Caractérisation de la charge}
+			
+			\subsubsection{Contrôle basé sur le retour de force electromotrice}
+	
+		\subsection{Interface d'alimentation}
+		
+		Afin de fonctionner dans son intégralité, le système a besoin de différents niveaux de tension, parmi lesquels un niveau de 5V pour le servomoteur et l'alimentation des microcontrôleurs, et du 3.3V pour l'utilisation du \textit{Bluetooth Low Energy}. Il est donc prévu de concevoir à cet effet un PCB permettant d'obtenir tous les niveaux de tension nécessaires sur une seule carte et ainsi les distribuer à tous les éléments fonctionnels du système.
+		
+			\subsubsection{Caractérisation de la source d'alimentation}
+			
+			La source d'alimentation de notre projet est une \textbf{batterie LiPo 3S}. Ce type de batterie est structuré par 3 cellules LiPo de 3.7V en série, soit une \textbf{tension nominale de 11.1V} (3 x 3.7V) pour la batterie LiPo 3S à vide. Un élément LiPo est en fait une batterie Li-ion où l'électrolyte est un polymère gélifié.
+			
+			Il est à garder en mémoire que la décharge d'un élément LiPo en-dessous de 2.5V entraîne sa destruction. De manière générale, il est recommandé de ne pas décharger les éléments en-dessous de 3.3V si l'on souhaite une durée de vie optimale pour ce type de batterie. 
+			
+		A l'inverse, chaque élément LiPo \textbf{ne doit jamais être chargé au-dessus de 4.2V}, au risque de provoquer un \textbf{possible incendie}. Dans le cas d'une batterie constituée d'éléments LiPo multiples, il est \textbf{impératif d'utiliser un \textit{égaliseur}} dans le circuit de charge.
+		
+		% Source : http://geeby22.over-blog.com/page-4287873.html
+			
+			\subsubsection{Conversion tension batterie vers 5V}
+				
+			La conversion depuis le 11.1V de la batterie vers la tension régulée 5V va être réalisée par le composant \textbf{LM22672MR-5.0/NOPB} du constructeur \textit{Texas Instruments}.
+			
+			\subsubsection{Conversion 5V vers 3.3V}
+			
+			Le composant \textbf{MCP1826S-3302E/EB} de \textit{Microchip} a été retenu pour établir la conversion 5V vers 3.3V. Ce régulateur linéaire fournissant une sortie faible tension et un courant de 1000mA typique a été choisi dans sa version sortie standard fixe 3.3V. Le composant est stable en utilisant en sortie un condensateur céramique de valeur 1uF, ce qui facilite largement son dimensionnement. Seulement une capacité d'entrée sera à déterminer pour mettre en oeuvre le régulateur.
+				
+		\subsection{Interface de radiocommande}
+			
+			\subsubsection{Commande Bluetooth}
+	
+	\section{Conclusion}
+	
+	Ce rapport de pré-étude a pour objectif de présenter le thème du projet GE II ainsi que les objectifs à atteindre en vue de proposer un système fonctionnel et homologable pour la compétition finale en fin de semestre. Nous y exposons une analyse fonctionnelle du système à réaliser, un cahier des charges détaillé ainsi qu'un développement des sous-fonctions du dispositif à concevoir.
+	
+	La conception d'un aéroglisseur radiocommandé est un projet d'envergure faisant appel à des notions d'électronique de puissance comme d'électronique numérique. Chaque membre du binôme ayant un attrait plus important pour l'une des deux matières, nous avons décidé de nous répartir la charge de travail par domaine de connaissances. Un des membres du binôme développera alors la partie liée à la communication Bluetooth, [...] tandis que l'autre membre du binôme se concentrera sur la commande du moteur Brushless DC ainsi que la génération des différents niveaux de tension nécessaires au fonctionnement du dispositif.
+	
+	Ce rapport de pré-étude va ainsi nous donner une solide base d'investigation pour le développement de solutions technologiques fiables et fonctionnelles dans la conception de notre système. Afin d'avoir un meilleur suivi de notre avancée, vous trouverez notre repertoire \texttt{github} ici.
+	
 \end{document}
