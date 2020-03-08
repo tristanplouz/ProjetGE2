@@ -48,25 +48,142 @@
 	
 	\section{Analyse fonctionnelle du système}
 	
-	
+	\newpage
 	
 	\section{Cahier des Charges}
 	
+	\vspace{-1em}
+	
 	Le Cahier des Charges (CdC) développé ci-dessous va nous servir de base en répertoriant toutes les contraintes à respecter afin de mener à bien notre projet et de proposer un système homologable à la compétition finale. Les contraintes du projet sont multiples, qu'elles soient mécaniques, électroniques ou bien temporelles.
+	
+	\vspace{-1em}
 	
 		\subsection{Partie mécanique de l'aéroglisseur}
 		
+		\vspace{-1em}
+		
 		La structure de l'aéroglisseur va être le support de tout le développement électronique du projet. Bien que cette partie ne soit pas ciblée dans l'évaluation des compétences mises en oeuvre, il n'en demeure pas moins que l'aéroglisseur doit respecter certaines contraintes évidentes de conception et d'encombrement.
 		
-%		\begin{itemize}
-%		\item[$\bullet$]
-%		\end{itemize}
+		\begin{itemize}
+			\item[$\bullet$] Les dimensions de l'aéroglisseur ne devront pas dépasser \textbf{250mm en largeur}, \textbf{350mm en longueur} et \textbf{300mm en hauteur}
+			\item[$\bullet$] L'\textbf{hélice de propulsion} devra être \textbf{protégée} et \textbf{ne présenter aucun danger} pour l'environnement extérieur (pilotes, spectateurs, ...)
+			\item[$\bullet$] La structure devra permettre de \textbf{porter l'électronique du système} et une \textbf{caméra du type GoPro}
+			\item[$\bullet$] Un espace devra également être prévu pour un \textbf{système de coupure générale} qui soit \textbf{facile d'accès} en cas de coupure nécessaire du dispositif
+			\item[$\bullet$] La structure devra être réalisée intégralement en \textbf{carton plume}
+		\end{itemize}
 		
-		\subsection{Composants électroniques imposés}
+		\vspace{-1em}
 		
-		\subsection{Principales échéances et délivrables attendus}
+		\subsection{Contraintes électroniques de l'aéroglisseur}
 		
-		%Un certain rythme
+		\vspace{-1em}
+		
+		Nous allons définir ci-dessous l'ensemble des contraintes électroniques à respecter pour concevoir notre aéroglisseur. Cette partie est le coeur du projet GE II, et nous allons essayer d'établir un cahier des charges fonctionnel le plus exhaustif possible pour proposer un système adéquat avec les attendus du rendu. Ces contraintes peuvent être synthétisées en trois grands axes : les contraintes liées à la \textbf{motorisation}, les contraintes liées à l'\textbf{alimentation} et les contraintes liées à la \textbf{télécommande}.
+
+		\vspace{-1em}		
+		
+			\subsubsection{Contraintes liées à la motorisation}
+			
+			\vspace{-1em}
+			
+			La motorisation des aéroglisseurs permet le déplacement du système en entrainant une hélice qui servira à la fois à la propulsion et à la création du coussin d'air. 
+			
+			\begin{itemize}
+				\item[$\bullet$] La motorisation sera mise en oeuvre par un moteur unique type \textbf{brushless triphasé} de référence \textbf{NM Prodrive 3530 1100kV}
+				\item[$\bullet$] Le moteur brushless sera alimenté par un \textbf{onduleur triphasé en pont} commandé par un circuit programmable \textbf{DsPIC30F2010}
+				\item[$\bullet$] L'onduleur triphasé sera constitué de \textbf{six transistors MOSFET canal N} \textbf{BSC0902NS} du constructeur \textit{Infineon}
+				\item[$\bullet$] Les drivers de demi-pont \textbf{MIC4104YM} de \textit{Microchip} seront utilisés dans le montage
+				\item[$\bullet$] Chaque demi-pont sera découplé du bus continu par un \textbf{condensateur de découplage} aluminium polymère 330uF 16V de référence \textbf{A750KK337M1CAAE014} du constructeur \textit{Kemet}
+				\item[$\bullet$] Le moteur brushless ne disposant pas de capteurs à effet Hall, une \textbf{commande par retour de force électromotrice} devra être implémantée
+			\end{itemize}
+			
+			\vspace{-1em}
+			
+			\subsubsection{Contraintes liées à l'alimentation}
+			
+			\vspace{-1em}
+			
+			L'alimentation du système devra être conçue de manière à pouvoir alimenter tous les éléments électroniques nécessaires au bon fonctionnement du dispositif. Elle doit également répondre à certaines contraintes pour être la plus opérationnelle possible.
+			
+			\begin{itemize}
+				\item[$\bullet$] La source unique d'alimentation sera une \textbf{batterie LiPo 3S 2200 mAh}
+				\item[$\bullet$] Les autres niveaux de tensions nécessaires au fonctionnement du dispositif seront générés par des \textbf{convertisseurs DC/DC indépendants}
+				\item[$\bullet$] La conversion vers le niveau de tension \textbf{5V} sera réalisée par le régulateur à découpage fixe \textbf{LM22672MR-5.0/NOPB} du constructeur \textit{Texas Instruments}
+				\item[$\bullet$] La conversion vers le niveau de tension \textbf{3.3V} sera assurée par le régulateur linéaire \textbf{MCP1826S-3302E/EB} de \textit{Microchip}
+				\item[$\bullet$] L'aéroglisseur devra comporter un \textbf{interrupteur général marche arrêt} qui coupera l'alimentation de l'électronique et du moteur
+				\item[$\bullet$] Un \textbf{système de coupure générale} permettant de couper l'alimentation globale devra être câblé.
+			\end{itemize}
+			
+			\vspace{-1em}
+			
+			\subsubsection{Contraintes liées à la télécommande}
+			
+			\vspace{-1em}
+			
+			\begin{itemize}
+				\item[$\bullet$] L'aéroglisseur sera télécommandé via un \textbf{smartphone} (Android ou iOS) en utilisant une \textbf{liaison Bluetooth}
+				\item[$\bullet$] L'application sur la télécommande est libre et peut inclure des joysticks, jauges, boutons ou une gestion de l'inclinaison pour le pilotage de l'aéroglisseur
+				\item[$\bullet$] Le module Bluetooth retenu est de type \textbf{HC-05} intégré sur une platine \textbf{zs-040} et assurera la communication entre la télécommande, le servomoteur de direction et l'onduleur du moteur de propulsion
+				\item[$\bullet$] Les protocoles de communication entre le récepteur et l'onduleur devront respecter les \textbf{normes des télécommandes de modélisme}
+				\item[$\bullet$] Les commandes devront être \textbf{proportionnelles} (au minimum \textbf{5 niveaux} pour la direction et la propulsion)
+				\item[$\bullet$] Un \textbf{système de sécurité} sera mis en oeuvre pour arrêter le moteur si l'aéroglisseur ne reçoit \textbf{pas d'information} de la télécommande \textbf{pendant plus de 200ms}
+			\end{itemize}
+			
+			\vspace{-1em}
+		
+		\subsection{Principales échéances et livrables attendus}
+		
+		\vspace{-1em}
+		
+		Un certain rythme de travail est attendu en vue de mener à bien le projet. Des livrables seront à rendre aux différentes étapes du projet afin de se tenir au rythme imposé.
+		
+			\vspace{-1em}
+		
+			\subsubsection{Rapports intermédiaires et final}
+			
+			\begin{itemize}
+				\item[$\bullet$] Le rapport de pré-étude comportera une analyse fonctionnelle du dispositif, une identification
+complète des paramètres utiles de la source d’alimentation et de la charge, un cahier des charges détaillé, une explication complète du fonctionnement des sous fonctions constituant le montage
+				\item[$\bullet$] Le rapport d’étude définira la solution retenue. Le dimensionnement et la justification des choix de la totalité des composants y figurera ainsi que le schéma définitif (aux normes) et les PCB des
+cartes électroniques à réaliser
+				\item[$\bullet$] Le rapport final reprendra les 2 premiers rapports ainsi que les explications sur la réalisation, les mesures et les tests faits pour valider le fonctionnement du montage
+			\end{itemize}
+			
+			\vspace{-1em}
+		
+			\subsubsection{Récapitulatif des points recevables}
+			
+			\vspace{-1em}
+			
+			La note finale est la moyenne d'une \textbf{note technique} et d'une \textbf{note de compte-rendu}.
+			
+			\vspace{-1.5em}
+			
+			\paragraph{Note technique}
+			
+			Elle est établie à partir du résultat de l'homologation, de la compétition, et de l'évaluation du produit fini :
+			
+			\begin{itemize}
+				\item[$\bullet$] La note technique sera \textbf{inférieure à la moyenne} si l'aéroglisseur ne passe pas les \textbf{épreuves d'homologation} (quelque soit la quantité et la qualité du travail fourni).
+				\item[$\bullet$] Une note technique minimale de 12 sera attribuée à tous les participants aux courses. 
+				\item[$\bullet$] Les 8 points restants sont divisés en deux parties :
+				\begin{itemize}
+					\item[$\circ$] Une première partie sur 4 points est liée au nombre de points acquis pendant la compétition
+					\item[$\circ$] Une seconde partie sur 4 points est attribuée suivant des critères de réalisation, de programmation, d’esthétique, de fair-play, de pilotage, d’amortissement financier, de gestion du planning, d’originalité...
+				\end{itemize}
+			\end{itemize}
+			
+			\vspace{-1.5em}
+			
+			\paragraph{Note de compte-rendu}
+			
+			Elle est établie à partir de la note des trois compte-rendus à rendre :
+			
+			\begin{itemize}
+				\item[$\bullet$] Le rapport de \textbf{pré-étude} est noté sur \textbf{3 points}
+				\item[$\bullet$] Le rapport d'\textbf{étude} et de fabrication est noté sur \textbf{5 points}
+				\item[$\bullet$] Le \textbf{compte-rendu final} est noté sur \textbf{12 points}
+			\end{itemize}
 	
 	\section{Développement des sous-fonctions du système}
 	
