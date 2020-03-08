@@ -48,7 +48,7 @@
 	
 	\section{Analyse fonctionnelle du système}
 	
-	
+	\newpage
 	
 	\section{Cahier des Charges}
 	
@@ -60,9 +60,13 @@
 	
 		\subsection{Partie mécanique de l'aéroglisseur}
 		
+<<<<<<< HEAD
+		La structure de l'aéroglisseur va être le support de tout le développement électronique du projet. Bien que cette partie ne soit pas ciblée dans l'évaluation des compétences mises en œuvre, il n'en demeure pas moins que l'aéroglisseur doit respecter certaines contraintes évidentes de conception et d'encombrement.
+=======
 		\vspace{-1em}
 		
 		La structure de l'aéroglisseur va être le support de tout le développement électronique du projet. Bien que cette partie ne soit pas ciblée dans l'évaluation des compétences mises en oeuvre, il n'en demeure pas moins que l'aéroglisseur doit respecter certaines contraintes évidentes de conception et d'encombrement.
+>>>>>>> e0650b3ac58d74cd6d425fde797929a71f0d4cbf
 		
 		\begin{itemize}
 			\item[$\bullet$] Les dimensions de l'aéroglisseur ne devront pas dépasser \textbf{250mm en largeur}, \textbf{350mm en longueur} et \textbf{300mm en hauteur}
