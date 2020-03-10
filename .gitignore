@@ -58,3 +58,6 @@ dkms.conf
 *.toc
 *.aux
 *.log
+*.bbl
+*.blg
+*.lof
