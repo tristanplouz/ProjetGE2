@@ -7,6 +7,8 @@
 \usepackage{hyperref}
 \usepackage{mathpazo}
 
+\usepackage{graphicx}
+
 \usepackage{fancyhdr}
 
 \setlength{\parindent}{3em}
@@ -38,6 +40,8 @@
 	
 	\section{Introduction}
 	
+	\vspace{-1em}
+	
 	Dans le cadre de notre formation Génie Électrique à l'INSA Strasbourg, le \textbf{projet GE II} du semestre 8 a pour objectif la conception d'un système électrique comprenant des éléments de conversion statique et de commande électronique programmable. Ce projet sera notamment l'occasion de mettre en œuvre nos connaissances acquises en électronique de puissance, en électronique numérique, en informatique industrielle et en automatique tout au long de notre cursus. 
 	
 	Le thème retenu cette année consiste en une compétition baptisée "La nuit de la glisse". L'objectif sera de présenter pour cette compétition un \textbf{aéroglisseur radiocommandé} qui devra répondre à un certain nombre d'exigences pour pouvoir être homologué et ainsi participer à l'épreuve finale. En vue de réaliser un tel système, nous partirons d'un cahier des charges succinct pour mener une analyse fonctionnelle du dispositif, rédiger un cahier des charges complet et finalement concevoir, simuler, tester et fabriquer l'aéroglisseur attendu.
@@ -46,9 +50,7 @@
 	
 	Le projet intégrera finalement les aspects humains de gestion de projet et de communication orale et écrite. Nous ferons vérifier dans un premier temps nos lettres de motivation et CV, pour ensuite définir une stratégie de projet basée autour d'un planning de travail. Les présentations orales de pré-étude, de définition de solution, d'étude... seront réalisées en salle banalisée et filmées afin d'obtenir un meilleur débriefing sur nos méthodes de communication et sur l'amélioration de celles-ci.
 	
-	\section{Analyse fonctionnelle du système}
-	
-	
+	\vspace{-1em}
 	
 	\section{Cahier des Charges}
 	
@@ -184,12 +186,44 @@ cartes électroniques à réaliser
 				\item[$\bullet$] Le rapport d'\textbf{étude} et de fabrication est noté sur \textbf{5 points}
 				\item[$\bullet$] Le \textbf{compte-rendu final} est noté sur \textbf{12 points}
 			\end{itemize}
+			
+	\vspace{-1.5em}		
+			
+	\section{Analyse fonctionnelle du système}
+	
+	\vspace{-1em}
+	
+	Suite à l'étude du cahier des charges précédemment exposé, nous devons maintenant mener une analyse fonctionnelle de notre système. Cette analyse doit recenser l'ensemble des dispositifs nécessaires au fonctionnement de notre système et doit montrer comment ces dispositifs sont liés entre eux. Un moyen visuel et concret d'aborder cette analyse est de réaliser un diagramme fonctionnel de notre système. Nous proposons le diagramme fonctionnel électronique de notre aéroglisseur en \textsc{Figure \ref{full_functional}}.
+	
+	\begin{figure}[h]
+		\begin{center}
+			\includegraphics[scale=0.33]{../Illus/full_functional.png}
+		\end{center}
+		\caption{Diagramme fonctionnel électronique de l'aéroglisseur}
+		\label{full_functional}
+	\end{figure}
+	
+	Une fois ce diagramme réalisé, nous avons identifié trois fonctions principales du système que nous pourrons développer sur trois PCB distincts :
+	
+	\vspace{-0.5em}
+	
+	\begin{itemize}
+		\item[$\bullet$] le \textbf{contrôle de moteur brushless} sera mis en oeuvre sur une première carte. Cette carte comportera le DsPIC30F2010 générant les signaux de PWM, ainsi que les transistors et drivers de demi-pont de l'onduleur triphasé.
+		\item[$\bullet$] les différents \textbf{niveaux de tension} nécessaires au fonctionnement du système seront générés sur une seconde carte. Elle comportera les deux régulateurs de tension, qui sont le régulateur à découpage fixe 5V et le régulateur linéaire 3V3.
+		\item[$\bullet$] la \textbf{communication Bluetooth} et le \textbf{traitement de la position et de la vitesse de déplacement} de l'aéroglisseur sera développé sur une troisième carte. Elle accueillera entre autre le PIC16F1619 et le module \textit{Bluetooth Low Energy} permettant la communication avec le smartphone utilisé comme télécommande.
+		
+	\end{itemize}
 	
 	\section{Développement des sous-fonctions du système}
 	
-		%En vue de poursuivre l'étude du dispositif à réaliser, nous allons développer dans cette partie les différentes sous-fonctions à mettre
+		\vspace{-1em}
+	
+		L'étape suivante du projet consiste en une étude bibliographique permettant d'en savoir plus sur les différentes sous-fonctions de l'aéroglisseur, et en particulier développer sommairement les aspects technologiques de chacun des dispositifs entrant dans le diagramme fonctionnel.
+		
+		\vspace{-1em}
 		
 		\subsection{Contrôle du moteur Brushless DC de propulsion}
+		
 		
 			\subsubsection{Caractérisation de la charge}
 			
@@ -233,10 +267,12 @@ cartes électroniques à réaliser
 	
 	\section{Conclusion}
 	
-	Ce rapport de pré-étude a pour objectif de présenter le thème du projet GE II ainsi que les objectifs à atteindre en vue de proposer un système fonctionnel et homologable pour la compétition finale en fin de semestre. Nous y exposons une analyse fonctionnelle du système à réaliser, un cahier des charges détaillé ainsi qu'un développement des sous-fonctions du dispositif à concevoir.
+	Ce rapport de pré-étude a pour objectif de présenter le thème du projet GE II ainsi que les objectifs à atteindre en vue de proposer un système fonctionnel et homologable pour la compétition finale en fin de semestre. Nous y exposons un cahier des charges détaillé, une analyse fonctionnelle du système à réaliser ainsi qu'un développement des sous-fonctions du dispositif à concevoir.
 	
-	La conception d'un aéroglisseur radiocommandé est un projet d'envergure faisant appel à des notions d'électronique de puissance comme d'électronique numérique. Chaque membre du binôme ayant un attrait plus important pour l'une des deux matières, nous avons décidé de nous répartir la charge de travail par domaine de connaissances. Un des membres du binôme développera alors la partie liée à la communication Bluetooth, [...] tandis que l'autre membre du binôme se concentrera sur la commande du moteur Brushless DC ainsi que la génération des différents niveaux de tension nécessaires au fonctionnement du dispositif.
+	La conception d'un aéroglisseur radiocommandé est un projet d'envergure faisant appel à des notions d'électronique de puissance comme d'électronique numérique. Chaque membre du binôme ayant un attrait plus important pour l'une des deux matières, nous avons décidé de nous répartir la charge de travail par domaine de connaissances. Un des membres du binôme développera alors la partie liée à la communication Bluetooth, la communication entre les différents microprocesseurs tandis que l'autre membre du binôme se concentrera sur la commande du moteur Brushless DC ainsi que la génération des différents niveaux de tension nécessaires au fonctionnement du dispositif.
 	
 	Ce rapport de pré-étude va ainsi nous donner une solide base d'investigation pour le développement de solutions technologiques fiables et fonctionnelles dans la conception de notre système. Afin d'avoir un meilleur suivi de notre avancée, vous trouverez notre répertoire \href{https://github.com/tristanplouz/ProjetGE2}{github ici}.
+	
+	\listoffigures
 	
 \end{document}
