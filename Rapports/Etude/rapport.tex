@@ -52,20 +52,45 @@
 	
 	Le projet intégrera finalement les aspects humains de gestion de projet et de communication orale et écrite. Nous ferons vérifier dans un premier temps nos lettres de motivation et CV, pour ensuite définir une stratégie de projet basée autour d'un planning de travail. Les présentations orales de pré-étude, de définition de solution, d'étude... seront réalisées en salle banalisée et filmées afin d'obtenir un meilleur débriefing sur nos méthodes de communication et sur l'amélioration de celles-ci.
 	
+	\newpage
 	
-
-	
-		%En vue de poursuivre l'étude du dispositif à réaliser, nous allons développer dans cette partie les différentes sous-fonctions à mettre
-		
 		\section{Moteur brushless DC de propulsion}
 		
-			Le moteur DC brushless (en anglais \textit{Brushless DC Motor}, abrégé BLDCM par la suite)
+		\vspace{-1em}
+		
+		Le \textbf{moteur DC brushless} (en anglais \textit{Brushless DC Motor}, abrégé BLDCM par la suite) est un moteur qui a connu un gain en popularité très important au cours des deux dernières décennies. Et pour cause, les champs d'application de ce type de moteur sont multiples : appareils électroménagers, automobile, aérospatial, équipement médical, production industrielle et instrumentation \cite{AN885}. 
+			
+		Le moteur \textbf{NM Prodrive 3350 110kV} retenu pour la conception de notre aéroglisseur est un moteur DC brushless. Il sera notamment utilisé dans notre système pour la rotation de l'hélice, qui permettra à la fois la propulsion et la génération du flux d'air nécessaire à la création du coussin d'air qui supportera l'aéroglisseur.
+			
+			Dans cette partie, nous développerons dans un premier temps les généralités autour des moteurs DC brushless. Dans un second et troisième temps, nous aborderons les aspects de conception d'un onduleur et de contrôle du moteur avec une méthode ne faisant appel à aucun capteur basée sur la lecture du retour de force électromécanique. Une quatrième partie se concentrera sur les aspects de réalisation d'un PCB de contrôle 
+			
+			\vspace{-1em}
 		
 			\subsection{Généralités}
 			
+			\vspace{-1em}
+			
+			Comme son nom l'indique, et contrairement à la majorité des moteurs DC, le BLDCM n'utilise pas de balais pour sa commutation. La commutation est au contraire réalisée électroniquement. L'utilisation de cette structure fait que le BLDCM a de nombreux avantages par rapport aux moteurs DC à balais ou les moteurs à induction. Parmi ces avantages, on peut notamment retenir :
+			
+			\vspace{-1em}
+			
+			\begin{itemize}
+				\item[$\bullet$] un meilleur compromis couple / vitesse 
+				\item[$\bullet$] un temps de réponse amélioré
+				\item[$\bullet$] une durée de vie prolongée
+				\item[$\bullet$] un fonctionnement moins bruyant
+				\item[$\bullet$] des rangs de vitesse plus élevés
+			\end{itemize}
+			
+			De plus, le rapport couple délivré / encombrement moteur est amélioré, ce qui rend le BLDCM très utile dans des applications où l'espace et le poids sont des critères cruciaux \cite{AN885}, comme dans le cas de notre aéroglisseur.
+			
+			\vspace{-1em}
+			
 				\subsubsection{Structure du BLDCM}
 				
-				 Un moteur brushless est structuré à partir d'un aimant permanent au rotor et de pôles bobinés au stator. L'énergie électrique est convertie en énergie mécanique par le biais des forces d'attraction magnétique entre l'aimant permanent du rotor et le champ tournant induit par les pôles bobinés du stator. La Figure \ref{struct_bldcm} présente une illustration simplifiée de la construction d'un BLDCM. 
+				\vspace{-1.5em}
+				
+				 Un moteur brushless est structuré à partir d'un aimant permanent au rotor et de pôles bobinés au stator. L'énergie électrique est convertie en énergie mécanique par le biais des forces d'attraction magnétique entre l'aimant permanent du rotor et le champ tournant induit par les pôles bobinés du stator. La \textsc{Figure \ref{struct_bldcm}} présente une illustration simplifiée de la construction d'un BLDCM. 
 				 
 				 \begin{figure}
 				 	\begin{center}
@@ -74,6 +99,31 @@
 				 	\caption{Diagramme simplifié de la structure d'un BLDCM (\textit{Source :} \cite{AN857})}
 				 	\label{struct_bldcm}
 				 \end{figure}
+				 
+				 L'exemple de structure présenté ici montre trois circuits électomagnétiques connectés à un point commun (couplage étoile). Chacun des circuits est divisé en deux parties qui seront bobinées sur des dents de la machine diamétralement opposées. Cette structure permet alors à l'aimant permanent au rotor de se déplacer au milieu de champs magnétiques induits. Nous avons modélisé le BLDCM en utilisant le logiciel \textit{FEMM} pour donner une idée plus concrète de son fonctionnement en rotation. La montre notamment la modélisation de la structure du moteur sur ce logiciel.
+				 
+				 % Capture d'écran structure FEMM électif circuit magnétique
+
+				 La plupart des BLDCM ont une structure triphasée avec un couplage étoile, et c'est notamment le cas du moteur que nous allons utiliser dans ce projet. Un tel moteur est alors piloté en alimentant deux phases en même temps. Afin d'entrer en rotation, les trois phases du moteur devront être alimentées 
+				 
+				 \subsubsection{Séquence de commutation}
+				 
+				  % Récupérer modélisation FEMM de l'électif circuits magnétiques S4
+				  
+				 \subsubsection{Structure d'un onduleur triphasé}
+				 
+				 \subsubsection{Modélisation électrique du BLDCM}
+				 
+				 \subsection{Conception de l'onduleur triphasé}
+				 
+				 \subsection{Méthode de contrôle du BLDCM}
+				 
+				 Le BLDCM que nous avons retenu pour 
+				 
+				 	\subsubsection{t}
+				 
+				 
+				 
 				 
 				 
 				 
