@@ -302,7 +302,15 @@ BLDCM.
 			\subsubsection{Conversion tension batterie vers 5V}
 			\vspace{-1em}
 				
-			La conversion depuis le 11.1V de la batterie vers la tension régulée 5V va être réalisée par le composant \textbf{LM22672MR-5.0/NOPB} du constructeur \textit{Texas Instruments}.
+			La conversion depuis le 11.1V de la batterie vers la tension régulée 5V va être réalisée par le composant \textbf{LM22672MR-5.0/NOPB} du constructeur \textit{Texas Instruments}. Ce régulateur basé sur une technologie de convertisseur Buck permet de mettre en oeuvre une alimentation pouvant desservir un courant maximal de 1A en sortie. La fréquence de hachage typique du montage est de 500kHz. Une attention toute particulière devra être portée lors du placement des composants sur le PCB concerné en vue de limiter les conséquences de la compatibilité électromagnétique sur le montage. La \textsc{Figure \ref{buck_gen_scheme}} présente le montage à réaliser pour mettre en oeuvre ce composant. La phase d'étude consistera alors à dimensionner les composants extérieurs au régulateur pour obtenir une structure fonctionnelle dans les conditions d'utilisation de notre système \cite{LM22672}.
+			
+			\begin{figure}[h]
+				 	\begin{center}
+				 		\includegraphics[scale=0.45]{../Illus/buck_gen_scheme.png}
+				 	\end{center}
+				 	\caption{Schéma de mise en oeuvre du régulateur LM22672 (\textit{Source :} \cite{LM22672})}
+				 	\label{buck_gen_scheme}
+				 \end{figure}	
 			
 			\vspace{-1em}
 			
@@ -355,7 +363,7 @@ BLDCM.
 			
 			\subsubsection{Application smartphone}
 			\vspace{-1em}			
-			L'application permettra de réaliser une interface homme-machine entre l'utilisateur et notre aéroglisseur. L'application doit permettre la mise en place d'un protocole précis qui pourra être facilement interprétable par le PIC16F1619. Dans un second temps, l'application doit être ergonomique pour réaliser les différentes fonctions:avancer, tourner et allumer différents effets.
+			L'application permettra de réaliser une interface homme-machine entre l'utilisateur et notre aéroglisseur. L'application doit permettre la mise en place d'un protocole précis qui pourra être facilement interprétable par le PIC16F1619. Dans un second temps, l'application doit être ergonomique pour réaliser les différentes fonctions : avancer, tourner et allumer différents effets.
 	
 	\section{Conclusion}
 	
