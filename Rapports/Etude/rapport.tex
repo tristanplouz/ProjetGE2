@@ -8,6 +8,7 @@
 \usepackage{mathpazo}
 
 \usepackage{graphicx}
+\usepackage{pgfplots}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -134,11 +135,11 @@
 			
 			\subsection{Contrôle basé sur le retour de force électromotrice}
 	
-		\section{Interface d'alimentation}
+		\chapter{Interface d'alimentation}
 		
 		Afin de fonctionner dans son intégralité, le système a besoin de différents niveaux de tension, parmi lesquels un niveau de 5V pour le servomoteur et l'alimentation des microcontrôleurs, et du 3.3V pour l'utilisation du \textit{Bluetooth Low Energy}. Il est donc prévu de concevoir à cet effet un PCB permettant d'obtenir tous les niveaux de tension nécessaires sur une seule carte et ainsi les distribuer à tous les éléments fonctionnels du système.
 		
-			\subsection{Caractérisation de la source d'alimentation}
+			\section{Caractérisation de la source d'alimentation}
 			
 			La source d'alimentation de notre projet est une \textbf{batterie LiPo 3S}. Ce type de batterie est structuré par 3 cellules LiPo de 3.7V en série, soit une \textbf{tension nominale de 11.1V} (3 x 3.7V) pour la batterie LiPo 3S à vide. Un élément LiPo est en fait une batterie Li-ion où l'électrolyte est un polymère gélifié.
 			
@@ -148,15 +149,139 @@
 		
 		% Source : http://geeby22.over-blog.com/page-4287873.html
 			
-			\subsection{Conversion tension batterie vers 5V}
+			\section{Conversion tension batterie vers 5V}
 			
 			L'alimentation des microcontrôleurs et du servomoteur nécessite d'obtenir un niveau de tension de 5V à partir de la tension 11.1V de la batterie LiPo 3S. Pour cela, nous avons mis en oeuvre le régulateur à découpage \textbf{LM22672MR-5.0/NOPB} du constructeur \textit{Texas Instruments}. Ce régulateur permet d'implémenter un convertisseur de type Buck en utilisant un minimum de composants externes. Toutefois, ces derniers devront être correctement dimensionnés afin de prendre en compte les contraintes de la source et de la charge.
+			
+			\subsection{Généralités sur le composant LM22672}
+			
+				\subsubsection{Caractéristiques électriques}
+			
+				\subsubsection{Schéma d'application standard}
+				
+				La Figure \ref{schema}
+			
+			\subsection{Dimensionnement du convertisseur}
+			
+				\subsubsection{Données }
+				
+				\subsubsection{Dimensionnement des composants}
+				
+					\paragraph{Diode Schottky}
+					
+					La diode Schottky de sortie retenue pour le montage est la \textbf{SL22-E3/52T} du constructeur \textit{Vishay}. Elle est notamment adaptée à des applications de convertisseurs DC/DC comme le montage que celui que nous souhaitons dimensionner. La \textsc{Table \ref{charact_schottky}} \cite{SL22}.
+					
+					\begin{table}
+						\begin{center}
+							\begin{tabular}{|l|c|c|c}
+							\hline
+							Paramètre & Symbole & Valeur & Unité \\
+							\hline						
+							Tension maximale inverse & $V_{RRM}$ & 20 & V \\
+							\hline						
+							Tension maximale efficace & $V_{RMS}$ & 14 & V \\
+							\hline						
+							Courant maximal direct & $I_{F}$ & 2.0 & A \\
+							\hline						
+							\end{tabular}					
+						\end{center}
+						\caption{}
+						\label{charact_schottky}
+					\end{table}
+				
+					\paragraph{Condensateurs d'entrée}
+					
+					Comme dans tout dimensionnement de convertisseur, une attention particulière doit être portée au choix des condensateurs d'entrée du montage. Leur but principal est notamment de \textbf{réduire l'ondulation sur l'entrée du convertisseur}. Une bonne pratique est de choisir des \textbf{condensateurs céramiques} ayant des \textbf{valeurs d'ESR très faible} afin de réaliser cette fonction. Ils doivent notamment être placés au plus proche de l'entrée du convertisseur pour obtenir le meilleur effet possible \cite{A055}.
+								
+						\subparagraph{Paramètres influents le dimensionnement}
+						Les différents paramètres intervenant dans le dimensionnement des condensateurs d'entrée du montage sont en particulier :
+						
+						\begin{itemize}
+							\item[$\bullet$] le courant $I_{S}$ nominal dans la charge ;
+							\item[$\bullet$] le rapport cyclique  $\alpha_{nom}$ au point nominal de fonctionnement ;
+							\item[$\bullet$] la fréquence $F$ de commutation du convertisseur.	
+						\end{itemize}
+						
+						La relation (\ref{c_in_th}) permet de déterminer pratiquement la valeur minimale de la capacité à placer en entrée en considérant tous les paramètres énoncés ci-dessus.
+						\begin{equation}
+							C_{min} = \frac{I_S\cdot\alpha\cdot(1-\alpha)\cdot 1000}{F\cdot V_P}
+							\label{c_in_th}
+						\end{equation}
+						
+						\subparagraph{Calcul de la capacité d'entrée nécessaire}
+						
+						En vue d'appliquer la relation (\ref{c_in_th}), on prendra les valeurs d'application numérique suivantes :		
+						\begin{equation}
+							F = 575.061\text{kHz} 
+							\quad\text{;}\quad
+							\alpha = 0.44201
+							\quad\text{;}\quad
+							I_S = 1\text{A}
+						\end{equation}
+						
+						\subparagraph{Pertes dans les condensateurs d'entrée}
+						
+						Les pertes dans les condensateurs suivent la relation de Joule :
+						
+						\begin{equation}
+							P = R \cdot I^2
+						\end{equation}
+						
+						où R est la valeur de l'ESR de
+						
+								
+							\paragraph{Condensateurs de sortie}
+							
+							Tout comme les condensateurs d'entrée, les condensateurs de sortie d'un convertisseur font l'objet d'un dimensionnement particulier. Cependant leur rôle est tout autre : ils doivent, en association avec l'inductance de sortie \cite{A055}.	
+				
+				
 			
 			\subsubsection{Ajustement de la fréquence de commutation}
 			
 			Le composant LM22672 est capable de fonctionner 
 			
-			\subsubsection{Dimensionnement thermique}
+			\subsection{Simulation du convertisseur}
+			
+			Le dimensionnement précédent
+			
+				\subsubsection{Modélisation du convertisseur sous \textit{LTSpice}}
+				
+				\subsubsection{Essais de charge}
+				
+				\begin{figure}[h]
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+	x=500cm,
+	y=0.9mm,
+	axis x line=middle,
+	axis y line=middle,
+	xmin = 0, xmax = 0.001,
+	ymin = 0, ymax=20,
+	grid=both,
+	xlabel=Temps (s),
+	ylabel=$V_{OUT}$ (V)
+]
+
+\addplot[color=blue]
+table[x expr=\thisrowno{0}*1000,y={V(v_out)}]
+{data/load_transient.txt};
+
+\addplot[color=orange]
+table[x={time},y={I(I1)}]
+{data/load_transient.txt};
+
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\label{filtre_th}
+\caption{Diagramme de Bode en module de la fonction de transfert théorique $H_{Th}(p)$}
+\end{figure}
+				
+				\subsubsection{•}
+				
+			
+			\subsection{Dimensionnement thermique}
 			
 			Tous les montages électroniques qui contiennent des semi-conducteurs, condensateurs ou d'autres composants vulnérables à l'action thermique vont avoir une durée de vie largement limitée si on ne prend pas en compte les aspects thermiques lors du dimensionnement. Aussi vital soit-il pour améliorer , le dimensionnement thermique est rarement facile 	
 			
@@ -172,9 +297,51 @@
 			
 			% AN-2020 TI
 			
-			\subsection{Conversion 5V vers 3.3V}
 			
-			Le composant \textbf{MCP1826S-3302E/EB} de \textit{Microchip} a été retenu pour établir la conversion 5V vers 3.3V. Ce régulateur linéaire fournissant une sortie faible tension et un courant de 1000mA typique a été choisi dans sa version sortie standard fixe 3.3V. Le composant est stable en utilisant en sortie un condensateur céramique de valeur 1uF, ce qui facilite largement son dimensionnement. Seulement une capacité d'entrée sera à déterminer pour mettre en œuvre le régulateur.
+			\subsection{Routage du convertisseur}
+			
+				\subsubsection{Synthèse des composants}
+				
+				La \textsc{Table \ref{synth_composants}} résume l'ensemble des composants à intégrer au PCB pour réaliser le convertisseur 12V vers 5V. Elle précise notamment les références des sites \textit{RS} et \textit{Farnell} afin de faciliter l'étape de commande de composants. Sont aussi répertoriés les boîtiers des composants afin de préparer toutes les empreintes nécessaires à la réalisation du PCB.
+				
+				\begin{table}
+					\begin{center}
+						\begin{tabular}{|c|c|c|c|c|}
+						\hline
+						\textbf{Ref Schéma} & Ref. \textit{RS} & Ref. \textit{Farnell} & Ref Fabricant & Boîtier \\ 
+						\hline
+						C\_BOOT & 461-4013 & & C0805KRX7R9BB103 & 0805 \\
+						\hline
+						C\_IN & 434-8126 & & C0805KRX7R9BB103 & 0805 \\
+						\hline
+						C\_IN2 & 451-5770 & & C0805KRX7R9BB103 & 0805 \\
+						\hline
+						C\_OUT & 795-5691 & & C0805KRX7R9BB103 & 0805 \\
+						\hline
+						C\_SS & 698-3425 & & C0805KRX7R9BB103 & 0805 \\
+						\hline
+						D\_1 & 184-1516 & & C0805KRX7R9BB103 & 0805 \\
+						\hline
+						L\_1 & 813-5684 & & C0805KRX7R9BB103 & 0805 \\
+						\hline
+						LM22672 & 761-5450 & & C0805KRX7R9BB103 & 0805 \\
+						\hline
+						RT & 123-3056 & & C0805KRX7R9BB103 & 0805 \\
+						\hline
+						\end{tabular}
+					\end{center}
+					\caption{Synthèse des composants du convertisseur 12V vers 5V sur le PCB d'alimentation}
+					\label{synth_composants}
+				\end{table}
+				
+				
+				
+				
+				
+			
+		\section{Conversion 5V vers 3.3V}
+			
+		Le composant \textbf{MCP1826S-3302E/EB} de \textit{Microchip} a été retenu pour établir la conversion 5V vers 3.3V. Ce régulateur linéaire fournissant une sortie faible tension et un courant de 1000mA typique a été choisi dans sa version sortie standard fixe 3.3V. Le composant est stable en utilisant en sortie un condensateur céramique de valeur 1uF, ce qui facilite largement son dimensionnement. Seulement une capacité d'entrée sera à déterminer pour mettre en œuvre le régulateur.
 	
 		\subsection{Contrôle de la direction}
 			L'aéroglisseur doit pouvoir tourner dans toutes les directions pour pouvoir traverser le parcours. La direction s'effectue en orientant la dérive de l'aéroglisseur, celle ci orientera le flux d'air et ainsi induira un mouvement de rotation à l'ensemble du système. L'actionneur que nous avons pour réaliser le déplacement de la dérive est un servomoteur.
