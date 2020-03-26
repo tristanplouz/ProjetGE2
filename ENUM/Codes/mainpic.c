@@ -29,13 +29,14 @@
 
 # define _XTAL_FREQ 4000000
 void __interrupt() tc_int(void){
-    if(PIR1bits.RCIF==1){ //QQch arrive sur le BT
+    if(PIR1bits.RCIF){ //QQch arrive sur le BT
         char datain = RC1REG; //On lit la donnée
         PIR1bits.RCIF=0; //reset du flag
         //Début du traitement
         if(datain == 0){
             //reset du TIMER de sécurité
-            LATAbits.LATA2^=1;
+            TMR4=0;
+            //LATAbits.LATA2^=1;
         }
         else if (datain<22&& datain>2){ //Commande de direction
             PWM3DCH=datain; //Valeur directement correct pour le PWM du servo
@@ -50,7 +51,10 @@ void __interrupt() tc_int(void){
                     break;
             }
         }
-         
+    }
+    if(PIR2bits.TMR4IF){
+        LATAbits.LATA4^=1;
+        PIR2bits.TMR4IF=0;
     }
 }
 
@@ -91,16 +95,22 @@ void main(void) {
     TX1STAbits.BRGH = 0; // High Resolution du Baud generator
     RC1STAbits.SPEN = 1;
     TX1STAbits.TXEN = 1; //Enable TX
-    //TX1REG = 94; //Valeur a envoyer
-
-    //Initialisation Interuption
-    PIE1bits.RCIE = 1;
-    INTCONbits.PEIE = 1;
 
     //Initialisation RX
     ANSELB = 0;
     RC1STAbits.CREN = 1; //Enable reception
 
+    //Init TIMER4
+    T4CLKCON=0;//Selection de Fosc/4
+    T4CONbits.CKPS=0b111;// Prédiviseur de 128
+    T4CONbits.OUTPS=0b1001; //post diviseur de 10
+    PR4=160;//142; //Calcul de la période 4*Tosc*Presc*Postsc*x=T
+    T4CONbits.ON=1;
+    PIE2bits.TMR4IE=1;
+    
+    //Initialisation Interuption
+    PIE1bits.RCIE = 1;
+    INTCONbits.PEIE = 1;
     INTCONbits.GIE = 1;
     while (1) {      
     }
