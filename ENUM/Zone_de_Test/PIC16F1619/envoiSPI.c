@@ -5,6 +5,22 @@
  * Created on 20 février 2020, 10:25
  */
 
+
+/*      pinout
+ * 
+ *       VCC|GND 
+ * RA5      |PRGD    RA0
+ * RA4      |PRGC    RA1
+ * RA3  MCLR|        RA2
+ * RC5  SERV|        RC0
+ * RC4      |        RC1
+ * RC3      |SDO     RC2
+ * RC6      |SDI     RB4
+ * RC7  BTTX|BTRX    RB5
+ * RB7      |SCK     RB6
+
+ */
+
 // CONFIG1
 #pragma config FOSC = INTOSC    // Oscillator Selection Bits (INTOSC oscillator: I/O function on CLKIN pin)
 #pragma config PWRTE = OFF      // Power-up Timer Enable (PWRT disabled)
@@ -36,36 +52,14 @@
 
 #define _XTAL_FREQ 4000000
 
+
+char datain;
 //Vecteur d'intéruption
 void __interrupt() tc_int(void){
-    if(PIR1bits.RCIF){ //QQch arrive sur le BT
-        char datain = RC1REG; //On lit la donnée
-        PIR1bits.RCIF=0; //reset du flag
-        TMR4=0; //reset du TIMER de sécurité
-        //Début du traitement
-        if(datain == 0){
-            
-        }
-        else if (datain<22&& datain>2){ //Commande de direction
-            PWM3DCH=datain; //Valeur directement correct pour le PWM du servo
-        }
-        else if (datain<100&& datain>22){ //Commande de la puissance
-             //traitement pour la puissance
-        }
-        else if (datain>201){ //Commande des effets
-            switch(datain){
-                case 202:
-                    LATAbits.LATA4^=1;
-                    break;
-            }
-        }
-    }//L
-    else if(PIR2bits.TMR4IF){ //Le Timer de Sécurité overflow, 200ms ce sont écoulé sans reception BT
-        //On met l'aero en position de sécurité
-        PWM3DCH=9;//Servo droit
-        //Puissance de propulsion nulle
-        //LATAbits.LATA4^=1;
-        PIR2bits.TMR4IF=0;//On reset le flag
+    if( PIR1bits.SSP1IF==1){
+        LATAbits.LATA2^=1;
+        datain=SSP1BUF;
+        PIR1bits.SSP1IF=0;
     }
 }
 
@@ -78,51 +72,35 @@ void main(void) {
     PORTA=0;
     ANSELA=0;
     TRISA=0;
+    TRISBbits.TRISB4=1;//SDin
+    TRISCbits.TRISC2=0;//SDout
+    TRISBbits.TRISB6=0;//CLK out
+    
     //Initalisation oscillateur
     OSCCONbits.IRCF=0b1101; //4MHz
     
-    //PWM CONTROL
-    PWM3CON=0;
-    RC5PPS = 0b00001110; //On "cable" Le PWM3 sur RC5
-    PR2 = 155; // PR2=Tpwm*Fosc/(4*TMRprescaler)-1
-    PWM3DCH=0; //Clear PulseWidth register
-    PWM3DCL=0;//Clear PulseWidth register
-    PIR1bits.TMR2IF = 0;//Clear Timer2 flag
-    T2CONbits.CKPS = 0b111; //Prescaler 128
-    TRISC=0;
-    T2CONbits.ON=1; //Start timer
-    PWM3CONbits.EN = 1; //Enable PWm
-    PWM3CONbits.OUT= 1; //Enable PWM out
-    PWM3DCL=0b00;
-    PWM3DCH=9;
-    //PWM3DCH de 0 à 21 0b00010101;
+    //Baudrate générateur
+    SP1BRGL = 25;//Valeur du baud générator (4M/16*9600)-1=25.04
+    SP1BRGH = 0;//Valeur réelle de 9615
     
-    //Initialisation TX
-    RC7PPS = 0b00010010; //On "cable" le TX sur le pin C7 
-    BAUD1CONbits.BRG16 = 1; //Baud generator sur 8bits pas 16
-    SP1BRGL = 25;//Valeur du baud générator (4M*0.92/16*9600)-1=22.958333//2.2555
-    SP1BRGH = 0; //Valeur réel du baud rate 10416
-    TX1STAbits.SYNC = 0; //Mode assynchrone
-    TX1STAbits.BRGH = 0; // High Resolution du Baud generator
-    RC1STAbits.SPEN = 1;
-    TX1STAbits.TXEN = 1; //Enable TX
-
-    //Initialisation RX
-    ANSELB = 0;
-    RC1STAbits.CREN = 1; //Enable reception
-
-    //Init TIMER4
-    T4CLKCON=0;//Selection de Fosc/4
-    T4CONbits.CKPS=0b111;// Prédiviseur de 128
-    T4CONbits.OUTPS=0b1001; //post diviseur de 10
-    PR4=160;//142; //Calcul de la période 4*Tosc*Presc*Postsc*x=T
-    T4CONbits.ON=1;
-    PIE2bits.TMR4IE=1;
+    //SPI init
+    RC2PPS=0b00010001;//On cable le SDO sur C2
+    SSP1CONbits.CKP=0;
+    SSP1STATbits.CKE=0;
+    SSP1CON1bits.SSPM=0b0010;
+    SSP1CON1bits.SSPEN=1;//Enable  the connection
     
-    //Initialisation Interuption
-    PIE1bits.RCIE = 1;
-    INTCONbits.PEIE = 1;
-    INTCONbits.GIE = 1;
-    while (1) {      
+    
+    //Interuption
+    PIR1bits.SSP1IF=0;
+    PIE1bits.SSP1IE=1;
+    INTCONbits.PEIE=1;
+    INTCONbits.GIE=1;
+    
+    SSP1BUF=15;
+    __delay_ms(1000);
+    while (1) {    
+        SSP1BUF=50;
+        __delay_ms(500);
     }
 }
