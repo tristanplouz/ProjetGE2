@@ -74,7 +74,7 @@ void main(void) {
     TRISA=0;
     TRISBbits.TRISB4=1;//SDin
     TRISCbits.TRISC2=0;//SDout
-    TRISBbits.TRISB6=0;//CLK out
+    TRISBbits.TRISB7=0;//CLK out
     
     //Initalisation oscillateur
     OSCCONbits.IRCF=0b1101; //4MHz
@@ -85,6 +85,7 @@ void main(void) {
     
     //SPI init
     RC2PPS=0b00010001;//On cable le SDO sur C2
+    RB7PPS=0b00010000;
     SSP1CONbits.CKP=0;
     SSP1STATbits.CKE=0;
     SSP1CON1bits.SSPM=0b0010;
@@ -97,10 +98,10 @@ void main(void) {
     INTCONbits.PEIE=1;
     INTCONbits.GIE=1;
     
-    SSP1BUF=15;
-    __delay_ms(1000);
     while (1) {    
         SSP1BUF=50;
-        __delay_ms(500);
+        __delay_ms(2000);
+	SSP1BUF=60;
+        __delay_ms(2000);
     }
 }

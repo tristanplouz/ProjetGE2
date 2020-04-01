@@ -23,32 +23,52 @@
  * RD1		|		RD0
  */
 
+// FOSC 
+//#pragma config FOSC = FRC		// Oscillator (Internal Fast RC (No change to Primary Osc Mode bits)) 
+#pragma config FCKSMEN = CSW_FSCM_OFF 	// Clock Switching and Monitor (Sw Disabled, Mon Disabled) 
+
+// FWDT 
+#pragma config FWPSB = WDTPSB_16 	// WDT Prescaler B (1:16) 
+#pragma config FWPSA = WDTPSA_512 	// WDT Prescaler A (1:512) 
+#pragma config WDT = WDT_ON 		// Watchdog Timer (Enabled) 
+
+// FBORPOR 
+#pragma config FPWRT = PWRT_64 // POR Timer Value (64ms) 
+//#pragma config BODENV = BORV20 // Brown Out Voltage (Reserved) 
+#pragma config BOREN = PBOR_ON // PBOR Enable (Enabled) 
+#pragma config MCLRE = MCLR_EN // Master Clear Enable (Enabled) 
+
+// FGS 
+#pragma config GWRP = GWRP_OFF 		// General Code Segment Write Protect (Disabled) 
+#pragma config GCP = CODE_PROT_OFF 	// General Segment Code Protection (Disabled)
+
+// FICD 
+#pragma config ICS = ICS_PGD // Comm Channel Select (Use PGC/EMUC and PGD/EMUD) 
+
 #define SYS_FREQ 7370000
 #define FCY SYS_FREQ/4 
 
-#include "xc.h"
-#include <libpic30.h>
+#include <xc.h>
+#include <libpic30.h> 
 #include <p30F2010.h>//Définition des ports du dsPIC
 
-void __attribute__((interrupt)) inter(void){
-	_LATB0^=1;
-    if(IFS0bits.SPI1IF==1){
-	    
-        IFS0bits.SPI1IF=0;
-        char datain = SPI1BUF;
-        SPI1BUF= datain;
-    }
-	__delay_ms(5000);
-}
+void __attribute__ ((interrupt(auto_psv))) _SPI1Interrupt(void){
+	_LATB1^=1;
+	IFS0bits.SPI1IF=0;
+	char datain= SPI1BUF;
+	if(datain==50){
+		_LATB0^=1;
+	}
+}	
 int main(void) {
     LATF=0;
     LATD=0;
     LATB=0;
+    LATE=0;
     TRISBbits.TRISB0=0;
     TRISBbits.TRISB1=0;
     TRISFbits.TRISF2=1;
-    TRISEbits.TRISE8=0;
-   
+    TRISEbits.TRISE8=1;
     
     SPI1CONbits.MODE16=0;
     SPI1CONbits.CKP=0;
@@ -63,11 +83,9 @@ int main(void) {
     IEC0bits.SPI1IE=1;
     
     SPI1STATbits.SPIEN=1;//Enable Serial port
-    SPI1BUF=0b0010010;
-    __delay_ms(1000);
-    _LATB1=1;
+    
     while(1){
-        //_LATB0=SPI1STATbits.SPIRBF;
+	
     }
-    return 0;
+    return 0; 
 }
