@@ -2,7 +2,7 @@
  * File:   mainpic.c
  * Author: tristan
  *
- * Created on 20 février 2020, 10:25
+ * Created on 20 fÃ©vrier 2020, 10:25
  */
 
 
@@ -17,7 +17,7 @@
  * RC3      |SDO     RC2
  * RC6      |SDI     RB4
  * RC7  BTTX|BTRX    RB5
- * RB7      |SCK     RB6
+ * RB7   SCK|        RB6
 
  */
 
@@ -54,7 +54,7 @@
 
 
 char datain;
-//Vecteur d'intéruption
+//Vecteur d'intÃ©ruption
 void __interrupt() tc_int(void){
     if( PIR1bits.SSP1IF==1){
         LATAbits.LATA2^=1;
@@ -79,9 +79,9 @@ void main(void) {
     //Initalisation oscillateur
     OSCCONbits.IRCF=0b1101; //4MHz
     
-    //Baudrate générateur
-    SP1BRGL = 25;//Valeur du baud générator (4M/16*9600)-1=25.04
-    SP1BRGH = 0;//Valeur réelle de 9615
+    //Baudrate gÃ©nÃ©rateur
+    SP1BRGL = 25;//Valeur du baud gÃ©nÃ©rator (4M/16*9600)-1=25.04
+    SP1BRGH = 0;//Valeur rÃ©elle de 9615
     
     //SPI init
     RC2PPS=0b00010001;//On cable le SDO sur C2
