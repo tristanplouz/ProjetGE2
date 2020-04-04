@@ -2,7 +2,7 @@
  * File:   newmainXC16.c
  * Author: tristan
  *
- * Created on 30 mars 2020, 10:25
+ * Created on 31 mars 2020, 11:25:25
  */
 
 /*      pinout
@@ -24,7 +24,7 @@
  */
 
 // FOSC 
-//#pragma config FOSC = FRC		// Oscillator (Internal Fast RC (No change to Primary Osc Mode bits)) 
+//#pragma config FOSC = FRC		// Oscillator (InTeRnal Fast RC (No change to PrImary OSc Mode biTs))AN 
 #pragma config FCKSMEN = CSW_FSCM_OFF 	// Clock Switching and Monitor (Sw Disabled, Mon Disabled) 
 
 // FWDT 
@@ -53,11 +53,11 @@
 #include <p30F2010.h>//Définition des ports du dsPIC
 
 void __attribute__ ((interrupt(auto_psv))) _SPI1Interrupt(void){
-	_LATB1^=1;
-	IFS0bits.SPI1IF=0;
+	_LATB1^=1;//Toggle LED on B1
+	IFS0bits.SPI1IF=0; //Reset Flag
 	char datain= SPI1BUF;
 	if(datain==50){
-		_LATB0^=1;
+		_LATB0^=1; //Toggle LED on B01
 	}
 }	
 int main(void) {
@@ -65,11 +65,13 @@ int main(void) {
     LATD=0;
     LATB=0;
     LATE=0;
+    //Mise en Place des registres d'entrée Sortie'
     TRISBbits.TRISB0=0;
     TRISBbits.TRISB1=0;
     TRISFbits.TRISF2=1;
     TRISEbits.TRISE8=1;
     
+    //inTialisation Des paramétres du SPI
     SPI1CONbits.MODE16=0;
     SPI1CONbits.CKP=0;
     SPI1CONbits.CKE=0;
@@ -77,7 +79,8 @@ int main(void) {
     SPI1CONbits.MSTEN=0;
     SPI1CONbits.SMP=0;
     SPI1STATbits.SPIROV=0;
-    //interuption
+    
+    //Interuptions
     IFS0=0;
     IPC2bits.SPI1IP=0b111;
     IEC0bits.SPI1IE=1;
@@ -85,7 +88,7 @@ int main(void) {
     SPI1STATbits.SPIEN=1;//Enable Serial port
     
     while(1){
-	
+		//Je ne fais rien du touts
     }
     return 0; 
 }

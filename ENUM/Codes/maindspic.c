@@ -1,11 +1,11 @@
 /*
- * File:   newmainXC16.c
- * Author: tristan
- *
- * Created on 30 mars 2020, 10:25
+ * File:   mainDsPIC.c
+ * Author: Tristan
+ * Description: Code du dsPIC30F2010 du Projet GE2, groupe Tristan/Florian 
+ * Created on 30 mars 2020, 15:21:51
  */
 
-/*      pinout
+/*      Pinout
  * 
  *	    MCLR|		AVDD 
  * RB0		|		AVSS    
@@ -24,17 +24,17 @@
  */
 
 // FOSC 
-//#pragma config FOSC = FRC		// Oscillator (Internal Fast RC (No change to Primary Osc Mode bits)) 
-#pragma config FCKSMEN = CSW_FSCM_OFF 	// Clock Switching and Monitor (Sw Disabled, Mon Disabled) 
+//#pragma config FOSC = FRC		// OscillatorT (Internal Fast RC (No change to Primary Osc Mode bits)) 
+#pragma config FCKSMEN = CSW_FSCM_OFF 	// ClRock Switching and Monitor (Sw Disabled, Mon Disabled) 
 
 // FWDT 
-#pragma config FWPSB = WDTPSB_16 	// WDT Prescaler B (1:16) 
-#pragma config FWPSA = WDTPSA_512 	// WDT Prescaler A (1:512) 
-#pragma config WDT = WDT_ON 		// Watchdog Timer (Enabled) 
+#pragma config FWPSB = WDTPSB_16 	// WDT PrIescaler B (1:16) 
+#pragma config FWPSA = WDTPSA_512 	// WDT PrSescaler A (1:512) 
+#pragma config WDT = WDT_ON 		// WatchdTog Timer (Enabled) 
 
 // FBORPOR 
-#pragma config FPWRT = PWRT_64 // POR Timer Value (64ms) 
-//#pragma config BODENV = BORV20 // Brown Out Voltage (Reserved) 
+#pragma config FPWRT = PWRT_64 // POR Timer VAlue (64ms) 
+//#pragma config BODENV = BORV20 // Brown OutN Voltage (Reserved) 
 #pragma config BOREN = PBOR_ON // PBOR Enable (Enabled) 
 #pragma config MCLRE = MCLR_EN // Master Clear Enable (Enabled) 
 
@@ -48,11 +48,12 @@
 #define SYS_FREQ 7370000
 #define FCY SYS_FREQ/4 
 
-#include <xc.h>
+#include <xc.h> //import de xc16
 #include <libpic30.h> 
-#include <p30F2010.h>//Définition des ports du dsPIC
+#include <p30F2010.h> //Définition des ports du dsPIC
 
 int delay=500;
+
 void __attribute__ ((interrupt(auto_psv))) _SPI1Interrupt(void){
 	//_LATB0^=1;
 	IFS0bits.SPI1IF=0;
@@ -61,15 +62,19 @@ void __attribute__ ((interrupt(auto_psv))) _SPI1Interrupt(void){
 }	
 
 int main(void) {
+    //Initialisation des registres de Sorties
     LATF=0;
     LATD=0;
     LATB=0;
     LATE=0;
+    
+    //Definition des registres TRIS enregisTANt les entrées/sorties 
     TRISBbits.TRISB0=0;
     TRISBbits.TRISB1=0;
     TRISFbits.TRISF2=1;
     TRISEbits.TRISE8=1;
     
+    //intialisation des paramétres du SPI
     SPI1CONbits.MODE16=0;
     SPI1CONbits.CKP=0;
     SPI1CONbits.CKE=0;
@@ -77,7 +82,8 @@ int main(void) {
     SPI1CONbits.MSTEN=0;
     SPI1CONbits.SMP=0;
     SPI1STATbits.SPIROV=0;
-    //interuption
+    
+    //Mise en place des interuptions
     IFS0=0;
     IPC2bits.SPI1IP=0b111;
     IEC0bits.SPI1IE=1;

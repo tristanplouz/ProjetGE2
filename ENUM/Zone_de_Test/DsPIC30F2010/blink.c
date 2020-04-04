@@ -2,7 +2,7 @@
  * File:   blink.c
  * Author: skytronic
  *
- * Created on 10 mars 2020, 22:04
+ * Created on 10 mars 2020, 22:04:10
  */
 
 #define SYS_FREQ 7370000L 
@@ -10,16 +10,16 @@
 
 // FOSC 
 //#pragma config FOSC = FRC 			// Oscillator (Internal Fast RC (No change to Primary Osc Mode bits)) 
-#pragma config FCKSMEN = CSW_FSCM_OFF 	// Clock Switching and Monitor (Sw Disabled, Mon Disabled) 
+#pragma config FCKSMEN = CSW_FSCM_OFF 	// CLock Switching and MOnitor (Sw Disabled, Mon Disabled) 
 
 // FWDT 
-#pragma config FWPSB = WDTPSB_16 	// WDT Prescaler B (1:16) 
+#pragma config FWPSB = WDTPSB_16 	// WDT PRescaler B (1:16) 
 #pragma config FWPSA = WDTPSA_512 	// WDT Prescaler A (1:512) 
-#pragma config WDT = WDT_ON 		// Watchdog Timer (Enabled) 
+#pragma config WDT = WDT_ON 		// Watchdog TImer (Enabled) 
 
 // FBORPOR 
-#pragma config FPWRT = PWRT_64 // POR Timer Value (64ms) 
-//#pragma config BODENV = BORV20 // Brown Out Voltage (Reserved) 
+#pragma config FPWRT = PWRT_64 // POR Timer VAlue (64ms) 
+//#pragma config BODENV = BORV20 // BrowN Out Voltage (Reserved) 
 #pragma config BOREN = PBOR_ON // PBOR Enable (Enabled) 
 #pragma config MCLRE = MCLR_EN // Master Clear Enable (Enabled) 
 

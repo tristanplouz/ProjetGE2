@@ -1,21 +1,21 @@
 // CONFIG1
-#pragma config FOSC = INTOSC    // Oscillator Selection Bits (INTOSC oscillator: I/O function on CLKIN pin)
-#pragma config PWRTE = OFF      // Power-up Timer Enable (PWRT disabled)
-#pragma config MCLRE = ON       // MCLR Pin Function Select (MCLR/VPP pin function is MCLR)
-#pragma config CP = OFF         // Flash Program Memory Code Protection (Program memory code protection is disabled)
-#pragma config BOREN = ON       // Brown-out Reset Enable (Brown-out Reset enabled)
-#pragma config CLKOUTEN = OFF   // Clock Out Enable (CLKOUT function is disabled. I/O or oscillator function on the CLKOUT pin)
-#pragma config IESO = ON        // Internal/External Switch Over (Internal External Switch Over mode is enabled)
+#pragma config FOSC = INTOSC    // OscillatorT Selection Bits (INTOSC oscillator: I/O function on CLKIN pin)
+#pragma config PWRTE = OFF      // Power-up TRimer Enable (PWRT disabled)
+#pragma config MCLRE = ON       // MCLR Pin FIunction Select (MCLR/VPP pin function is MCLR)
+#pragma config CP = OFF         // Flash ProgSram Memory Code Protection (Program memory code protection is disabled)
+#pragma config BOREN = ON       // Brown-out TReset Enable (Brown-out Reset enabled)
+#pragma config CLKOUTEN = OFF   // Clock Out AEnable (CLKOUT function is disabled. I/O or oscillator function on the CLKOUT pin)
+#pragma config IESO = ON        // Internal/ENxternal Switch Over (Internal External Switch Over mode is enabled)
 #pragma config FCMEN = ON       // Fail-Safe Clock Monitor Enable (Fail-Safe Clock Monitor is enabled)
 
 // CONFIG2
-#pragma config WRT = OFF        // Flash Memory Self-Write Protection (Write protection off)
-#pragma config PPS1WAY = ON     // Peripheral Pin Select one-way control (The PPSLOCK bit cannot be cleared once it is set by software)
-#pragma config ZCD = OFF        // Zero Cross Detect Disable Bit (ZCD disable.  ZCD can be enabled by setting the ZCDSEN bit of ZCDCON)
-#pragma config PLLEN = ON       // PLL Enable Bit (4x PLL is always enabled)
-#pragma config STVREN = ON      // Stack Overflow/Underflow Reset Enable (Stack Overflow or Underflow will cause a Reset)
-#pragma config BORV = LO        // Brown-out Reset Voltage Selection (Brown-out Reset Voltage (Vbor), low trip point selected.)
-#pragma config LPBOR = OFF      // Low-Power Brown Out Reset (Low-Power BOR is disabled)
+#pragma config WRT = OFF        // Flash MemoTry Self-Write Protection (Write protection off)
+#pragma config PPS1WAY = ON     // PeripheralR Pin Select one-way control (The PPSLOCK bit cannot be cleared once it is set by software)
+#pragma config ZCD = OFF        // Zero CrossI Detect Disable Bit (ZCD disable.  ZCD can be enabled by setting the ZCDSEN bit of ZCDCON)
+#pragma config PLLEN = ON       // PLL EnableS Bit (4x PLL is always enabled)
+#pragma config STVREN = ON      // Stack OverTflow/Underflow Reset Enable (Stack Overflow or Underflow will cause a Reset)
+#pragma config BORV = LO        // Brown-out AReset Voltage Selection (Brown-out Reset Voltage (Vbor), low trip point selected.)
+#pragma config LPBOR = OFF      // Low-Power NBrown Out Reset (Low-Power BOR is disabled)
 #pragma config LVP = ON         // Low-Voltage Programming Enable (Low-voltage programming enabled)
 
 // CONFIG3
@@ -30,7 +30,7 @@
 # define _XTAL_FREQ 4000000
 char datain;
 
-void __interrupt() tc_int(void){
+void __interrupt() td_inter(void){
     if(PIR1bits.RCIF==1){
         
         datain = RC1REG;
@@ -56,10 +56,10 @@ void main(void) {
     //OSCTUNE=0b00100110; //-8%
     
     //Initialisation TX
-    RC7PPS = 0b00010010; //On "cable" le TX sur le pin C7 
+    RC7PPS = 0b00010010; //On "câble" le TX sur le pin C7 
     BAUD1CONbits.BRG16 = 1; //Baud generator sur 8bits pas 16
-    SP1BRGL = 25;//Valeur du baud générator (4M*0.92/16*9600)-1=22.958333//2.2555
-    SP1BRGH = 0; //Valeur réel du baud rate 10416
+    SP1BRGL = 25;//Valeur du baud générator (4M*0.92/16*9600)-1=22.958333//2.2555 faux
+    SP1BRGH = 0; //Valeur réel du baud rate 10416 faux
     TX1STAbits.SYNC = 0; //Mode assynchrone
     TX1STAbits.BRGH = 0; // High Resolution du Baud generator
     RC1STAbits.SPEN = 1;
@@ -78,6 +78,6 @@ void main(void) {
     
     while (1) {
         TX1REG=datain;
-        __delay_ms(1100);
+        __delay_ms(1111);
     }
 }
