@@ -89,6 +89,9 @@ int main(void) {
     IEC0bits.SPI1IE=1;
     
     SPI1STATbits.SPIEN=1;//Enable Serial port
+    
+    //Enable SACDEI
+	U1STAbits.ALTIO=0;
 	
     while(1){
 		_LATB0=1;

@@ -193,6 +193,9 @@ void main(void) {
     INTCONbits.PEIE=1;
     INTCONbits.GIE=1;
     
+    //Enable SACDEI
+	PID1CONbits.MODE=0b000;
+    
     while (1) {
 		SSP1BUF=puis; //On envoie la valeur de la puissance sur le SPI
 		PWM3DCH=ang; //On ecrit la valeur de l'impulsion pour le PWM
