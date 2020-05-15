@@ -1,23 +1,18 @@
 \documentclass{beamer}
 \usetheme[hideothersubsections]{PaloAlto}
 \usecolortheme{albatross}
+
 \usepackage{etoolbox}
 
 \definecolor{Antra}{RGB}{105,105,105}
 \definecolor{AntraB}{RGB}{105,105,125}
 \definecolor{Gris}{RGB}{80,80,85}
+
 \setbeamercolor*{structure}{fg=Antra!50,bg=AntraB}
-
 \setbeamercolor*{palette primary}{use=structure,fg=white,bg=Gris}
-%\setbeamercolor*{palette secondary}{use=structure,fg=white,bg=Gris}
-
-
 \setbeamercolor*{background canvas}{bg=Antra,fg=Antra}
-
 \setbeamercolor*{normal text}{bg=AntraB,fg=Antra!10}
 \setbeamercolor*{navigation symbols}{bg=AntraB,fg=Antra!10}
-
-
 
 \beamertemplatenavigationsymbolsempty
 
@@ -26,27 +21,28 @@
 \author[]{Florian POUTHIER - Tristan DRUSSEL}
 \date{Mai 2020}
 \institute{4ème année Génie Électrique \\ INSA Strasbourg}
+
 \setbeamertemplate{footline}
 {
-\leavevmode% 
- \begin{beamercolorbox}[wd=0.3333\paperwidth,left,ht=0.025\paperheight,dp=0.0125\paperheight]{palette primary}
-   \hspace*{2em}\insertauthor
- \end{beamercolorbox}
-  \begin{beamercolorbox}[wd=0.3333\paperwidth,center,ht=0.025\paperheight,dp=0.0125\paperheight]{AntraB}
- \hspace*{2em}  \insertframenumber\hspace*{2em}
- \end{beamercolorbox}
-  \begin{beamercolorbox}[wd=0.3333\paperwidth,right,ht=0.025\paperheight,dp=0.0125\paperheight]{palette primary}
-  \insertshorttitle\hspace*{2em}
- \end{beamercolorbox}
-  \vskip0pt
+	\leavevmode% 
+	\begin{beamercolorbox}[wd=0.3333\paperwidth,left,ht=0.025\paperheight,dp=0.0125\paperheight]{palette primary}
+	   	\hspace*{2em}\insertauthor
+	\end{beamercolorbox}
+	\begin{beamercolorbox}[wd=0.3333\paperwidth,center,ht=0.025\paperheight,dp=0.0125\paperheight]{AntraB}
+		\hspace*{2em}  \insertframenumber\hspace*{2em}
+	\end{beamercolorbox}
+	\begin{beamercolorbox}[wd=0.3333\paperwidth,right,ht=0.025\paperheight,dp=0.0125\paperheight]{palette primary}
+		\insertshorttitle\hspace*{2em}
+	\end{beamercolorbox}
+	\vskip0pt
 }
 
 
 \begin{document}
-\author[]{Tristan DRUSSEL}
 	\begin{frame}[noframenumbering,plain]
 		\titlepage
 	\end{frame}
+	\author[]{Tristan DRUSSEL}
 	\begin{frame}
 		\frametitle{Aperçu}
 	%Contexte du projet
@@ -143,12 +139,22 @@
 	\end{frame}
 	\begin{frame}
 		\section[Poursuites]{Poursuites du projet}
+		\begin{itemize}
+		    \item Pilotage de l'onduleur
+		    \item Réalisation des cartes	
+		    \item Tests en conditions réelles
+		\end{itemize}
 	\end{frame}
 	
 	\begin{frame}{Conclusion}
 	\section*{Conclusion}
 	%Conclusion
+	\begin{itemize}
+		    \item Projet multidisciplinaire
+		    \item Mise en oeuvre des compétences acquises précédements
+		\end{itemize}
 	\end{frame}
+	\author[]{Florian POUTHIER - Tristan DRUSSEL}
 	\begin{frame}{Bibliographie}
 	\section*{Bibliographie}
 		\bibliographystyle{plain} 
