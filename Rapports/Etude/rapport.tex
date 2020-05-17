@@ -540,16 +540,61 @@ on notera que hard timing: surtout pour les cages tournantes.
 
 			
 			\subsection{Contrôle basé sur le retour de force électromotrice}
+	\chapter{Communication}
+		
+	\chapter{Structure mécanique}
+	La conception mécanique est un point important dans la réalisation de notre aéroglisseur. La structure doit en effet supporter tous les composants cités ci-dessus (batterie, moteur, carte, ...). Cela doit aussi correspondre au cahier des charges. Le cahier des charges spécifie des dimensions de 25cm de largeur, 30cm de hauteur et 35cm de longueur, le matériau doit être le carton plume. De plus l'hélice doit être protégée et un support de caméra sportive doit pouvoir être fixé. 
+		\section{Modèle originel}
+		Pour réaliser les plans de notre aéroglisseur, nous nous sommes inspirés des plans du \textbf{Chticat}, un modèle d'aéroglisseur en polystyrène expansé disponible sur internet.
+		\begin{figure}[h]
+			\begin{center}
+				 \includegraphics[width=0.8\textwidth]{../Illus/Source_Chticat}
+			\end{center}
+			\caption{Mise en plan du Chticat (\textit{Source :} \cite{chticat})}
+			\label{MEPChticat}
+		\end{figure}
+		Ces plans ne peuvent pas être utilisés tel quel, en effet, nous n'utilisons pas le même matériau pour la structure, dans notre cas du carton plûme et non pas du polystyrène expansé, de plus les dimensions ne sont pas strictement identiques. Et l'encombrement de notre système de contrôle est plus important que le système prévu de base pour le Chticat. En effet, le système prévu est sensé se loger sous le "dôme" central qui est bien trop petit pour nos composants. Nous avons donc décidé de redessiner les plans afin d'adapter au mieux le modèle.
+		\section{Nos modifications}
+			\subsection{Dimension}
+				\paragraph{Matériau}Dans un premier temps, il faut prendre en compte le changement d'épaisseur du matériau. Le polystyrène expansé n'a pas la même épaisseur que le carton plume, il faut donc changer la largeur de toutes les encoches.
+				\paragraph{Logement de l'électronique} Dans un second temps, nous devons repenser la \textit{cabine} qui contient l'électronique. nous avons décider de créer une \textit{cabane} sur le dessus de notre aéroglisseur. Nous pouvons voir sur la vue 3D ci dessous que nos empreintes de cartes occupent un espace optimisé dans l'intérieur de notre aéroglisseur.
+				\begin{figure}[h]
+					\begin{center}
+						\includegraphics[width=0.8\textwidth]{../Illus/vueInterne.png}
+					\end{center}
+					\caption{Intérieur de notre aéroglisseur avec les empreintes des cartes}
+					On peut voir respectivement en rouge, bleu et turquoise, la baterie, le servomoteur et le Brushless
+					\label{MEPChticat}
+				\end{figure}
+			\subsection{Ventilation}
+			Afin de garantir un meilleur refroidissement de l'électronique, nous avons aménagé une serie de trous d'aération permettant la circulation de l'air au travers de l'électronique. Ces évents sont situés juste derière l'hélice.
+			\paragraph{Sécurité} Une cordelette pend derière l'aéroglisseur. En tirant sur cette cordelette, on débranche un jumper, qui désactive le moteur de propulsion. De plus, un grillage est prévu autour de l'hélice pour en assuré la protection.
+			\begin{figure}[h]
+					\begin{center}
+						\includegraphics[width=0.8\textwidth]{../Illus/AeroProt.png}
+					\end{center}
+					\caption{Vue avec le grillage}
+					
+					\label{MEPChticat}
+				\end{figure}
+			\subsection{Modèle final}
+				\begin{figure}[h]
+					\begin{center}
+						 \includegraphics[width=0.8\textwidth]{../Illus/MiseEnPlanModif}
+					\end{center}
+					\caption{Mise en plan de notre version}
+					\label{MEP}
+				\end{figure}
+				Notre version modifiée du Chticat répond donc au cahier des charges. Il est réalisable en carton plume de 5mm. Il permet de supporter toute l'électronique. L'hélice est protégée. 
+				Notre objectif était de découper le pièce en carton plume à la découpeuse Laser. Le laser étant plus rapide, précis et soigneux que nous, nous aurions pû avoir des pièces nettes et semblables à notre modélisation 3D.
+				\paragraph{Assemblage} Une fois les pièces découpées, nous aurions procédé à l'assemblage des différentes pièces avec de la colle chaude. L'assemblage s'effectue autour du plateau principal, en ajoutant les fonds, les cotés l'avant et l'arrière. Dans un premier temps les capots ne seraient pas fixés afin de faciliter l'accès aux cartes. Sur le plateau principal, des petits trous sont aménagés afin de pouvoir faire passer les câbles d'alimentation des LEDs disposées à l'avant et à l'arrière. Il faut ensuite assurer la sécurité de l'hélice en fixant du grillage.
+	\chapter{Conclusion}
 	
-
+	%Ce rapport de pré-étude a pour objectif de présenter le thème du projet GE II ainsi que les objectifs à atteindre en vue de proposer un système fonctionnel et homologable pour la compétition finale en fin de semestre. Nous y exposons une analyse fonctionnelle du système à réaliser, un cahier des charges détaillé ainsi qu'un développement des sous-fonctions du dispositif à concevoir.
 	
-	\section{Conclusion}
+	%La conception d'un aéroglisseur radiocommandé est un projet d'envergure faisant appel à des notions d'électronique de puissance comme d'électronique numérique. Chaque membre du binôme ayant un attrait plus important pour l'une des deux matières, nous avons décidé de nous répartir la charge de travail par domaine de connaissances. Un des membres du binôme développera alors la partie liée à la communication Bluetooth, [...] tandis que l'autre membre du binôme se concentrera sur la commande du moteur Brushless DC ainsi que la génération des différents niveaux de tension nécessaires au fonctionnement du dispositif.
 	
-	Ce rapport de pré-étude a pour objectif de présenter le thème du projet GE II ainsi que les objectifs à atteindre en vue de proposer un système fonctionnel et homologable pour la compétition finale en fin de semestre. Nous y exposons une analyse fonctionnelle du système à réaliser, un cahier des charges détaillé ainsi qu'un développement des sous-fonctions du dispositif à concevoir.
-	
-	La conception d'un aéroglisseur radiocommandé est un projet d'envergure faisant appel à des notions d'électronique de puissance comme d'électronique numérique. Chaque membre du binôme ayant un attrait plus important pour l'une des deux matières, nous avons décidé de nous répartir la charge de travail par domaine de connaissances. Un des membres du binôme développera alors la partie liée à la communication Bluetooth, [...] tandis que l'autre membre du binôme se concentrera sur la commande du moteur Brushless DC ainsi que la génération des différents niveaux de tension nécessaires au fonctionnement du dispositif.
-	
-	Ce rapport de pré-étude va ainsi nous donner une solide base d'investigation pour le développement de solutions technologiques fiables et fonctionnelles dans la conception de notre système. Afin d'avoir un meilleur suivi de notre avancée, vous trouverez notre répertoire \href{https://github.com/tristanplouz/ProjetGE2}{github ici}.
+	%Ce rapport de pré-étude va ainsi nous donner une solide base d'investigation pour le développement de solutions technologiques fiables et fonctionnelles dans la conception de notre système. Afin d'avoir un meilleur suivi de notre avancée, vous trouverez notre répertoire \href{https://github.com/tristanplouz/ProjetGE2}{github ici}.
 	
 	\listoffigures
 	
