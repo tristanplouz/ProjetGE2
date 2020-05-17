@@ -80,7 +80,7 @@
 	  		\end{column}
 	  		\begin{column}{0.5\textwidth}
 	    		\begin{figure}
-	    			\includegraphics[width=0.8\textwidth]{../Illus/3Dview.png}
+	    			\includegraphics[width=0.8\textwidth]{../Illus/3dview.png}
 	    			\caption{Modèle 3D modifié et adapté}
 	    		 \end{figure}
 	  		\end{column}
@@ -161,7 +161,7 @@
 		\end{itemize}
 	\end{frame}
 	
-	% Modélisation théorique
+	% Analyse fonctionnelle
 	\begin{frame}{Électronique de Puissance:}
 		\framesubtitle{Analyse fonctionnelle}
 		\subsection[Analyse F]{Analyse fonctionnelle}
@@ -197,22 +197,47 @@
 	\begin{frame}{Électronique de Puissance:}
 		\framesubtitle{ Simulations sous PSIM}
 		\subsection[Simulations]{Simulations sous PSIM}
-		Simulation de fonctionnement de l'alimentation
-		\begin{itemize}
-			\item Mise en oeuvre du schéma de principe interne du composant d'alimentation de type convertisseur \textit{Buck}
-			\item Dimensionnement adéquat des composants externes au convertisseur
-			\item Validation du modèle et des valeurs retenues pour les composants externes
-		\end{itemize}
-	\end{frame}	
+		\begin{columns}[T]
+	  		\begin{column}{0.5\textwidth}
+				Simulation de fonctionnement de l'alimentation
+				\begin{itemize}
+					\item Mise en oeuvre du schéma de principe interne du composant d'alimentation de type convertisseur \textit{Buck}
+					\item Dimensionnement adéquat des composants externes au convertisseur
+					\item Validation du modèle et des valeurs retenues pour les composants externes
+				\end{itemize}
+	  		\end{column}
+	  		\begin{column}{0.5\textwidth}
+	  			\begin{figure}
+	  				\begin{center}
+	  					\includegraphics[height=0.5\textheight]{../Illus/func_bloc_lm22672.png}
+	  				\end{center}
+	    			\caption{Diagramme fonctionnel du convertisseur LM22672}
+	    		\end{figure}
+	  		\end{column}
+		\end{columns}
+	\end{frame}
 	
 	% Simulations PSIM - BLDCM
-	\begin{frame}
-		Simulation de fonctionnement du moteur \textit{brushless}
-		\begin{itemize}
-			\item Étude du pilotage d'un moteur \textit{brushless}
-			\item Prise en compte des aspects mécaniques avec une modélisation mathématique de l'hélice
-			\item Vérification du fonctionnement et des performances de propulsion espérées
-		\end{itemize}
+	\begin{frame}{Électronique de Puissance:}
+		\framesubtitle{ Simulations sous PSIM}
+		\begin{columns}[T]
+	  		\begin{column}{0.5\textwidth}
+				Simulation de fonctionnement du moteur \textit{brushless}
+				\begin{itemize}
+					\item Étude du pilotage d'un moteur \textit{brushless}
+					\item Prise en compte des aspects mécaniques avec une modélisation mathématique de l'hélice
+					\item Vérification du fonctionnement et des performances de propulsion espérées
+				\end{itemize}
+	  		\end{column}
+	  		\begin{column}{0.5\textwidth}
+	  			\begin{figure}
+	  				\begin{center}
+	  					\includegraphics[height=0.35\textheight]{../Illus/simu_bldcm.png}
+	  				\end{center}
+	    			\caption{Schéma de l'onduleur et du moteur \textit{brushless} sous \textit{PSIM}}
+	    		\end{figure}
+	  		\end{column}
+		\end{columns}
 	\end{frame}	
 	
 	% Conception des PCBs - Carte Alim
