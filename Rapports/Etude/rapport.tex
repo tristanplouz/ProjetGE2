@@ -6,14 +6,41 @@
 \usepackage[top=20mm, bottom=25mm, left=15mm, right=15mm]{geometry}
 \usepackage{hyperref}
 \usepackage{mathpazo}
-\usepackage{multirow}
-
+\usepackage{multicol}
+	
+\usepackage{color}
+	\definecolor{apricot}{rgb}{0.98, 0.81, 0.69}
+	\definecolor{bisque}{rgb}{1.0, 0.89, 0.77}
+	\definecolor{champagne}{rgb}{0.97, 0.91, 0.81}
+	\definecolor{cobalt}{rgb}{0.0, 0.28, 0.67}
+	\definecolor{burntumber}{rgb}{0.54, 0.2, 0.14}
+	
+\usepackage{listings}
+	\lstset{	
+		basicstyle={\scriptsize},
+		language=C,
+		numbers={left},
+		stepnumber=5,
+		numbersep=5pt,
+		inputencoding={latin1},
+		backgroundcolor=\color{champagne},
+		frame=l,
+		numberstyle=\tiny\color{burntumber},
+		breaklines=true,
+		xleftmargin=10pt,
+		framexleftmargin=1pt,
+		keywordstyle=\bfseries\color{green!40!black},
+	 	commentstyle=\itshape\color{burntumber},
+	  	identifierstyle=\color{cobalt},
+	 	stringstyle=\color{orange}
+	}
+	
 \usepackage{graphicx}
 \usepackage{pgfplots}
-\pgfplotsset{compat=1.15}
+	\pgfplotsset{compat=1.15}
 
 \usepackage[europeanresistors]{circuitikz}
-\usetikzlibrary{babel}
+	\usetikzlibrary{babel}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -26,6 +53,16 @@
 \renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}
 %\titleformat{\subsubsection}[runin]{\normalfont\bfseries}{\thesubsubsection}{0em}{}
 
+\newcommand{\insertcode}[3]{
+\begin{center}
+	\vbox{ #3
+		\begin{multicols}{2}
+			\lstinputlisting[language=C, linerange={#2}]{#1}
+		\end{multicols}
+	}
+\end{center}
+}
+
 \pagestyle{fancy}
 \fancyhead[L]{Projet GE2}
 \fancyhead[C]{\textit{Aéroglisseur radiocommandé}}
@@ -33,6 +70,9 @@
 \fancyfoot[L]{INSA Strasbourg}
 \fancyfoot[R]{Tristan DRUSSEL - Florian POUTHIER}
 \headheight=15.5pt
+
+
+
 
 \title{Rapport d'Étude Projet GE II\\Aéroglisseur radio-commandé}
 \author{Tristan DRUSSEL - Florian POUTHIER \\ \\ Génie Électrique 4ème année\\ INSA Strasbourg}
@@ -462,7 +502,7 @@ table[x={time},y={I(I1)}]
 				 	\label{struct_bldcm}
 				 \end{figure}
 				 
-				 L'exemple de structure présenté ici montre trois circuits électomagnétiques connectés à un point commun (couplage étoile). Chacun des circuits est divisé en deux parties qui seront bobinées sur des dents de la machine diamétralement opposées. Cette structure permet alors à l'aimant permanent au rotor de se déplacer au milieu de champs magnétiques induits. Nous avons modélisé le BLDCM en utilisant le logiciel \textit{FEMM} pour donner une idée plus concrète de son fonctionnement en rotation. La montre notamment la modélisation de la structure du moteur sur ce logiciel.
+				 L'exemple de structure présenté ici montre trois circuits électromagnétiques connectés à un point commun (couplage étoile). Chacun des circuits est divisé en deux parties qui seront bobinées sur des dents de la machine diamétralement opposées. Cette structure permet alors à l'aimant permanent au rotor de se déplacer au milieu de champs magnétiques induits. Nous avons modélisé le BLDCM en utilisant le logiciel \textit{FEMM} pour donner une idée plus concrète de son fonctionnement en rotation. La montre notamment la modélisation de la structure du moteur sur ce logiciel.
 				 
 				 \subsection{Modélisation}
 				 
@@ -543,15 +583,15 @@ on notera que hard timing: surtout pour les cages tournantes.
 			\newcommand{\pic}{\texttt{PIC16F1619} }
 			\newcommand{\dspic}{\texttt{dsPIC30F2010} }
 	\chapter{Contrôle}
-	Le système est controlé par deux microcontrôleurs un \pic ainsi qu'un \dspic. Le \pic se charge de la communication avec le smartphone au travers du module bluetooth, il utilise ensuite les informations reçues pour controler le servomoteur de direction et envoie les informations adéquates au \dspic. Celui ci gère la puissance du moteur Brushless, il pilote l'onduleur triphasé.%Ajouter lien vers partie consacré plus haut
+	Le système est contrôlé par deux microcontrôleurs un \pic ainsi qu'un \dspic. Le \pic se charge de la communication avec le smartphone au travers du module Bluetooth, il utilise ensuite les informations reçues pour contrôler le servomoteur de direction et envoie les informations adéquates au \dspic. Celui ci gère la puissance du moteur Brushless, il pilote l'onduleur triphasé.%Ajouter lien vers partie consacré plus haut
 		\section{Communication}
 			\subsection{Vue d'ensemble}
 				Dans notre système, nous disposons de plusieurs appareils \textit{intelligent}, le \pic , le \dspic et le smartphone, afin que l'on puisse profiter au maximum des capacités de chacun, ces éléments doivent communiquer entre eux.
 				\subsubsection{Technologies utilisées}
 				Nous utilisons plusieurs technologies de communication différentes entre chaque composant.
-				\paragraph{Entre le \textit{Smartphone} et le \textit{Module Bluetooth}} Une liason \textit{Bluetooth Low Energy} est établie entre le le module Bluetooth HC-05 et le smartphone. Dans notre cas, le téléphone est dit \textit{master} tandis que le module est dit \textit{slave}.
-				\paragraph{Entre le \textit{Module Bluetooth} et le \textit{\pic} } Pour communiquer entre le module Bluetooth HC-05 et le \pic, une liaison série est utilisé. Cette liaison utilise deux conducteurs de données appellés TX et RX. La communication s'effectue à un baud rate commun entre les deux appareils. Le port TX d'un appareil est connecté au port RX du second et inversement.
-				\paragraph{Entre le \textit{\dspic} et le \textit{\pic}} Entre ces deux composants, nous utilisons une connection de type \textbf{SPI}. Cette liaison utilise 3 ou 4 conducteurs. Ils sont appellés SLCK (\textsf{Serial Clock}), MISO (\textsf{Master Input Slave Output}), MOSI (\textsf{Master Output Slave Input})  et SS (\textsf{Slave Select}). Le dernier n'étant utile uniquement si il y a plusieurs \textit{slave} dans le système. Dans notre cas, le \pic est \textit{master} et le \dspic est \textit{slave}
+				\paragraph{Entre le \textit{Smartphone} et le \textit{Module Bluetooth}} Une liaison \textit{Bluetooth Low Energy} est établie entre le le module Bluetooth HC-05 et le smartphone. Dans notre cas, le téléphone est dit \textit{master} tandis que le module est dit \textit{slave}.
+				\paragraph{Entre le \textit{Module Bluetooth} et le \textit{\pic} } Pour communiquer entre le module Bluetooth HC-05 et le \pic, une liaison série est utilisé. Cette liaison utilise deux conducteurs de données appelés TX et RX. La communication s'effectue à un baud rate commun entre les deux appareils. Le port TX d'un appareil est connecté au port RX du second et inversement.
+				\paragraph{Entre le \textit{\dspic} et le \textit{\pic}} Entre ces deux composants, nous utilisons une connexion de type \textbf{SPI}. Cette liaison utilise 3 ou 4 conducteurs. Ils sont appelés SLCK (\textsf{Serial Clock}), MISO (\textsf{Master Input Slave Output}), MOSI (\textsf{Master Output Slave Input})  et SS (\textsf{Slave Select}). Le dernier n'étant utile uniquement si il y a plusieurs \textit{slave} dans le système. Dans notre cas, le \pic est \textit{master} et le \dspic est \textit{slave}
 				
 				\setlength{\unitlength}{1mm}
 \begin{figure}
@@ -589,7 +629,7 @@ on notera que hard timing: surtout pour les cages tournantes.
 	\begin{center}
 	
 	\begin{tabular}{cc}
-		<0>       & Information de connection \\
+		<0>       & Information de connexion \\
 		<1>    	  & Non utilisé               \\
 		<2-20>    & Contrôle de la direction  \\
 		<21-99>   & Non utilisé               \\
@@ -603,12 +643,12 @@ on notera que hard timing: surtout pour les cages tournantes.
 
 			\subsection{Application}
 			Afin de pouvoir utiliser notre propre protocole, défini ci dessous, et d'avoir notre propre interface graphique nous avons décider de créer notre application de A à N. Pour cela, nous avons utilisé l'outil développer par le MIT, \href{http://ai2.appinventor.mit.edu/}{MIT App Inventor}. Cette outils en ligne permet de créer avec des blocs de simples applications pour smartphone.
-		\paragraph{Interface de connection} Lorsque nous démarrons l'application, nous arrivons sur un écran qui scan et liste les différents périphériques Bluetooth Low Energy à proximité de notre smartphone. Cette vue reprend les éléments développés dans ce tutoriel \cite{tutoBLE} du MIT. Plusieurs options s'offrent à nous, le scan des périphérique ou la connection à un des périphériques. Lorsque nous nous connectons à un périphérique, nous basculons sur l'écran de commande de l'aéroglisseur.
+		\paragraph{Interface de connection} Lorsque nous démarrons l'application, nous arrivons sur un écran qui scan et liste les différents périphériques Bluetooth Low Energy à proximité de notre smartphone. Cette vue reprend les éléments développés dans ce tutoriel \cite{tutoBLE} du MIT. Plusieurs options s'offrent à nous, le scan des périphérique ou la connexion à un des périphériques. Lorsque nous nous connectons à un périphérique, nous basculons sur l'écran de commande de l'aéroglisseur.
 		\begin{figure}
 			\begin{center}
 				\includegraphics[width=0.3\textwidth]{../Illus/AppConnection.png}
 			\end{center}
-			\caption{Écran de connection au périphérique Bluetooth}
+			\caption{Écran de connexion au périphérique Bluetooth}
 		\end{figure}
 			\paragraph{Interface de commande} L'écran de commande est composé de deux curseurs, celui de droite contrôlant la puissance et celui de gauche contrôlant la direction. En haut au milieu, il y a un bouton pour se déconnecter et revenir à l'écran d'accueil. En bas de l'écran, une série d'interrupteur permettant l'allumage de différents effets.
 			\begin{figure}
@@ -626,7 +666,7 @@ on notera que hard timing: surtout pour les cages tournantes.
 			\put(45,50){\framebox(25,10)[c]{\shortstack{Mouvement du\\ curseur Puissance}}}
 			\put(80,50){\framebox(25,10)[c]{Appui sur un effet}}
 			\put(115,50){\framebox(25,10)[c]{Fin du timer}}
-			\put(150,50){\framebox(25,10)[c]{\shortstack{Appui sur\\ déconnection}}}
+			\put(150,50){\framebox(25,10)[c]{\shortstack{Appui sur\\ déconnexion}}}
 
 			\put(92.5,80){\line(0,-1){10}}
 			\put(22.5,70){\line(1,0){140}}			
@@ -650,7 +690,7 @@ on notera que hard timing: surtout pour les cages tournantes.
 			\put(115,20){\framebox(25,10)[c]{\shortstack{Envoi de la valeur\\<0>}}}
 
 			
-			\put(80,80){\framebox(25,10)[c]{\shortstack{Appui sur\\ connection}}}
+			\put(80,80){\framebox(25,10)[c]{\shortstack{Appui sur\\ connexion}}}
 			
 			\put(80,100){\framebox(25,10)[c]{\shortstack{Scan}}}
 			\put(92.5,100){\vector(0,-1){10}}
@@ -662,7 +702,7 @@ on notera que hard timing: surtout pour les cages tournantes.
 		\end{picture}
 			\caption{Algorithme de fonctionnement de l'application}
 		\end{figure}
-		\\Chaque fonction ci dessus est assimilable à un bloc de MIT App Inventor. Par exemple, prenons la branche du \textit{mouvement curseur direction}.
+		\\Chaque fonction ci dessus est assimilable à un bloc de MIT App Inventor. Par exemple, prenons la branche \textit{Mouvement curseur direction}.
 		\begin{figure}
 			\begin{center}		
 				\includegraphics[width=0.5\textwidth]{../Illus/MITBlock.png}
@@ -671,17 +711,64 @@ on notera que hard timing: surtout pour les cages tournantes.
 			\caption{Vues de MIT App Inventor}
 		\end{figure}
 		Nous pouvons voir les différents éléments constituant notre application, et un exemple de bloc qui réagit au changement de position du curseur pour l'envoyer le la liaison Bluetooth Low Energy.
-		\\Les sources du projet de l'application est disponible sur \href{https://github.com/tristanplouz/ProjetGE2/tree/master/Application}{notre dépot github ici}
+		\\Les sources du projet de l'application est disponible sur notre dépôt Github ici\cite{git}
 			\subsection{Réception Bluetooth}
-			Après avoir émis les informations de pilotage, il faut les récupérer pour les exploiter. Nous avons donc mis en place une liaison série entre le module Bluetooth HC-05 et le \pic. Cette liaison est déclaré à 9600 bauds.
+			Après avoir émis les informations de pilotage, il faut les récupérer pour les exploiter. Nous avons donc mis en place une liaison série entre le module Bluetooth HC-05 et le \pic. Cette liaison est déclarée à 9600 bauds.
+			\paragraph{Mise en place}La configuration du module \textit{UART} du \pic est réalisée en s'appuyant sur la documentation technique\cite[p.~315]{DatasheetPIC}. On décide les pins que l'on va utiliser, tous les pins utilisés sur les microcontrôleurs sont précisés dans le tableau \ref{pinoutpic}
+			
+			\insertcode{../../ENUM/Codes/mainpic.c}{73-83,180-182,189-190}{Initialisation de la liaison série sur le \pic}
+			
+	
 			\subsection{Liaison SPI}
 		\section{Fonctionnement}
+		\begin{table}
+			\begin{center}
+				\begin{tabular}{r|ccc|l}
+	
+				VCC		& 1 &   & 20 & GND \\ 
+				  		& 2 &   & 19 & PRGD \\ 
+				 		& 3 &   & 18 & PRGC \\ 
+				MCLR 	& 4 &   & 17 &  \\ 
+				Servo 	& 5 &   & 16 &   \\
+				 Effet	& 6 &   & 15 &   \\ 
+				  		& 7 &   & 14 & SDO \\ 
+				  		& 8 &   & 13 & SDI \\ 
+				BTTX 	& 9 &   & 12 & BTRX \\ 
+				SCK 	& 10&   & 11 &   \\ 
+				\end{tabular} 
+			\end{center}
+			\caption{Plan de branchement sur le \pic}
+			\label{pinoutpic}
+		\end{table}
+		\begin{table}
+			\begin{center}
+				\begin{tabular}{r|ccc|l}
+				MCLR & 1 &   & 28 & AVDD \\ 
+				  & 2 &   & 27 & AVCC \\ 
+				  & 3 &   & 26 &   \\ 
+				  & 4 &   & 25 &   \\ 
+				  & 5 &   & 24 &   \\ 
+				  & 6 &   & 23 &   \\ 
+				 & 7 &   & 22 &   \\ 
+				GND & 8 &   & 21 &   \\ 
+				  & 9 &   & 20 & VDD \\ 
+				  & 10 &   & 19 & GND \\ 
+				  & 11 &   & 18 & SDI \\ 
+				  & 12 &   & 17 & SDO \\ 
+				VDD & 13 &   & 16 & SCK \\ 
+				  & 14 &   & 15 &   \\ 
+				\end{tabular} 
+			\end{center}
+			\caption{Plan de branchement sur le \dspic}
+			\label{pinoutdspic}
+		\end{table}
 			\subsection{Contrôle du servomoteur}
 			\subsection{Contrôle de l'onduleur}
 			\subsection{Sécurité}
 				\subsubsection{Arrêt d'urgence}\label{secu}
-				\subsubsection{Perte de connection}
+				\subsubsection{Perte de connexion}
 			\subsection{Contrôle des effets}
+			
 	\chapter{Structure mécanique}
 	La conception mécanique est un point important dans la réalisation de notre aéroglisseur. La structure doit en effet supporter tous les composants cités ci-dessus (batterie, moteur, carte, ...). Cela doit aussi correspondre au cahier des charges. Le cahier des charges spécifie des dimensions de 25cm de largeur, 30cm de hauteur et 35cm de longueur, le matériau doit être le carton plume. De plus l'hélice doit être protégée et un support de caméra sportive doit pouvoir être fixé. 
 		\section{Modèle originel}
@@ -694,9 +781,9 @@ on notera que hard timing: surtout pour les cages tournantes.
 			\caption{Mise en plan (\textit{Source :} \cite{PLCHTI}) et photo (\textit{Source :} \cite{chticat}) du \textbf{Chticat}}
 			\label{MEPChticat}
 		\end{figure}
-		Ces plans ne peuvent pas être utilisés tel quel, en effet, nous n'utilisons pas le même matériau pour la structure, dans notre cas du carton plûme et non pas du polystyrène expansé. De plus les dimensions ne sont pas strictement identiques. Et l'encombrement de notre système de contrôle est plus important que le système prévu de base pour le Chticat. En effet, le système prévu est sensé se loger sous le "dôme" central qui est bien trop petit pour nos composants. Nous avons donc décidé de redessiner les plans afin d'adapter au mieux le modèle.
+		Ces plans ne peuvent pas être utilisés tel quel, en effet, nous n'utilisons pas le même matériau pour la structure, dans notre cas du carton plume et non pas du polystyrène expansé. De plus les dimensions ne sont pas strictement identiques. Et l'encombrement de notre système de contrôle est plus important que le système prévu de base pour le Chticat. En effet, le système prévu est sensé se loger sous le "dôme" central qui est bien trop petit pour nos composants. Nous avons donc décidé de redessiner les plans afin d'adapter au mieux le modèle.
 		\section{Nos modifications}
-		Toutes les modifications que nous avons apporté au modèle ont été réalisé sur le logicel de \textit{Conception Assistée par Ordinateur} \href{https://freecadweb.org/}{FreeCAD} en re modélisant les pièces du modèle originel et en modélisant de nouvelles.
+		Toutes les modifications que nous avons apporté au modèle ont été réalisé sur le logiciel de \textit{Conception Assistée par Ordinateur} \href{https://freecadweb.org/}{FreeCAD} en re-modélisant les pièces du modèle originel et en modélisant de nouvelles.
 			\subsection{Dimension}
 				\paragraph{Matériau}Dans un premier temps, il faut prendre en compte le changement d'épaisseur du matériau. Le polystyrène expansé n'a pas la même épaisseur que le carton plume, il faut donc changer la largeur de toutes les encoches.
 				\paragraph{Logement de l'électronique} Dans un second temps, nous devons repenser la \textit{cabine} qui contient l'électronique. nous avons décider de créer une \textit{cabane} sur le dessus de notre aéroglisseur. Nous pouvons voir sur la vue 3D ci dessous que nos empreintes de cartes occupent un espace optimisé dans l'intérieur de notre aéroglisseur.
@@ -706,12 +793,12 @@ on notera que hard timing: surtout pour les cages tournantes.
 %A METTRE A JOUR
 					\end{center}
 					\caption{Intérieur de notre aéroglisseur avec les empreintes des cartes}
-					On peut voir respectivement en rouge, bleu et turquoise, la baterie, le servomoteur et le Brushless
-					\label{MEPChticat}
+					On peut voir respectivement en rouge, bleu et turquoise, la batterie, le servomoteur et le Brushless
+					\label{MEPnous}
 				\end{figure}
 			\subsection{Ventilation}
-			Afin de garantir un meilleur refroidissement de l'électronique, nous avons aménagé une serie de trous d'aération permettant la circulation de l'air au travers de l'électronique. Ces évents sont situés juste derière l'hélice.
-			\subsection{Sécurité} Une cordelette pend derière l'aéroglisseur. En tirant sur cette cordelette, on débranche un jumper, qui désactive le moteur de propulsion. Cette fonctionnalité est \hyperref[secu]{définie ici}, dans la partie contrôle. De plus, un grillage est prévu autour de l'hélice pour en assuré la protection.
+			Afin de garantir un meilleur refroidissement de l'électronique, nous avons aménagé une série de trous d'aération permettant la circulation de l'air au travers de l'électronique. Ces évents sont situés juste derrière l'hélice.
+			\subsection{Sécurité} Une cordelette pend derrière l'aéroglisseur. En tirant sur cette cordelette, on débranche un jumper, qui désactive le moteur de propulsion. Cette fonctionnalité est \hyperref[secu]{définie ici}, dans la partie contrôle. De plus, un grillage est prévu autour de l'hélice pour en assurer la protection.
 			\begin{figure}[h]
 					\begin{center}
 						\includegraphics[width=0.5\textwidth]{../Illus/AeroProt.png}
@@ -736,7 +823,7 @@ on notera que hard timing: surtout pour les cages tournantes.
 					\label{MEP}
 				\end{figure}
 				Notre version modifiée du Chticat répond donc au cahier des charges. Il est réalisable en carton plume de 5mm. Il permet de supporter toute l'électronique. L'hélice est protégée. Les dimensions extérieurs de la structure sont conformes au cahier des charges.
-				Notre objectif était de découper le pièce en carton plume à la découpeuse Laser. Le laser étant plus rapide, précis et soigneux que nous, nous aurions pû avoir des pièces nettes et semblables à notre modélisation 3D.
+				Notre objectif était de découper le pièce en carton plume à la découpeuse Laser. Le laser étant plus rapide, précis et soigneux que nous, nous aurions pu avoir des pièces nettes et semblables à notre modélisation 3D.
 				\paragraph{Assemblage} Une fois les pièces découpées, nous aurions procédé à l'assemblage des différentes pièces avec de la colle chaude. L'assemblage s'effectue autour du plateau principal, en ajoutant les fonds, les cotés l'avant et l'arrière. Dans un premier temps les capots ne seraient pas fixés afin de faciliter l'accès aux cartes. Sur le plateau principal, des petits trous sont aménagés afin de pouvoir faire passer les câbles d'alimentation des LEDs disposées à l'avant et à l'arrière. Il faut ensuite assurer la sécurité de l'hélice en fixant du grillage.
 				
 	\chapter{Conclusion}
@@ -748,7 +835,7 @@ on notera que hard timing: surtout pour les cages tournantes.
 	%Ce rapport de pré-étude va ainsi nous donner une solide base d'investigation pour le développement de solutions technologiques fiables et fonctionnelles dans la conception de notre système. Afin d'avoir un meilleur suivi de notre avancée, vous trouverez notre répertoire \href{https://github.com/tristanplouz/ProjetGE2}{github ici}.
 	
 	\listoffigures
-	
+	\lstlistoflistings
 	\bibliographystyle{plain} 
 	\bibliography{biblio.bib}
 	
