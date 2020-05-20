@@ -1,0 +1,70 @@
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage[top=20mm, bottom=25mm, left=15mm, right=15mm]{geometry}
+\usepackage{hyperref}
+\usepackage{mathpazo}
+\usepackage{multicol}
+	
+\usepackage{color}
+	\definecolor{apricot}{rgb}{0.98, 0.81, 0.69}
+	\definecolor{bisque}{rgb}{1.0, 0.89, 0.77}
+	\definecolor{champagne}{rgb}{0.97, 0.91, 0.81}
+	\definecolor{cobalt}{rgb}{0.0, 0.28, 0.67}
+	\definecolor{burntumber}{rgb}{0.54, 0.2, 0.14}
+	
+\usepackage{listings}
+	\lstset{	
+		basicstyle={\scriptsize},
+		language=C,
+		numbers={left},
+		stepnumber=5,
+		numbersep=5pt,
+		inputencoding={latin1},
+		backgroundcolor=\color{champagne},
+		frame=l,
+		numberstyle=\tiny\color{burntumber},
+		breaklines=true,
+		xleftmargin=10pt,
+		framexleftmargin=1pt,
+		keywordstyle=\bfseries\color{green!40!black},
+	 	commentstyle=\itshape\color{burntumber},
+	  	identifierstyle=\color{cobalt},
+	 	stringstyle=\color{orange}
+	}
+	
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.15}
+
+\usepackage[american voltage, americanresistors]{circuitikz}
+\usetikzlibrary{babel}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+
+\usepackage{fancyhdr}
+
+\setcounter{secnumdepth}{3}
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}
+%\titleformat{\subsubsection}[runin]{\normalfont\bfseries}{\thesubsubsection}{0em}{}
+
+\newcommand{\insertcode}[3]{
+\begin{center}
+	\vbox{ #3
+		\begin{multicols}{2}
+			\lstinputlisting[language=C, linerange={#2}]{#1}
+		\end{multicols}
+	}
+\end{center}
+}
+
+\pagestyle{fancy}
+\fancyhead[L]{Projet GE2}
+\fancyhead[C]{\textit{Aéroglisseur radiocommandé}}
+\fancyhead[R]{Étude - Mai 2020}
+\fancyfoot[L]{INSA Strasbourg}
+\fancyfoot[R]{Tristan DRUSSEL - Florian POUTHIER}
+\headheight=15.5pt
