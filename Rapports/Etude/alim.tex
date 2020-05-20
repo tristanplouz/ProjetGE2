@@ -33,54 +33,95 @@ d'alimentation.
 		la batterie LiPo 3S à vide. Un élément LiPo est en fait une batterie 
 		Li-ion où l'électrolyte est un polymère gélifié.
 			
-		Il est à garder en mémoire que la décharge d'un élément LiPo 
-		en-dessous de 2.5V entraîne sa destruction. De manière générale, il 
-		est recommandé de ne pas décharger les éléments en-dessous de 3.3V 
-		si l'on souhaite une durée de vie optimale pour ce type de batterie. 
+		Il est à garder en mémoire que \textbf{la décharge d'un élément LiPo 
+		en-dessous de 2.5V entraîne sa destruction}. De manière générale, il 
+		est recommandé de 
+		\textit{ne pas décharger les éléments en-dessous de 3.3V} 
+		si l'on souhaite une durée de vie optimale pour ce type de batterie.
+		Nous tiendrons compte de cette contrainte par la suite lors de la
+		mise en oeuvre d'un circuit de protection contre la sous-tension. 
 			
 		A l'inverse, chaque élément LiPo 
 		\textbf{ne doit jamais être chargé au-dessus de 4.2V}, au risque de 
 		provoquer un \textbf{possible incendie}. Dans le cas d'une batterie 
 		constituée d'éléments LiPo multiples, il est 
 		\textbf{impératif d'utiliser un \textit{égaliseur}} dans le circuit 
-		de charge.
+		de charge. Cet égaliseur est de manière générale disponible sur tous
+		les chargeurs standards de batteries LiPo.
 		
 		% Source : http://geeby22.over-blog.com/page-4287873.html
 			
 		\subsection{Modélisation de la batterie LiPo}
 			
 		La batterie LiPo utilisée pour notre système va être modélisée sous 
-		\textit{PSIM} par l'élément 
+		\textit{PSIM} par l'élément Li-Ion Battery comme montré en 
+		\textsc{Figure \ref{lipo_model_psim}}.
 			
 		\begin{figure}[h]
 			\begin{center}
 				\includegraphics[scale=0.5]{../Illus/lipo_model_psim.png}
 			\end{center}
+			\caption{Élément \textit{PSIM} modélisant la batterie LiPo du 
+			système}
+			\label{lipo_model_psim}
 		\end{figure}
 			
 			\subsubsection{Caractéristiques principales de la batterie utilisée}
 			
 			La \textsc{Table \ref{carac_lipo_psim}} met en avant les 
-			caractéristiques principales du modèle de la batterie considérée.
+			caractéristiques principales du modèle de la batterie utilisée.
 			
 			\begin{table}[h]
 				\begin{center}
 					\begin{tabular}{l c}
-						Parameter				& Value			\\
+						\textbf{Paramètre}		& \textbf{Valeur}	\\
 						\hline
-						Number of cells 		& 3 			\\
-						Rated capacity			& 2.2A 			\\
-						Internal resistance		& 9m$\Omega$	\\
-						Maximum capacity		& 2.3A			\\
-						Nominal capacity		& 2.2A			\\
-						Initial State of Charge	& 0.95			\\
+						Nombre de cellules 		& 3 				\\
+						Capacité nominale		& 2200mAh 			\\
+						Capacité maximale		& 2300mAh			\\
+						Résistance interne		& 9m$\Omega$		\\
 					\end{tabular}
 				\end{center}
 				\caption{Caractéristiques principales du modèle \textit{PSIM} de la batterie}
 				\label{carac_lipo_psim}
 			\end{table}
 			
-			\subsubsection{Vérification des caractéristiques du modèle}
+				\vspace{-0.5em}
+			
+				\paragraph{Nombre de cellules}
+				
+				La batterie considérée comportant 3 cellules, nous pouvons ainsi
+				déterminer ses tensions caractéristiques, à savoir :
+				\begin{itemize}
+					\item[$\bullet$] une tension nominale de 11.1V (3 x 3.7V) ;
+					\item[$\bullet$] une tension maximale de 12.6V (3 x 4.2V) ;
+					\item[$\bullet$] une tension minimale d'utilisation de 9.9V (3 x 3.3V). 
+				\end{itemize}
+				
+				\vspace{-0.5em}
+				
+				\paragraph{Capacité nominale}
+				
+				Elle correspond à la \textit{taille du réservoir d'énergie} que 
+				constitue la batterie. Bien que des capacités de batterie plus
+				élevées soient synonymes de meilleurs temps d'autonomie, il en
+				résulte dans le même des batteries plus lourdes et volumineuses
+				pouvant allourdir la structure de l'aéroglisseur.
+				Une capacité de 2200mAh est alors un bon compromis en plus d'être
+				une valeur courante sur le marché.
+				
+				\vspace{-0.5em}
+			
+				\paragraph{État initial de charge}
+			
+				Nous considèrerons pour nos simulations un 
+				\textbf{état initial de charge de 95\%}, 
+				valeur raisonnable correspondant à la réalité d'une 
+				batterie chargée.
+			
+			%\subsubsection{Vérification des caractéristiques du modèle}
+			
+			%cf. tuto \cite{LiPo_PSIM}
 			
 		\subsection{Protection contre la sous-tension batterie}
 			
