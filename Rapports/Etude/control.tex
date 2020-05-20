@@ -148,7 +148,7 @@
 				VCC		& 1 &   & 20 & GND \\ 
 				  		& 2 &   & 19 & PRGD \\ 
 				 		& 3 &   & 18 & PRGC \\ 
-				MCLR 	& 4 &   & 17 &  \\ 
+				MCLR 	& 4 &   & 17 & Arrêt d'urgence \\ 
 				Servo 	& 5 &   & 16 &   \\
 				 Effet	& 6 &   & 15 &   \\ 
 				  		& 7 &   & 14 & SDO \\ 
@@ -196,11 +196,14 @@
 			
 			\subsection{Sécurité}
 			
-				\subsubsection{Arrêt d'urgence}\label{secu}
-				
 				\subsubsection{Perte de connexion}
 				La perte de connexion entre l'aéroglisseur est le smartphone peut être un problème dangereux, personne n'a envie de se confronter à un aéroglisseur fou avec une hélice tranchante en rotation. Pour éviter ce soucis, l'application Bluetooth envoie au minimum un caractère toutes les 100ms, voir \ref{algo}, soit à cause d'une action de l'utilisateur, il envoi donc l'information, soit en cas d'overflow d'un timer, ce timer déclenche l'envoi d'un 0 toutes les 100ms. À chaque réception d'un nouveau caractère, un timer sur le \pic est réinitialisé. Si le timer déclaré sur le \pic overflow, une interruption est déclenché, elle met la valeur de la puissance à 0, le servomoteur de direction droit et allume un effet visuel.
 				\insertcode{../../ENUM/Codes/mainpic.c}{87-94,113-117,137-143}{Gestion de la perte de connexion sur le \pic}
+				
+				\subsubsection{Arrêt d'urgence}\label{secu}
+				Un arrêt d'urgence, sous la forme d'un gros bouton rouge, n'est pas envisageable pour notre système. Nous avons donc pensé à une corde qui \textit{pend} à l'arrière de l'engin. En tirant sur cette corde, on active un système de bouton qui permet de mettre l'aéroglisseur en un mode de sécurité. Un jumper présent sur la carte permet de servir de commutateur. Sur un front descendant, nous déclenchons une interruption semblable à celle définie ci dessus.
+				
+				\insertcode{../../ENUM/Codes/mainpic.c}{137-143}{Gestion de l'arrêt d'urgence sur le \pic}
 				
 				
 			\subsection{Contrôle des effets}
