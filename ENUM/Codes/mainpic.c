@@ -106,10 +106,10 @@ void init_SPI(){
     SSP1BUF=100;
 }
 
-char puis=10,ang=10;
+char puis=10,ang=10,fail=0;
 
 //Vecteur d'interruption
-void __interrupt() tc_int(void){
+void __interrupt() td_int(void){
 	if(PIR1bits.RCIF){ //QQch arrive sur le BT
 		char datain = RC1REG; //On lit la donnée
         PIR1bits.RCIF=0; //reset du flag
@@ -138,6 +138,7 @@ void __interrupt() tc_int(void){
         //On met l'aero en position de sécurité
         ang=10;//Servo droit
         puis=0;//Puissance de propulsion nulle
+        fail=1;
         PIR2bits.TMR4IF=0;//On reset le flag
     }
     else if( PIR1bits.SSP1IF==1){ //Fin de manoeuvre SPI
@@ -196,9 +197,15 @@ void main(void) {
 	PID1CONbits.MODE=0b000;
     
     while (1) {
-		SSP1BUF=puis; //On envoie la valeur de la puissance sur le SPI
-		PWM3DCH=ang; //On ecrit la valeur de l'impulsion pour le PWM
-		__delay_ms(10);
+		if(fail==0){
+			SSP1BUF=puis; //On envoie la valeur de la puissance sur le SPI
+			PWM3DCH=ang; //On ecrit la valeur de l'impulsion pour le PWM
+			__delay_ms(10);
+		}
+		else{
+			LATAbits.LATA4^=1;
+			__delay_ms(100);
+		}
     }
 }
 

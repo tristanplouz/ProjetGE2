@@ -18,7 +18,7 @@
 		basicstyle={\scriptsize},
 		language=C,
 		numbers={left},
-		stepnumber=5,
+		stepnumber=2,
 		numbersep=5pt,
 		inputencoding={latin1},
 		backgroundcolor=\color{champagne},
@@ -30,8 +30,12 @@
 		keywordstyle=\bfseries\color{green!40!black},
 	 	commentstyle=\itshape\color{burntumber},
 	  	identifierstyle=\color{cobalt},
-	 	stringstyle=\color{orange}
-	}
+	 	stringstyle=\color{orange},
+	 	consecutivenumbers=false,
+	 	multicols=2
+	 	}
+	\renewcommand{\lstlistingname}{Code}
+	\renewcommand{\lstlistlistingname}{Table des extraits de code}
 	
 \usepackage{graphicx}
 \usepackage{pgfplots}
@@ -54,9 +58,7 @@
 \newcommand{\insertcode}[3]{
 \begin{center}
 	\vbox{ #3
-		\begin{multicols}{2}
-			\lstinputlisting[language=C, linerange={#2}]{#1}
-		\end{multicols}
+		\lstinputlisting[language=C, linerange={#2},caption={[Code extrait de \lstname: Ligne #2] \textbf{ }}]{#1}
 	}
 \end{center}
 }
