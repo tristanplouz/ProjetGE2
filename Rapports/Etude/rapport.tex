@@ -12,7 +12,7 @@
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.15}
 
-\usepackage[europeanresistors]{circuitikz}
+\usepackage[american voltage, americanresistors]{circuitikz}
 \usetikzlibrary{babel}
 
 \usepackage{amsmath}
@@ -59,11 +59,17 @@
 
 	\chapter{Interface d'alimentation}
 		
-	Afin de fonctionner dans son intégralité, le système a besoin de différents niveaux de tension, parmi lesquels un niveau de 5V pour le servomoteur et l'alimentation des microcontrôleurs, et du 3.3V pour l'utilisation du \textit{Bluetooth Low Energy}. Il est donc prévu de concevoir à cet effet un PCB permettant d'obtenir tous les niveaux de tension nécessaires sur une seule carte et ainsi les distribuer à tous les éléments fonctionnels du système.
+	Afin de fonctionner dans son intégralité, le système a besoin de différents niveaux de tension, parmi lesquels un niveau de 5V pour le servomoteur de direction, et du 3.3V pour l'alimentation des microcontrôleurs et pour l'utilisation du \textit{Bluetooth Low Energy}. Il est donc prévu de concevoir à cet effet un PCB permettant d'obtenir tous les niveaux de tension nécessaires sur une seule carte et ainsi les distribuer à tous les éléments fonctionnels du système. 
+	
+	Après une caractérisation de la batterie utilisée, nous présenterons la mise en oeuvre des conversions tension source vers 5V, puis 5V vers 3.3V, pour enfin présenter la carte électronique d'interface d'alimentation.
 		
 		\section{Caractérisation de la source d'alimentation}
 			
-		La source d'alimentation de notre projet est une \textbf{batterie LiPo 3S}. Ce type de batterie est structuré par 3 cellules LiPo de 3.7V en série, soit une \textbf{tension nominale de 11.1V} (3 x 3.7V) pour la batterie LiPo 3S à vide. Un élément LiPo est en fait une batterie Li-ion où l'électrolyte est un polymère gélifié.
+		La source d'alimentation de notre projet est une \textbf{batterie LiPo 3S}. Quelques généralités sur les batteries LiPo et leur utilisation seront exposées dans un premier temps. Nous mettrons ensuite en oeuvre un modèle \textit{PSIM} de la batterie considérée avant d'en vérifier les caractéristiques en simulation. Finalement, nous proposerons un montage de protection contre la sous-tension batterie, pouvant être destructrice pour ce type de batterie.
+		
+			\subsection{Généralités sur les batteries LiPo}
+			
+			Ce type de batterie est structuré par 3 cellules LiPo de 3.7V en série, soit une \textbf{tension nominale de 11.1V} (3 x 3.7V) pour la batterie LiPo 3S à vide. Un élément LiPo est en fait une batterie Li-ion où l'électrolyte est un polymère gélifié.
 			
 		Il est à garder en mémoire que la décharge d'un élément LiPo en-dessous de 2.5V entraîne sa destruction. De manière générale, il est recommandé de ne pas décharger les éléments en-dessous de 3.3V si l'on souhaite une durée de vie optimale pour ce type de batterie. 
 			
@@ -71,9 +77,79 @@
 		
 		% Source : http://geeby22.over-blog.com/page-4287873.html
 			
+			\subsection{Modélisation de la batterie LiPo}
+			
+			La batterie LiPo utilisée pour notre système va être modélisée sous \textit{PSIM} par l'élément 
+			
+			\begin{figure}[h]
+				\begin{center}
+					\includegraphics[scale=0.5]{../Illus/lipo_model_psim.png}
+				\end{center}
+			\end{figure}
+			
+				\subsubsection{Caractéristiques principales de la batterie utilisée}
+			
+				La \textsc{Table \ref{carac_lipo_psim}}  met en avant les caractéristiques principales du modèle de la batterie considérée.
+			
+				\begin{table}[h]
+					\begin{center}
+						\begin{tabular}{l c}
+							Parameter				& Value			\\
+							\hline
+							Number of cells 		& 3 			\\
+							Rated capacity			& 2.2A 			\\
+							Internal resistance		& 9m$\Omega$	\\
+							Maximum capacity		& 2.3A			\\
+							Nominal capacity		& 2.2A			\\
+							Initial State of Charge	& 0.95			\\
+						\end{tabular}
+					\end{center}
+					\caption{Caractéristiques principales du modèle \textit{PSIM} de la batterie}
+					\label{carac_lipo_psim}
+				\end{table}
+			
+				\subsubsection{Vérification des caractéristiques du modèle}
+			
+			\subsection{Protection contre la sous-tension batterie}
+			
+			Nous avons vu dans les généralités sur les batteries LiPo que la sous-tension pouvait être destructrice pour ce type de batterie. Cependant, lors de l'utilisation de l'aéroglisseur, il faudra faire attention à surveiller régulièrement la tension source afin de ne pas descendre en-dessous d'une valeur de tension critique pour la batterie. Un système électronique de détection et de coupure du système à partir d'un certaine tension de décharge de la batterie peut solutionner cette problématique. Nous mettrons ici en oeuvre un tel circuit, dénommé \textit{Under-Voltage FeedBack} (\textit{UVFB}).
+			
+				\subsubsection{Généralités sur le circuit UVFB}
+				
+				Le montage typique d'un circuit UVFB est exposé en Figure 
+				
+				\begin{figure}[h]
+					\begin{center}
+						\begin{circuitikz}
+							\draw
+							(0,5) 	to [V, l=$V_{BAT}$] (0,0)
+							(0,5)	to (2,5) 
+									to [R, l=$R_1$] (2,3) to (2,2)
+									to [R, l=$R_2$] (2,0) to (0,0)
+							(2,5)	to [short, *-*] (4,5)
+									to [R, l=$R_3$] (4,3)
+									to [short, -*]	(6,3)
+							(6,0)   to [thyristor, n=TL, l_=TL431]  (6,3)
+							(2,0)	to [short, *-*] (6,0)
+									to [short, -*]  (8,0)
+							(2,2.2)	to [short, *-]  (TL.G)
+							%(6,5) node [pmos, rotate=90] {Q1};
+							(6,5) node[pfet,bodydiode,rotate=90](Q1){}
+							(6,3) to (Q1.G) (Q1.S) to (4,5) (Q1.D) to [short, -*] (8,5);
+							\draw[black,thick,-latex] (8,0.2) -- (8,4.8) node [right,midway] {$V_{P}$};
+						\end{circuitikz}
+					\end{center}
+					\caption{Montage typique d'un circuit \textit{Under-Voltage FeedBack}}
+				\end{figure}
+				
+				\subsubsection{Dimensionnement des composants}
+				
+				Nous allons devoir dimensionner les composants du montage ci-dessus de manière à répondre à la problématique particulière de notre système. La première étape de fixer les valeurs des résistances afin d'obtenir la tension de coupure 
+			
+			
 		\section{Conversion tension batterie vers 5V}
 			
-			L'alimentation des microcontrôleurs et du servomoteur nécessite d'obtenir un niveau de tension de 5V à partir de la tension 11.1V standard de la batterie LiPo 3S. Pour cela, nous avons mis en oeuvre le régulateur à découpage \textbf{LM22672MR-5.0/NOPB} du constructeur \textit{Texas Instruments}. Ce régulateur permet d'implémenter un convertisseur de type Buck en utilisant un minimum de composants externes. Toutefois, ces derniers devront être correctement dimensionnés afin de prendre en compte les contraintes de la source et de la charge.
+		L'alimentation du servomoteur de direction nécessite d'obtenir un niveau de tension de 5V à partir de la tension 11.1V standard de la batterie LiPo 3S. Pour cela, nous avons mis en oeuvre le régulateur à découpage \textbf{LM22672MR-5.0/NOPB} du constructeur \textit{Texas Instruments}. Ce régulateur permet d'implémenter un convertisseur de type Buck en utilisant un minimum de composants externes. Toutefois, ces derniers devront être correctement dimensionnés afin de prendre en compte les contraintes de la source et de la charge.
 			
 			\subsection{Généralités sur le composant LM22672}
 			
