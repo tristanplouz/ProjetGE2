@@ -74,7 +74,7 @@ void init_PWM(){
  Initialisation du module UART: Tx sur le port C7
  */
 void init_TX(){
-	RC7PPS = 0b00010010; //On "câble" le TX sur le pin C7 
+    RC7PPS = 0b00010010; //On "câble" le TX sur le pin C7 
     BAUD1CONbits.BRG16 = 1; //Baud generator sur 8bits pas 16
     TX1STAbits.SYNC = 0; //Mode assynchrone
     TX1STAbits.BRGH = 0; // High Resolution du Baud generator
@@ -178,7 +178,6 @@ void main(void) {
     init_TX();
 
     //Initialisation RX
-    
     RC1STAbits.CREN = 1; //Enable reception RX
 
     //Init TIMER4

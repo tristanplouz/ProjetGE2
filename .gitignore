@@ -61,3 +61,4 @@ dkms.conf
 *.bbl
 *.blg
 *.lof
+*.bak
