@@ -10,14 +10,14 @@
  * 
  *       VCC|GND 
  * RA5      |PRGD    RA0
- * RA4      |PRGC    RA1
- * RA3  MCLR|        RA2
+ * RA4 Effet|PRGC    RA1
+ * RA3  MCLR|AU Jump RA2
  * RC5  SERV|        RC0
  * RC4      |        RC1
  * RC3      |SDO     RC2
  * RC6      |SDI     RB4
  * RC7  BTTX|BTRX    RB5
- * RB7   SCK|		 RB6
+ * RB7   SCK|Effet	 RB6
  */
 
 // CONFIG1
@@ -106,7 +106,7 @@ void init_SPI(){
     SSP1BUF=100;
 }
 
-char puis=10,ang=10,fail=0;
+char puis=10,ang=10,fail=0,gfail=0;
 
 //Vecteur d'interruption
 void __interrupt() td_int(void){
@@ -117,13 +117,14 @@ void __interrupt() td_int(void){
         //Début du traitement
         if(datain == 0){
             //ce caractère est envoyé toutes les 100ms par l'application
+			fail=0; //Ne se met pas en mode erreur
         }
         else if (datain<22&& datain>2){ //Commande de direction
             ang=datain; //Valeur directement correct pour le PWM du servo
         }
         else if (datain>100&& datain<200){ //Commande de la puissance
              //traitement pour la puissance
-			puis=datain;
+			puis=255-datain;
 			LATAbits.LATA2^=1;
         }
         else if (datain>201){ //Commande des effets stylés
@@ -135,17 +136,19 @@ void __interrupt() td_int(void){
         }
     }
     else if(PIR2bits.TMR4IF){ //Le Timer de Sécurité overflow, 200ms ce sont écoulés sans reception BT
-        //On met l'aero en position de sécurité
-        ang=10;//Servo droit
-        puis=0;//Puissance de propulsion nulle
-        fail=1;
+        fail=1;//On set un failflag
         PIR2bits.TMR4IF=0;//On reset le flag
     }
-    else if( PIR1bits.SSP1IF==1){ //Fin de manoeuvre SPI
+    else if( PIR1bits.SSP1IF){ //Fin de manoeuvre SPI
 		char datain;
         datain=SSP1BUF; //On lit le buffer
         PIR1bits.SSP1IF=0;//On reset le flag
     }
+	else if(INTCONbits.INTF){ //Le jumper de sécurité est retiré
+        fail=1;//On set un failflag
+		gfail=1;////On set un global failflag
+        INTCONbits.INTF=0;//On reset le flag
+	}
 }
 
 void main(void) {
@@ -164,7 +167,8 @@ void main(void) {
     TRISBbits.TRISB4=1;//SDin
     TRISCbits.TRISC2=0;//SDout
     TRISBbits.TRISB7=0;//CLK out
-    
+    TRISBbits.TRISB6=0;//Effet
+	
     //Initalisation oscillateur
     OSCCONbits.IRCF=0b1101; //4MHz
 	
@@ -186,25 +190,42 @@ void main(void) {
     
     //SPI init
     init_SPI();
-    
+	
+	//AU init
+	OPTION_REGbits.INTEDG=0;
+	INTCONbits.INTF = 0;
+	INTCONbits.INTE=1;
+
     //Initialisation Interuption
     PIE1bits.RCIE = 1;
     PIE1bits.SSP1IE=1;
     INTCONbits.PEIE=1;
     INTCONbits.GIE=1;
     
+	
     //Enable SACDEI
 	PID1CONbits.MODE=0b000;
     
     while (1) {
-		if(fail==0){
-			SSP1BUF=puis; //On envoie la valeur de la puissance sur le SPI
-			PWM3DCH=ang; //On ecrit la valeur de l'impulsion pour le PWM
-			__delay_ms(10);
+		
+		if(gfail==1){
+			LATAbits.LATA4^=1;
+			LATBbits.LATB6^=1;
+			INTCONbits.GIE=0;
+			SSP1BUF=0;
+			PWM3DCH=10;
+			__delay_ms(100);	
+		}
+		else if(fail==1){ //fail triggered
+			LATAbits.LATA4^=1;
+			SSP1BUF=0;
+			PWM3DCH=10;
+			__delay_ms(100);
 		}
 		else{
-			LATAbits.LATA4^=1;
-			__delay_ms(100);
+			SSP1BUF=puis; //On envoie la valeur de la puissance sur le SPI
+			PWM3DCH=ang; //On ecrit la valeur de l'impulsion pour le PWM
+			__delay_ms(10); // Repète l'opération toutes les 10ms
 		}
     }
 }
