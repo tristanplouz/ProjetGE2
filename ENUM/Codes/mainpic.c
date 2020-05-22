@@ -106,7 +106,7 @@ void init_SPI(){
     SSP1BUF=100;
 }
 
-char puis=10,ang=10,fail=0,gfail=0;
+char puis=10,ang=10,fail=0,gfail=0,eff1=0,eff2=0;
 
 //Vecteur d'interruption
 void __interrupt() td_int(void){
@@ -127,10 +127,17 @@ void __interrupt() td_int(void){
 			puis=255-datain;
 			LATAbits.LATA2^=1;
         }
-        else if (datain>201){ //Commande des effets stylés
+        else if (datain>201){ //Commandes des effets stylés
             switch(datain){
                 case 202:
-                    LATAbits.LATA4^=1;
+                    eff1^=1;
+                    break;
+				case 203:
+                    eff2^=1;
+                    break;
+				case 204:
+                    eff2^=1;
+					eff1^=1;
                     break;
             }
         }
@@ -144,9 +151,10 @@ void __interrupt() td_int(void){
         datain=SSP1BUF; //On lit le buffer
         PIR1bits.SSP1IF=0;//On reset le flag
     }
-	else if(INTCONbits.INTF){ //Le jumper de sécurité est retiré
+	else if(INTCONbits.INTF){
         fail=1;//On set un failflag
 		gfail=1;////On set un global failflag
+		//LATBbits.LATB6^=1;
         INTCONbits.INTF=0;//On reset le flag
 	}
 }
@@ -194,15 +202,14 @@ void main(void) {
 	//AU init
 	OPTION_REGbits.INTEDG=0;
 	INTCONbits.INTF = 0;
-	INTCONbits.INTE=1;
 
     //Initialisation Interuption
+    INTCONbits.INTE=1;
     PIE1bits.RCIE = 1;
     PIE1bits.SSP1IE=1;
     INTCONbits.PEIE=1;
     INTCONbits.GIE=1;
     
-	
     //Enable SACDEI
 	PID1CONbits.MODE=0b000;
     
@@ -225,9 +232,10 @@ void main(void) {
 		else{
 			SSP1BUF=puis; //On envoie la valeur de la puissance sur le SPI
 			PWM3DCH=ang; //On ecrit la valeur de l'impulsion pour le PWM
+			LATAbits.LATA4=eff1;
+			LATBbits.LATB6=eff2;
 			__delay_ms(10); // Repète l'opération toutes les 10ms
 		}
     }
 }
-
 
