@@ -57,7 +57,7 @@ d'alimentation.
 		\textit{PSIM} par l'élément Li-Ion Battery comme montré en 
 		\textsc{Figure \ref{lipo_model_psim}}.
 			
-		\begin{figure}[h]
+		\begin{figure}[ht]
 			\begin{center}
 				\includegraphics[scale=0.5]{../Illus/lipo_model_psim.png}
 			\end{center}
@@ -171,7 +171,8 @@ d'alimentation.
 			système. 
 			La première étape de fixer les valeurs des résistances afin 
 			d'obtenir la tension de coupure 
-			
+	
+	\newpage		
 			
 	\section{Conversion tension batterie vers 5V}
 			
@@ -185,10 +186,65 @@ d'alimentation.
 	en utilisant un minimum de composants externes. 
 	Toutefois, ces derniers devront être correctement dimensionnés afin 
 	de prendre en compte les contraintes de la source et de la charge.
+	
+	Nous exposerons dans un premier temps les généralités sur le composant
+	\texttt{LM22672} avant d'en proposer un modèle \textit{PSIM} complet. 
+	Ce modèle nous permettra de vérifier le dimensionnement des composants
+	extérieurs au régulateur à découpage et de valider la mise en oeuvre
+	du circuit complet. Finalement, nous prendrons en compte les aspects
+	thermiques du circuit avant de proposer un routage du convertisseur.
 			
 		\subsection{Généralités sur le composant LM22672}
+		
+		Le composant \texttt{LM22672} est un régulateur proposant toutes 
+		les fonctionnalités permettant d'implémenter un convertisseur 
+		Buck performant \cite{LM22672}. Il est disponible en deux versions 
+		de tension de sortie :
+		\begin{itemize}
+			\item[$\bullet$]	\texttt{-ADJ} à tension réglable jusqu'à un minimum
+							 	de 1.285V ;
+			\item[$\bullet$]	\texttt{-5.0} à tension de sortie fixe 5V.			 
+		\end{itemize}
+		Nous retiendrons dans notre cadre d'application la seconde version
+		nous permettant d'obtenir facilement un niveau de tension 5V.
 			
-			\subsubsection{Caractéristiques électriques}
+			\subsubsection{Caractéristiques électriques du composant}
+			
+			La documentation technique du composant nous permet d'accéder aux
+			caractéristiques électriques importantes du composant. Elles sont
+			synthétisées dans la \textsc{Table \ref{carac_elec_lm22672}}.
+			Les caractéristiques y sont données pour la version \texttt{-5.0}
+			du composant.
+			
+			\begin{table}[h]
+				\begin{center}
+					\begin{tabular}{|l l | r r r | c|}
+					\hline
+					\multicolumn{2}{|c|}{\textbf{PARAMETER}}	& \textbf{MIN}	& \textbf{TYP}	
+																& \textbf{MAX}	& \textbf{UNIT}\\
+					\hline
+					$R_{DS(ON)}$ 	& 	Switch On-Resistance 	&		&	0.2	&  0.32	&	$\Omega$	\\
+					\hline
+					$F_{SW}$		&	Oscillator Frequency	&	400	&	500	&	600	&	kHz			\\
+					\hline
+					$T_{OFF}$		&	Minimum Off-time		&	100	&	200	&	300	&	ns			\\
+					\hline
+					$T_{ON}$		&	Minimum On-time			&		&	100	&		&	ns			\\
+					\hline
+					$I_{SS}$		& 	Soft-Start Current		&	30	&	50	&	70	&	$\mu$A		\\
+					\hline
+				\end{tabular}				
+				\end{center}	
+				\caption{Caractéristiques électriques du convertisseur \texttt{LM22672} \cite{LM22672}}
+				\label{carac_elec_lm22672}
+			\end{table}
+			
+			Ces différents caractéristiques vont nous être utiles pour pouvoir 
+			modéliser au mieux les différentes fonctions du composant et ainsi
+			en proposer un modèle le plus fidèle possible.
+		 
+			
+			\subsubsection{Entrées et sorties du composant}
 			
 			\subsubsection{Schéma d'application standard}
 				
@@ -197,13 +253,14 @@ d'alimentation.
 		\subsection{Modélisation du composant LM22672}
 			
 		Afin de pouvoir établir un modèle fidèle du composant 
-		\textbf{LM22672}, nous allons nous baser sur le diagramme bloc
-		fonctionnel donné dans la datasheet du constructeur et représenté en
+		\texttt{LM22672}, nous allons nous baser sur le diagramme bloc
+		fonctionnel donné dans la datasheet du constructeur 
+		\cite{LM22672} et représenté en
 		\textsc{Figure \ref{func_bloc_lm22672}}. 
 		Nous allons identifier chaque bloc et le modéliser le plus 
 		adéquatement possible en accord avec les indications de la datasheet. 
-		L'ensemble des blocs seront ensuite assemblés afin d'obtenir le modèle 
-		complet du composant. Ce modèle sera finalement utilisé dans le 
+		Ces différents blocs seront ensuite assemblés afin d'obtenir le modèle 
+		complet du composant. Ce modèle sera finalement implémenté dans le 
 		logiciel \textit{PSIM} et associé avec tous les composants externes 
 		afin de vérifier le bon dimensionnement de ces derniers.
 								
