@@ -3,7 +3,7 @@
  * Author: Tristan
  * Description: Code du dsPIC30F2010 du Projet GE2, groupe Tristan/Florian 
  * Created on 30 mars 2020, 15:21:51
- */
+ *************************/
 
 /*      Pinout
  * 

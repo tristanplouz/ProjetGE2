@@ -5,7 +5,8 @@
 \usepackage{hyperref}
 \usepackage{mathpazo}
 \usepackage{multicol}
-	
+\usepackage{tcolorbox}
+
 \usepackage{color}
 	\definecolor{apricot}{rgb}{0.98, 0.81, 0.69}
 	\definecolor{bisque}{rgb}{1.0, 0.89, 0.77}
@@ -18,7 +19,6 @@
 		basicstyle={\scriptsize},
 		language=C,
 		numbers={left},
-		stepnumber=2,
 		numbersep=5pt,
 		inputencoding={latin1},
 		backgroundcolor=\color{champagne},
@@ -35,7 +35,7 @@
 	 	multicols=2
 	 	}
 	\renewcommand{\lstlistingname}{Code}
-	\renewcommand{\lstlistlistingname}{Table des extraits de code}
+	\renewcommand{\lstlistlistingname}{Table des extraits de code \\ \small Tous les codes sources sont disponibles sur Github: \url{https://github.com/tristanplouz/ProjetGE2} \cite{git}}
 	
 \usepackage{graphicx}
 \usepackage{pgfplots}
@@ -57,6 +57,9 @@
 	\vbox{ #3
 		\lstinputlisting[language=C, linerange={#2},caption={[Code extrait de \lstname: Ligne #2] \textbf{ }}]{#1}
 	}
+	\begin{tiny}
+	Il s'agit d'extraits discontinus du code source original. Certains résidus de débuggage peuvent être présent. Les numéros de ligne correspondent au fichier source. \cite{git}
+	\end{tiny}
 \end{center}
 }
 
