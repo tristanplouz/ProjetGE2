@@ -436,9 +436,48 @@
   			Afin de générer un champs tournant, on doit alterner l'activation et la désactivation des différentes sorties actifs à l'état haut ou à l'état bas. La séquence utilisée est décrite dans la note d'application \cite{AN857}.
   			\insertcode{../../ENUM/Codes/maindspic.c}{102-132}{Gestion de l'ordre des phases sur le \dspic}
   			\paragraph{Relation entre PWM et pulsation}
-	\section{Réalisation}\label{real}
+		\section{Réalisation}\label{real}
 			\begin{tcolorbox}[center,width=0.9\textwidth, colframe=red!90!orange, colback=orange!25, arc=3mm,boxrule=1mm, sharp corners=east,title=Note]
-			La réalisation a été faite avec les \textit{moyens du bord}. Cette section, présente quelques fonctionnalités fonctionnelles sur plaquette d'essais, surtout la partie sur le \pic et quelques éléments présents sur le \dspic .
+			La réalisation a été faite avec les \textit{moyens du bord}. Cette section, présente quelques fonctionnalités fonctionnelles sur plaquette d'essais.
   			\end{tcolorbox}
+  			\begin{figure}
+				\begin{center}						
+				\includegraphics[width=0.5\textwidth]{../Illus/real.png}
+				\begin{picture}(0,0)
+				\linethickness{0.3mm}
+				\textcolor{red}{
+					\put(-15.5,11){\framebox(4,18)}%dsPIC
+					\put(-60,23){\framebox(9,4)}%PIC
+					\put(-60,41){\framebox(12,4)}%BT
+				}
+				\textcolor{blue}{
+					\put(-27,36){\framebox(22,22)}%servo
+					\put(-11,2){\framebox(3,5)}%LED
+					\put(-54,28){\framebox(3,3)}%LED
+					\put(-60,8){\framebox(5,9)}%Fil AU
+				}
+				\textcolor{green}{
+					\put(-35,10){\framebox(14,14)}%PWM
+					\put(-54,8){\framebox(5,9)}%Fil bat
+					\put(-90,49){\framebox(25,17)}%ARDuino				
+				}
+				\end{picture}
+			\end{center}
+			\caption{Prototype de travail pour le projet}
+			En rouge les microcontrôleurs et le Bluetooth. En bleu, les éléments réels qui serait tel quel sur le projet. En vert, les solutions alternatives.
+		\end{figure}
+  			Nous pouvons résumer en 2 catégories les composants sur la plaquette d'essais.
   			
+  			\begin{table}
+  			\begin{tabular}{c|c}
+  			Composants réelement présent & composant remplacé\\
+  			\hline
+  			\pic & PWM \\ 
+  			\dspic & Fil sous tension batterie\\
+  			 Servo & Fil d'arrêt d'urgence   \\
+  			 Module Bluetooth &\\ 
+  			 LEDs &\\
+  			  Arduino &\\
   			
+  			\end{tabular}
+  			\end{table}
