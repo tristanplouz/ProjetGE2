@@ -1,5 +1,5 @@
 	\chapter{Contrôle}
-	Le système est contrôlé par deux microcontrôleurs un \pic ainsi qu'un \dspic. Le \pic se charge de la communication avec le smartphone au travers du module Bluetooth, il utilise ensuite les informations reçues pour contrôler le servomoteur de direction et envoie les informations adéquates au \dspic. Celui ci gère la puissance du moteur Brushless, il pilote l'onduleur triphasé présenté ici \ref{onduleur}.%Ajouter lien vers partie consacré plus haut
+	Le système est contrôlé par deux microcontrôleurs un \pic ainsi qu'un \dspic. Le \pic se charge de la communication avec le smartphone au travers du module Bluetooth, il utilise ensuite les informations reçues pour contrôler le servomoteur de direction et envoie les informations adéquates au \dspic. Celui ci gère la puissance du moteur Brushless, il pilote l'onduleur triphasé présenté ici: \ref{onduleur}.%Ajouter lien vers partie consacré plus haut
 		\section{Communication}
 			\subsection{Vue d'ensemble}
 				Dans notre système, nous disposons de plusieurs appareils \textit{intelligent}, le \pic , le \dspic et le smartphone, afin que l'on puisse profiter au maximum des capacités de chacun, ces éléments doivent communiquer entre eux.
@@ -48,8 +48,8 @@
 		<0>       & Information de connexion \\
 		<1>    	  & Non utilisé               \\
 		<2-20>    & Contrôle de la direction  \\
-		<21-99>   & Non utilisé               \\
-		<100-200> & Contrôle de la puissance  \\
+		<21-94>   & Non utilisé               \\
+		<95-200> & Contrôle de la puissance  \\
 		<201-255> & Effets                   
 	\end{tabular}
 		\end{center}
@@ -74,7 +74,7 @@
 			\caption{Écran de pilotage de l'aéroglisseur}
 		\end{figure}
 		\paragraph{Programmation}
-		La programmation sur MIT App Inventor s'effectue avec des blocs. Chaque élément ajouté sur un écran est associé à des blocs fonctionnels. Cette manière de fonctionner ne permet pas de réaliser des applications extrêmement complexes mais permet de réaliser rapidement des interfaces sur smartphone. Notre application ne nécessite pas énormément de choses pour fonctionner, les écrans sont très simples. Nous pouvons résumer le fonctionnement de l'application avec le diagramme suivant.\ref{algoApp}
+		La programmation sur MIT App Inventor s'effectue avec des blocs. Chaque élément ajouté sur un écran est associé à des blocs fonctionnels. Cette manière de fonctionner ne permet pas de réaliser des applications extrêmement complexes mais permet de réaliser rapidement des interfaces sur smartphone. Notre application ne nécessite pas énormément de choses pour fonctionner, les écrans sont très simples. Nous pouvons résumer le fonctionnement de l'application avec le diagramme suivant: \ref{algoApp}
 		\begin{figure}
 		\begin{picture}(230,120)
 		\scriptsize
@@ -131,7 +131,7 @@
 		\\Les sources du projet de l'application est disponible sur notre dépôt Github ici\cite{git}.
 			\subsection{Liaison Bluetooth}
 			Après avoir émis les informations de pilotage, il faut les récupérer pour les exploiter. Nous avons donc mis en place une liaison série entre le module Bluetooth HC-05 et le \pic. Cette liaison est déclarée à 9600 bauds.
-			\paragraph{Mise en place}La configuration du module \textit{UART} du \pic est réalisée en s'appuyant sur la documentation technique\cite{DatasheetPIC}. On décide les pins que l'on va utiliser, tous les pins utilisés sur les microcontrôleurs sont précisés dans le tableau \ref{pinoutpic} et \ref{pinoutdspic}.
+			\paragraph{Mise en place}La configuration du module \textit{UART} du \pic est réalisée en s'appuyant sur la documentation technique\cite{DatasheetPIC}. On décide les pins que l'on va utiliser, tous les pins utilisés sur les microcontrôleurs sont précisés dans les tableaux \ref{pinoutpic} et \ref{pinoutdspic}.
 			
 			\insertcode{../../ENUM/Codes/mainpic.c}{73-83,180-182,186-192}{Initialisation de la liaison série sur le \pic}
 			
@@ -205,11 +205,12 @@
 				MCLR 	& 4 &   & 17 & Arrêt d'urgence \\ 
 				Servo 	& 5 &   & 16 &   \\
 				 Effet	& 6 &   & 15 &   \\ 
-				  		& 7 &   & 14 & SDO \\ 
-				  		& 8 &   & 13 & SDI \\ 
+				(Enable)	& 7 &   & 14 & SDO \\ 
+				UVFB 	& 8 &   & 13 & SDI \\ 
 				BTTX 	& 9 &   & 12 & BTRX \\ 
-				SCK 	& 10&   & 11 &   \\ 
+				SCK 	& 10&   & 11 & Effet   \\ 
 				\end{tabular} 
+				\texttt{Enable} non utilisé, il permet d'éteindre l'alim
 			\end{footnotesize}
 				
 			
@@ -331,10 +332,34 @@
 			
 				\paragraph{Commande}Le signal de commande employé pour contrôlé les servomoteurs est un signal de type PWM (Power Width Modulation, Modulation à Largeur d'Impulsion). La largeur de l'impulsion correspond à une position donnée. Le signal est un signal électrique de période 20ms, toutes les 20ms, le moteur doit recevoir un signal de commande pour s'aligner correctement. La largeur de l'impulsion varie généralement entre 0.5 et 3ms. La largeur d'impulsion fait varier proportionnellement l'angle de sortie ou la vitesse. Par exemple, si une impulsion de 0.75ms correspond à un angle de $0^{\circ}$ et une impulsion de 2.25 à un angle de $180^{\circ}$. Pour obtenir un angle de $66^{\circ}$, il faut une impulsion de 1.3ms.  
 			
-				\paragraph{Création du signal de commande} Afin de générer le signal de commande pour le servomoteur, nous allons utiliser le \pic. Ce composant programmable nous permettra de générer le signal comportant une impulsion de largeur variable toutes les 20ms. En jouant sur le rapport cyclique, nous jouons sur la largeur de l'impulsion. Cette largeur d'impulsion sera contrôlée par les information transmise sur la liaison \textit{Bluetooth}. 
-				
+				\paragraph{Création du signal de commande} Afin de générer le signal de commande pour le servomoteur, nous allons utiliser le \pic. Ce composant programmable nous permettra de générer le signal comportant une impulsion de largeur variable toutes les 20ms. En jouant sur le rapport cyclique, nous jouons sur la largeur de l'impulsion. Cette largeur d'impulsion sera contrôlée par les information transmise sur la liaison \textit{Bluetooth}. Dans la datasheet du \pic \cite{DatasheetPIC}, on peut voir la formule suivante sur la période du PWM.
+				$$ PWM_{period}=(PR2+1)\times 4 \times T_{osc} \times TMR2_{prescaler}$$
+				$$ 20*10^{-3}=(PR2+1) \times 4 \times \frac{1}{4*10^{6}} \times 128$$
+				$$ PR2=\left(\frac{20*10^{-3}}{128*10^{-6}} \right)-1=155.25$$
+				On choisit donc une valeur de \texttt{PR2} de 155. Maintenant, il nous reste à déterminer les valeurs pour obtenir des impulsions de la bonne largeur.
+				$$ PulseWidth=[PWM3DCH:PWM3DCL<7-6>]\times T_{osc} \times TMR2_{prescaler}$$
+				$$ PulseWidth_{min}=[PWM3DCH:PWM3DCL<7-6>]\times \frac{1}{4*40^{6}} \times 128$$
+				$$ PulseWidth_{max}=[PWM3DCH:PWM3DCL<7-6>]\times \frac{1}{4*40^{6}} \times 128$$
+				En faisant des essais sur le servomoteur, on détermine expérimentalement les valeurs montrées dans le tableau \ref{PWMval}.
+				\begin{table}[h]
+				\begin{center}
+					\begin{tabular}{c|c|c}
+					
+					Angle du servo & Valeur de \texttt{PWM3DCH:PWMDCL} & Largeur de l'impulsion \\ 
+					\hline 
+					$0\deg$ & 8 & 0.256ms \\
+					$90\deg$ & 40 & 1.28ms \\
+					$180\deg$ & 80 & 2.56ms \\ 
+					
+					\end{tabular} 
+					\caption{Valeurs de la PWM}
+					\label{PWMval}
+				\end{center}
+				\end{table}
+				Dans notre code nous n'utilisons pas le registre \texttt{PWM3DCL}, on se contente de charger une valeur entre 2 et 20 dans le registre \texttt{PWM3DCH}, on perd en précision mais cela ne pose pas de soucis. Nous arrivons tout de même à avoir suffisamment de niveau pour remplir le cahier des charges.
 				\begin{tcolorbox}[center,width=0.9\textwidth, colframe=red!90!orange, colback=orange!25, arc=3mm,boxrule=1mm, sharp corners=east,title=Note]
-			L'aéroglisseur n'ayant pas pu être réalisé, les valeurs maximum et minimum sont l'amplitude maximum du servo, celui ci balaie donc les 180$\deg$ de sa course. Dans le système réel il aurait fallu les limiter afin que la dérive ne rentre pas en butée contre la structure de l'aéroglisseur. Voir \ref{vues}.
+			L'aéroglisseur n'ayant pas pu être réalisé, les valeurs maximum et minimum sont l'amplitude maximum du servo, celui ci balaie donc les 180$\deg$ de sa course. Dans le système réel il aurait fallu les limiter afin que la dérive ne rentre pas en butée contre la structure de l'aéroglisseur. Voir \ref{vues}.\\
+			Si il faut réduire l'amplitude de battement du servo, il est possible que l'on ai plus assez de niveaux en utilisant uniquement le registre \texttt{PWM3DCH} et il aurait fallut utiliser l'intégralité des registres.
   			\end{tcolorbox}
 			
 			\subsection{Contrôle des effets}
@@ -346,43 +371,72 @@
 			
 			\subsection{Sécurité}\label{secu}
 			Notre projet pouvant s'avérer devenir un Objet Glissant incontrôlé, il faut mettre en place différents organes de sécurité.
+			
+				\subsubsection{Batterie faible}
+				Comme décrit précédemment (voir \ref{UVBF}) une batterie de type Li-Po ne doit pas se décharger en dessous d'un certain seuil. Le circuit décrit permet de détecter le passage sous ce seuil, mais encore faut-il faire quelque chose. Lorsque le signal en provenance du circuit de protection des sous tensions est à l'état bas, nous empêchons toutes communications et nous déclenchons un effet visuel pour avertir l'utilisateur.
+				\insertcode{../../ENUM/Codes/mainpic.c}{226-231}{Gestion de la sous tension batterie sur le \pic}
 				\subsubsection{Perte de connexion}
-				La perte de connexion entre l'Aéroglisseur est le Smartphone peut être un problème dangereux, personne n'a envie de se confronter à un aéroglisseur fou avec une hélice tranchante en rotation. Pour éviter ce soucis, l'application Bluetooth envoie au minimum un caractère toutes les 100ms, voir \ref{algoApp}, soit à cause d'une action de l'utilisateur, il envoi donc l'information, soit en cas d'overflow d'un timer, ce timer déclenche l'envoi d'un 0 toutes les 100ms. À chaque réception d'un nouveau caractère, un timer sur le \pic est réinitialisé. Si le timer déclaré sur le \pic overflow, une interruption est déclenchée, elle met la valeur de la puissance à 0, le servomoteur de direction droit et allume un effet visuel.
-				\insertcode{../../ENUM/Codes/mainpic.c}{84-94,113-117,145-148}{Gestion de la perte de connexion sur le \pic}
+				La perte de connexion entre l'Aéroglisseur est le Smartphone peut être un problème dangereux, personne n'a envie de se confronter à un aéroglisseur fou avec une hélice tranchante en rotation. Pour éviter ce soucis, l'application Bluetooth envoie au minimum un caractère toutes les 100ms, voir paragraphe \ref{algoApp}, soit à cause d'une action de l'utilisateur, il envoi donc l'information, soit en cas d'overflow d'un timer, ce timer déclenche l'envoi d'un 0 toutes les 100ms. À chaque réception d'un nouveau caractère, un timer sur le \pic est réinitialisé. Si le timer déclaré sur le \pic overflow, une interruption est déclenchée, elle met la valeur de la puissance à 0, le servomoteur de direction droit et allume un effet visuel.
+				\insertcode{../../ENUM/Codes/mainpic.c}{84-94,113-115,143-146}{Gestion de la perte de connexion sur le \pic}
 				
-				\subsubsection{Arrêt d'urgence}
+				\subsubsection{Arrêt d'urgence}\label{AU}
 				Un arrêt d'urgence, sous la forme d'un \textbf{gros bouton rouge}, n'est pas envisageable pour notre système, car encore une fois devoir d'approcher d'un aéroglisseur fou n'est pas une partie de plaisir Nous avons donc pensé à une corde qui \textit{pend} à l'arrière de l'engin. En tirant sur cette corde, on active un système de bouton qui permet de mettre l'aéroglisseur en un mode de sécurité. Un jumper présent sur la carte permet de servir de commutateur. Sur un front descendant, nous déclenchons une interruption semblable à celle définie ci dessus.
 				
-				\insertcode{../../ENUM/Codes/mainpic.c}{154-158}{Gestion de l'arrêt d'urgence sur le \pic}
+				\insertcode{../../ENUM/Codes/mainpic.c}{152-156}{Gestion de l'arrêt d'urgence sur le \pic}
 				
+				\subsubsection{Hiérarchisation des "erreurs"}
+				Le traitement des erreurs a lieu en plusieurs phases. Il y a la phase de détection qui peut avoir lieu avec des interruptions ou pas. Les erreurs sont donc hiérarchisé comme dans le tableau suivant:
+				\begin{table}
+				\begin{center}
+					\begin{tabular}{r|l}
+					Priorité&Type d'erreur\\
+					\hline
+					 1 & Arrêt d'urgence 	\\ 
+					 2 & Sous tension batterie 	\\ 
+					 3 & Perte de connexion Bluetooth	\\
+					 4 & Fonctionnement normal	\\
+					\end{tabular} 
+					\end{center}
+				\end{table}
+				Nous traitons en premier lieu le \texttt{global fail} lié à l'arrêt d'urgence, puis la sous tension, la perte de connexion et enfin le fonctionnement sans erreur. Cette hierarchisation ne pose pas de problèmes étant donné que les différences de traitement réside principalement dans la nature de l'effet avertissant l'utilisateur
 			\subsection{Contrôle à partir des données Bluetooth}
 			Maintenant que chaque fonctionnalité a été présentée, nous pouvons tout réunir. Le fonctionnement global de notre code s'articule autour de deux parties de code: l'interruption déclenchée par l'arrivée d'information sur le module Bluetooth et la boucle principale.
-			\paragraph{Réception Bluetooth} La réception d'information provenant du module Bluetooth sur la liaison série déclenche une interruption. Lorsque cela arrive, le programme en cours est \textit{immédiatement} stoppé et exécute le contenu de la routine associée. Dans notre cas, la routine associée permet de récupérer la valeur reçue, cette valeur est \textit{décodée} en suivant le protocole défini ici \ref{protocol}.
+			\paragraph{Réception Bluetooth} La réception d'information provenant du module Bluetooth sur la liaison série déclenche une interruption. Lorsque cela arrive, le programme en cours est \textit{immédiatement} stoppé et exécute le contenu de la routine associée. Dans notre cas, la routine associée permet de récupérer la valeur reçue, cette valeur est \textit{décodée} en suivant le protocole défini ici: \ref{protocol}.
 			\begin{itemize}
 			\item[$\bullet$] Si la valeur reçue correspond à une mise à jour des effets, les variables \texttt{eff1} et \texttt{eff2} sont mises à jour, ici complémentée. 
 			\item[$\bullet$] Si la valeur reçue correspond à une mise à jour de la direction, on met à jour la variable \texttt{ang}, qui représente la valeur à mettre dans le registre de gestion de la PWM. En effet, pour cette action, il n'y a aucun traitement à faire, c'est pour cela que les valeurs sont ainsi sur le curseur de l'application.
 			\item[$\bullet$] Si la valeur reçue correspond à une mise à jour de la puissance de propulsion, un traitement est effectué avant d'être envoyé dans la variable \texttt{puissance} qui sera envoyé sur le \textit{SPI}.
-			\item[$\bullet$] Si la valeur ne correspond à rien ou est un 0, le message ne sert juste à montrer que l'application est toujours connectée pour des raisons de sécurité, comme expliqué en \ref{secu}			
+			\item[$\bullet$] Si la valeur ne correspond à rien ou est un 0, le message ne sert juste à montrer que l'application est toujours connectée pour des raisons de sécurité, comme expliqué au paragraphe \ref{secu}.		
 			\end{itemize}			 
-			\insertcode{../../ENUM/Codes/mainpic.c}{113-144}{Réception Bluetooth sur le \pic}
-			\paragraph{Boucle principale} Dans la boucle, on retrouve la gestion des modes. Notre système comporte trois modes:
+			\insertcode{../../ENUM/Codes/mainpic.c}{111-142}{Réception Bluetooth sur le \pic}
+			\paragraph{Boucle principale} Dans la boucle, on retrouve la gestion des modes. Notre système comporte quatre "modes":
 			\begin{itemize}
 			\item[$\bullet$] Le mode normal (\texttt{fail=0 et gfail=0}), il s'agit du mode par défaut et normal du système. Dans ce cas, la consigne en puissance est transmise au \dspic, la PWM contrôlant le servo et les effets sont mis à jour toutes les 10ms.
 			\item[$\bullet$] Le mode défaut (\texttt{fail=1 et gfail=0}), il s'agit du mode "sans connexion". Il n'y a aucune information qui est arrivé sur la liaison Bluetooth depuis trop longtemps. On met l'aéroglisseur en sécurité, la consigne de puissance est nulle et la dérive est dans une position droite et on fait clignoter un effet afin d'avertir l'utilisateur. Dès que la connexion Bluetooth est rétablie, le système peut repasser en mode normal. Un exemple de cette situation pourrait être que l'aéroglisseur est trop loin du pilote ou encore que le pilote a fermer l'application. Dans ce cas, l'aéroglisseur s'arrête automatiquement.
+			\item[$\bullet$] Le mode sous tension de batterie (signal bas sur \texttt{RC3}).Dans ce cas, la consigne en puissance est transmise au \dspic, la PWM contrôlant le servo et un effet averti l'utilisateur.
 			\item[$\bullet$] Le mode défaut global (\texttt{fail=1 et gfail=1}), ce mode n'est activé que lorsque l'arrêt d'urgence a été activé, lorsque l'on a arraché le jumper de sécurité. On met l'aéroglisseur en sécurité, la consigne de puissance est nulle et la dérive est dans une position droite et on fait clignoter tous les effets afin d'avertir l'utilisateur qu'il s'agit d'un autre défaut que ci dessus. En revanche dans ce mode, le redémarrage est impossible. Il faut débrancher la batterie, remettre en place le jumper de sécurité et réalimenter le système. Dans ce mode, toutes nouvelles informations sont bloquées, plus aucun événement ne peut déclencher une interruption. 
 			\end{itemize}
-			\insertcode{../../ENUM/Codes/mainpic.c}{216-239}{Boucle principale du \pic}
+			\insertcode{../../ENUM/Codes/mainpic.c}{216-247}{Boucle principale du \pic}
 			
 			
 			\subsection{Contrôle de l'onduleur}			
 			\begin{tcolorbox}[center,width=0.9\textwidth, colframe=red!90!orange, colback=orange!25, arc=3mm,boxrule=1mm, sharp corners=east,title=Note]
-			Cette partie a été réalisée durant la période de fermeture de l'école. N'ayant pas eut un oscilloscope et un moteur brushless à disposition, les codes n'ont pas été testé sur système réel. Le projet a été simulé sur \textit{MPLABxIDE}. Malheureusement, ce simulateur présente de nombreux défauts comme un manque de stabilité et des visualisations de sortie très limitées, notamment sur la durée des simulations.\\
-  			Les codes et visualisations présentés par la suite ne sont donc pas rigoureux, les valeurs et les indicateurs de temps ne sont pas réels.
+			Cette partie a été réalisée durant la période de fermeture de l'école. N'ayant pas eut un oscilloscope et un moteur brushless à disposition, les codes n'ont pas été testé sur système réel. Le projet a été simulé sur \textit{MPLABxIDE}. Malheureusement, ce simulateur présente de nombreux défauts comme un manque de stabilité et des visualisations de sortie très limitées, notamment sur la durée des simulations. Les valeurs calculées ne sont donc pas forcément adaptées\\
+  			Comme vous pourrez le voir dans la partie \ref{real}, un système de LED est ajoutée pour visualiser les sorties PWM. 
   			\end{tcolorbox}
-  			Le contrôle de l'onduleur, présenté ici \ref{onduleur}, est effectué par le \dspic . Il s'agit donc de créer 6 signaux  PWM pour contrôler chaque transistor de la structure globale. De plus, ces signaux doivent être cadencé afin de créer un champ tournant mais aussi synchroniser avec la méthode de \textit{Back EMF}.
+  			Le contrôle de l'onduleur, présenté paragraphe \ref{onduleur}, est effectué par le \dspic . Il s'agit donc de créer 6 signaux  PWM pour contrôler chaque transistor de la structure globale. De plus, ces signaux doivent être cadencé afin de créer un champ tournant mais aussi synchroniser avec la méthode de \textit{Back EMF}.
   			\paragraph{Mise en place des signaux PWM}
-  			\includegraphics[width=0.9\textwidth]{../Illus/1eressaipwmSYNC.png}
-	\section{Réalisation}
+  			La mise en place des signaux PWM sur le \dspic a été effectué en suivant le tutoriel \cite{PWMds}. 
+  			\insertcode{../../ENUM/Codes/maindspic.c}{78-101}{Mise en place des signaux PWM sur le \dspic}
+  			\begin{figure}
+	  			\includegraphics[width=0.9\textwidth]{../Illus/1eressaipwmSYNC.png}
+	  			\caption{Simulation des signaux PWM}
+  			\end{figure}
+  			\paragraph{Séquençage}
+  			Afin de générer un champs tournant, on doit alterner l'activation et la désactivation des différentes sorties actifs à l'état haut ou à l'état bas. La séquence utilisée est décrite dans la note d'application \cite{AN857}.
+  			\insertcode{../../ENUM/Codes/maindspic.c}{102-132}{Gestion de l'ordre des phases sur le \dspic}
+  			\paragraph{Relation entre PWM et pulsation}
+	\section{Réalisation}\label{real}
 			\begin{tcolorbox}[center,width=0.9\textwidth, colframe=red!90!orange, colback=orange!25, arc=3mm,boxrule=1mm, sharp corners=east,title=Note]
 			La réalisation a été faite avec les \textit{moyens du bord}. Cette section, présente quelques fonctionnalités fonctionnelles sur plaquette d'essais, surtout la partie sur le \pic et quelques éléments présents sur le \dspic .
   			\end{tcolorbox}

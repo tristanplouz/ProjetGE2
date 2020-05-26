@@ -103,7 +103,6 @@ void init_SPI(){
     SSP1CON1bits.SSPM=0b0010;
 	PIR1bits.SSP1IF=0; //Reset the flag
     SSP1CON1bits.SSPEN=1;//Enable  the connection
-    SSP1BUF=100;
 }
 
 char puis=10,ang=10,fail=0,gfail=0,eff1=0,eff2=0;
@@ -168,7 +167,7 @@ void main(void) {
     PORTA=0;
     ANSELA=0;
     TRISA=0;
-    TRISCbits.TRISC6=1;
+    TRISCbits.TRISC6=0;
     TRISCbits.TRISC3=1;
     
     LATB=0;
@@ -216,35 +215,34 @@ void main(void) {
 	PID1CONbits.MODE=0b000;
     
     while (1) {
-		if(PORTCbits.RC6==0){//Enable de la carte d'alim
-            if(gfail==1){
-                LATAbits.LATA4^=1;
-                LATBbits.LATB6^=1;
-                INTCONbits.GIE=0;
-                SSP1BUF=0;
-                PWM3DCH=10;
-                __delay_ms(100);	
-            }
-            else if(fail==1){ //fail triggered
-                LATAbits.LATA4^=1;
-                SSP1BUF=0;
-                PWM3DCH=10;
-                __delay_ms(100);
-            }
-            else if(PORTCbits.RC6==1){//Sous tension detectée 
-                LATBbits.LATB6^=1;
-                SSP1BUF=0;
-                PWM3DCH=10;
-                __delay_ms(100);
-            }
-            else{
-                SSP1BUF=puis; //On envoie la valeur de la puissance sur le SPI
-                PWM3DCH=ang;//ang; //On ecrit la valeur de l'impulsion pour le PWM
-                LATAbits.LATA4=eff1;
-                LATBbits.LATB6=eff2;
-                __delay_ms(10); // Repète l'opération toutes les 10ms
-            }
-        }    
+        if(gfail==1){
+            LATAbits.LATA4^=1;
+            LATBbits.LATB6^=1;
+            INTCONbits.GIE=0;
+            SSP1BUF=0;
+            PWM3DCH=10;
+            __delay_ms(100);	
+        }
+        else if(PORTCbits.RC6==0){//Sous tension detectée 
+            LATBbits.LATB6^=1;
+            SSP1BUF=0;
+            PWM3DCH=10;
+            __delay_ms(100);
+        }
+        else if(fail==1){ //fail triggered
+            LATAbits.LATA4^=1;
+            SSP1BUF=0;
+            PWM3DCH=10;
+            __delay_ms(100);
+        }
+        
+        else{
+            SSP1BUF=puis; //On envoie la valeur de la puissance sur le SPI
+            PWM3DCH=ang;//ang; //On ecrit la valeur de l'impulsion pour le PWM
+            LATAbits.LATA4=eff1;
+            LATBbits.LATB6=eff2;
+            __delay_ms(10); // Repète l'opération toutes les 10ms
+        } 
     }
 }
 

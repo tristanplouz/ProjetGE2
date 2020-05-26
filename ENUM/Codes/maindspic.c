@@ -1,9 +1,9 @@
 /*
- * File:   mainDsPIC.c
- * Author: Tristan
- * Description: Code du dsPIC30F2010 du Projet GE2, groupe Tristan/Florian 
- * Created on 30 mars 2020, 15:21:51
- *************************/
+ * File:   main.c
+ * Author: tristan
+ *
+ * Created on 3 mai 2020, 14:43
+ */
 
 /*      Pinout
  * 
@@ -105,28 +105,28 @@ void updatePWM(){
 	PDC3=power;
     switch(sect){
         case 1:
-            OVDCON = 0b0010010000000000;
+            OVDCON = 0b0000011000000000;
             sect++;
             break;
         case 2:
-            OVDCON = 0b0010000100000000;
+            OVDCON = 0b0010010000000000;
             sect++;
             break;
         case 3:
-            OVDCON = 0b0000100100000000;
+            OVDCON = 0b0010000100000000;
             sect++;
             break;
         case 4:
-            OVDCON = 0b0001100000000000;
+            OVDCON = 0b0000100100000000;
             sect++;
             break;
         case 5:
-            OVDCON = 0b0001001000000000;
+            OVDCON = 0b0001100000000000;
             sect++;
             break;
         case 6:
             sect=1;
-            OVDCON = 0b0000010100000000;
+            OVDCON = 0b0001001000000000;
             break;
 	}
 }
@@ -229,3 +229,6 @@ void main(void) {
     }
 	
 }
+	//https://turbofuture.com/misc/Configure-PWM-on-dspic30f-and-dspic33f
+    //http://www.isilf.be/Articles/ISILF05p157gramme.pdf
+    //http://www.moteurindustrie.com/brushless/technique.html
