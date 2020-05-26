@@ -17,10 +17,10 @@
 \beamertemplatenavigationsymbolsempty
 
 
-\title[Revue de projet Final]{Projet Aéroglisseur \\Revue de Projet Finale}
-\author[]{Florian POUTHIER - Tristan DRUSSEL}
-\date{Mai 2020}
-\institute{4ème année Génie Électrique \\ INSA Strasbourg}
+\title[Final Presentation]{HOVERCRAFT PROJECT\\Final Presentation}
+\author[]{Florian POUTHIER - Tristan DRUSSEL\\ \tiny florian.pouthier@insa-strasbourg.fr - tristan.drussel@insa-strasbourg.fr}
+\date{Mai, 27th, 2020}
+\institute{4th Year Electrical Engeenering \\ INSA Strasbourg}
 
 \setbeamertemplate{footline}
 {
@@ -44,109 +44,164 @@
 	\end{frame}
 	\author[]{Tristan DRUSSEL}
 	\begin{frame}
-		\frametitle{Aperçu}
+		\frametitle{Overview}
 	%Contexte du projet
 	%organisation du travail,problématique, questionnement reformulation du rpbleme
 		\begin{columns}[T]
 	  		\begin{column}{0.5\textwidth}
 	  		\begin{itemize}
-	  			\item Réalisation d'un aéroglisseur sur la base du Chticat
-				\item Mise en oeuvre de l'électronique de puissance, de l'électronique numérique et de la mécanique
+	  			\item Hovercraft realisation
+				\item Implementation of Power electronic and Digital electronic
 	  		\end{itemize}
-	    	
 	  		\end{column}
 	  		\begin{column}{0.5\textwidth}
 	  			\begin{figure}
 	    			\includegraphics[width=0.8\textwidth]{../Illus/Chticat.png}
-	    			\caption{Photo d'un Chticat originel}
+	    			\caption{Picture of a real Chticat}
 	    		 \end{figure}
 	  		\end{column}
 		\end{columns}
 	\end{frame}
-	\begin{frame}{Sommaire}
+	\begin{frame}{Summary}
 	%Plan d'intervention succinct
 		\setcounter{tocdepth}{1}
 		\tableofcontents
 	\end{frame}
-	\begin{frame}{L'aspect mécanique}
-		\section[Mécanique]{L'aspect Mécanique}
-		\subsection{Modèle CAO}
+	\begin{frame}{Mechanical aspect}
+		\section[Mechanical]{Mechanical aspect}
+		\subsection{CAD}
 		\begin{columns}[T]
 	  		\begin{column}{0.5\textwidth}
 		    	\begin{itemize}
-		    		\item Récupération des sources
-		    		\item Adaptation du modèle
+		    		\item Blueprint download
+		    		\item Modification and adaptation
 		    	\end{itemize}
+		    	\begin{figure}
+	    			\includegraphics[width=0.8\textwidth]{../Illus/Source_Chticat.png}
+	    			\caption{Blueprint of the Chticat}
+	    		 \end{figure}
 	  		\end{column}
 	  		\begin{column}{0.5\textwidth}
 	    		\begin{figure}
-	    			\includegraphics[width=0.8\textwidth]{../Illus/3dview.png}
-	    			\caption{Modèle 3D modifié et adapté}
+	    			\includegraphics[width=0.8\textwidth]{../Illus/AeroProt.png}
+	    			\caption{Our adapted and modified modele}
 	    		 \end{figure}
 	  		\end{column}
 		\end{columns}
 		
 	\end{frame}
-	\begin{frame}{Électronique Numérique}
-		\section[ENUM]{L'aspect Électronique Numérique}
-		Communication entre différents éléments:
+	\begin{frame}{Digital Electronics}
+		\section[Digital Elec]{Digital Electronics}
+		Communication between all elements:
 		\begin{itemize}
-			\item Application mobile
-	  		\item Module Bluetooth: \texttt{HC-05}
+			\item smartphone app
+	  		\item Bluetooth receptor: \texttt{HC-05}
 			\item \texttt{PIC16F1619}
 			\item \texttt{dsPIC10F2030}
 	  	\end{itemize}
-	  	Contrôle de l'onduleur
+	  	Inverter handling
 	\end{frame}
-	\begin{frame}{Électronique Numérique:}
-		\framesubtitle{Communication Bluetooth}
-		\subsection[Bluetooth]{Communication Bluetooth}
+	\begin{frame}{Digital Electronics:}
+		\framesubtitle{Bluetooth Communication}
+		\subsection[Bluetooth]{Bluetooth Communication}
 		\begin{columns}[T]
 	  		\begin{column}{0.5\textwidth}
 		    	\begin{itemize}
-		    		\item Contrôle à partir du Smartphone
+		    		\item Smartphone Controlled
 		    	\end{itemize}
 		    	\begin{figure}
 		    		\includegraphics[width=0.8\textwidth]{../Illus/AppPilotage.png}
-	    			\caption{Écran de pilotage de l'application}
+	    			\caption{Driving screen on the App}
 	    		 \end{figure}
 	  		\end{column}
 	  		\begin{column}{0.5\textwidth}
 	  			\begin{figure}
 	    			\hspace*{2em}\includegraphics[height=0.8\textheight]{../Illus/AppConnection.png}
-	    			\caption{Écran de connection de l'application}
+	    			\caption{Connection Screen on the application}
 	    		\end{figure}
 	  		\end{column}
 		\end{columns}
 		
 	\end{frame}
-	\begin{frame}{Électronique Numérique:}
-		\framesubtitle{Communication Série}
-		\subsection[Série]{Communication Série}
+	\begin{frame}{Digital Electronics:}
+		\framesubtitle{Serial Communication}
+		\subsection[Serial]{Serial Communication}
 		\begin{itemize}
-		    \item Communication entre le Récepteur Bluetooth et le \texttt{PIC16F1619}
+		    \item Communication between Bluetooth receptor and \texttt{PIC16F1619}
 		\end{itemize}
 		\begin{columns}[T]
 	  		\begin{column}{0.5\textwidth}
 		    	\begin{figure}
 		    		\includegraphics[width=0.45\textwidth]{../Illus/BluetoothLogo.png}
-	    			\caption{Logo du Bluetooth}
+	    			\caption{Bluetooth Logo}
 	    		 \end{figure}
 	  		\end{column}
 	  		\begin{column}{0.5\textwidth}
 	  			\begin{figure}
 	    			\hspace*{2em}\includegraphics[width=0.7\textwidth]{../Illus/HC05.png}
-	    			\caption{Module Bluetooth \texttt{HC-05}}
+	    			\caption{Bluetooth receptor \texttt{HC-05}}
 	    		\end{figure}
 	  		\end{column}
 	  	\end{columns}
 	\end{frame}
-	\begin{frame}{Électronique Numérique:}
-	\framesubtitle{Communication \textit{Serial Peripheral Interface}}
+	\begin{frame}{Digital Electronics:}
+	\framesubtitle{\textit{Serial Peripheral Interface} Communication}
 		\subsection[SPI]{Communication SPI}
 		\begin{itemize}
-		    \item Communication entre le \texttt{PIC16F1619} et le \texttt{dsPIC10F2030}
+		    \item Communication between \texttt{PIC16F1619} and \texttt{dsPIC10F2030}
+		    \setlength{\unitlength}{0.75mm}
+		    \begin{figure}
+		    
+		\begin{center}
+			\begin{picture}(125,35)
+			\tiny
+			\multiput(0,10)(75,0){2}{
+				\multiput(5,0)(5,0){8}{\framebox(5,5){}}
+				\put(23,-2){\vector(1,0){8}}
+			}
+			
+			\put(42.5,10){\line(0,-1){5}}
+			\put(82.5,5){\vector(0,1){5}}
+			\put(42.5,5){\line(1,0){40}}
+			
+			\put(7.5,20){\vector(0,-1){5}}
+			\put(117.5,15){\line(0,1){5}}
+			\put(7.5,20){\line(1,0){110}}
+			
+			\multiput(55,30)(1.5,2){2}{
+				\multiput(0,0)(3,0){5}{
+					\put(0,0){\line(1,0){1.5}}				
+				}			
+			}
+			\put(49,27.5){\vector(1,0){29}}
+			
+			\multiput(55,30)(1.5,0){10}{
+					\put(0,0){\line(0,1){2}}				
+				}
+			\multiput(0,0)(75,0){2}{
+				\multiput(3.5,0)(45.5,0){2}{
+					\multiput(0,0)(0,3){12}{\line(0,1){1.75}}			
+				}
+				\multiput(3.5,0)(0,35){2}{
+					\multiput(0,0)(3,0){15}{\line(1,0){1.75}}			
+				}
+			}
+			
+			\put(20,32){\texttt{PIC16F1619}}
+			\put(100,32){\texttt{dsPIC10F2030}}
+			\put(59,24.5){SCK}
+			\put(59,17){MISO}
+			\put(59,2.5){MOSI}
+			\end{picture}
+		\end{center}
+		\caption{SPI}
+	\end{figure}
 		\end{itemize}
+	\end{frame}
+	\begin{frame}{Digital Electronics:}
+		\framesubtitle{Inverter handling}
+		\subsection[Inverter]{Inverter handling}
+		
 	\end{frame}
 	
 	\author[]{Florian POUTHIER}
@@ -308,27 +363,19 @@
 	    		\end{figure}
 	  		\end{column}
 		\end{columns}
-	\end{frame}
-	
-	\begin{frame}{Pursuites du projet}
-		\section[Poursuites]{Poursuites du projet}
-		\begin{itemize}
-		    \item Pilotage de l'onduleur
-		    \item Réalisation des cartes	
-		    \item Tests en conditions réelles
-		\end{itemize}
-	\end{frame}
-	
+	\end{frame}	
 	\begin{frame}{Conclusion}
 	\section*{Conclusion}
 	%Conclusion
 	\begin{itemize}
-		    \item Projet pluridisciplinaire
-		    \item Mise en oeuvre des compétences acquises précédemment
+		    \item multidisciplinary project
+		    \item Use of knowledge and skills previousluy acquired
 		\end{itemize}
 	\end{frame}
-	\author[]{Florian POUTHIER - Tristan DRUSSEL}
-	\begin{frame}[plain]{Merci de votre attention}
+	\author[]{Florian POUTHIER - Tristan DRUSSEL\\ \tiny florian.pouthier@insa-strasbourg.fr - tristan.drussel@insa-strasbourg.fr}
+
+	\begin{frame}[plain]{Thanks!}
+	\framesubtitle{Any questions?}
 	\section*{}
 		%remerciement
 		\titlepage
