@@ -1,5 +1,5 @@
 	\chapter{Contrôle}
-	Le système est contrôlé par deux microcontrôleurs un \pic ainsi qu'un \dspic. Le \pic se charge de la communication avec le smartphone au travers du module Bluetooth, il utilise ensuite les informations reçues pour contrôler le servomoteur de direction et envoie les informations adéquates au \dspic. Celui ci gère la puissance du moteur Brushless, il pilote l'onduleur triphasé présenté ici: \ref{onduleur}.%Ajouter lien vers partie consacré plus haut
+	Le système est contrôlé par deux microcontrôleurs un \pic ainsi qu'un \dspic. Le \pic se charge de la communication avec le smartphone au travers du module Bluetooth, il utilise ensuite les informations reçues pour contrôler le servomoteur de direction et envoie les informations adéquates au \dspic. Celui ci gère la puissance du moteur Brushless, il pilote l'onduleur triphasé présenté ici: \ref{onduleur}.
 		\section{Communication}
 			\subsection{Vue d'ensemble}
 				Dans notre système, nous disposons de plusieurs appareils \textit{intelligent}, le \pic , le \dspic et le smartphone, afin que l'on puisse profiter au maximum des capacités de chacun, ces éléments doivent communiquer entre eux.
@@ -188,7 +188,7 @@
 			\insertcode{../../ENUM/Codes/mainpic.c}{95-107}{Initialisation de la liaison SPI sur le \pic}
 			\subsubsection{Sur le \dspic}
 			\paragraph{Mise en place}La configuration du module \textit{UART} du \dspic est réalisée en s'appuyant sur la documentation technique \cite{DatasheetDSPIC} et \cite{DatasheetDSPIC30} . On décide les pins que l'on va utiliser, tous les pins utilisés sur les microcontrôleurs sont précisés dans le tableau \ref{pinoutdspic}.
-			
+			\insertcode{../../ENUM/Codes/maindspic.c}{133-147}{Initialisation de la liaison SPI sur le \dspic}
 			
 		\section{Fonctionnement}
 		Dans les tableaux \ref{pinoutdspic} et \ref{pinoutpic} sont réunis tous les pins utilisés sur chacun de nos microcontrôleurs. Cette répartition n'a pas forcément de logique et s'appuie sur les éléments contenus dans les datasheets ou sur des exemples trouvés sur internet.\\
@@ -210,7 +210,7 @@
 				BTTX 	& 9 &   & 12 & BTRX \\ 
 				SCK 	& 10&   & 11 & Effet   \\ 
 				\end{tabular} 
-				\texttt{Enable} non utilisé, il permet d'éteindre l'alim
+				\\ \texttt{Enable} non utilisé, il permet d'éteindre l'alim
 			\end{footnotesize}
 				
 			
@@ -260,7 +260,7 @@
 				\put(86.5,84){Début}
 				
 				\put(90,81){\vector(0,-1){5}}
-				\put(80,68){\framebox(20,8)[c]{\shortstack{Initialisation\\(PWM,Timer,UART)}}}
+				\put(80,68){\framebox(20,8)[c]{\shortstack{Initialisation\\(PWM,Timer,Com)}}}
 				
 				\put(90,68){\line(0,-1){15}}
 				%droite
@@ -301,7 +301,7 @@
 				\multiput(95,49)(87,0){2}{
 					\multiput(0,0)(0,-3){9}{\line(0,-1){1.5}}			
 				}
-				\multiput(95,49)(0,-28){2}{
+				\multiput(95,49)(0,-27){2}{
 					\multiput(0,0)(3,0){29}{\line(1,0){1.5}}			
 				}
 				%texte
@@ -370,7 +370,7 @@
   			\end{tcolorbox}
 			
 			\subsection{Sécurité}\label{secu}
-			Notre projet pouvant s'avérer devenir un Objet Glissant incontrôlé, il faut mettre en place différents organes de sécurité.
+			Notre projet pouvant s'avérer devenir un objet glissant incontrôlé, il faut mettre en place différents organes de sécurité.
 			
 				\subsubsection{Batterie faible}
 				Comme décrit précédemment (voir \ref{UVBF}) une batterie de type Li-Po ne doit pas se décharger en dessous d'un certain seuil. Le circuit décrit permet de détecter le passage sous ce seuil, mais encore faut-il faire quelque chose. Lorsque le signal en provenance du circuit de protection des sous tensions est à l'état bas, nous empêchons toutes communications et nous déclenchons un effet visuel pour avertir l'utilisateur.
@@ -398,14 +398,16 @@
 					\end{tabular} 
 					\end{center}
 				\end{table}
-				Nous traitons en premier lieu le \texttt{global fail} lié à l'arrêt d'urgence, puis la sous tension, la perte de connexion et enfin le fonctionnement sans erreur. Cette hierarchisation ne pose pas de problèmes étant donné que les différences de traitement réside principalement dans la nature de l'effet avertissant l'utilisateur
+				Nous traitons en premier lieu le \texttt{global fail} lié à l'arrêt d'urgence, puis la sous tension, la perte de connexion et enfin le fonctionnement sans erreur. Cette hiérarchisation ne pose pas de problèmes étant donné que les différences de traitement réside principalement dans la nature de l'effet avertissant l'utilisateur
 			\subsection{Contrôle à partir des données Bluetooth}
 			Maintenant que chaque fonctionnalité a été présentée, nous pouvons tout réunir. Le fonctionnement global de notre code s'articule autour de deux parties de code: l'interruption déclenchée par l'arrivée d'information sur le module Bluetooth et la boucle principale.
 			\paragraph{Réception Bluetooth} La réception d'information provenant du module Bluetooth sur la liaison série déclenche une interruption. Lorsque cela arrive, le programme en cours est \textit{immédiatement} stoppé et exécute le contenu de la routine associée. Dans notre cas, la routine associée permet de récupérer la valeur reçue, cette valeur est \textit{décodée} en suivant le protocole défini ici: \ref{protocol}.
 			\begin{itemize}
 			\item[$\bullet$] Si la valeur reçue correspond à une mise à jour des effets, les variables \texttt{eff1} et \texttt{eff2} sont mises à jour, ici complémentée. 
 			\item[$\bullet$] Si la valeur reçue correspond à une mise à jour de la direction, on met à jour la variable \texttt{ang}, qui représente la valeur à mettre dans le registre de gestion de la PWM. En effet, pour cette action, il n'y a aucun traitement à faire, c'est pour cela que les valeurs sont ainsi sur le curseur de l'application.
-			\item[$\bullet$] Si la valeur reçue correspond à une mise à jour de la puissance de propulsion, un traitement est effectué avant d'être envoyé dans la variable \texttt{puissance} qui sera envoyé sur le \textit{SPI}.
+			\item[$\bullet$] Si la valeur reçue correspond à une mise à jour de la puissance de propulsion, un traitement est effectué avant d'être envoyé dans la variable \texttt{puissance} qui sera envoyé sur le \textit{SPI}. On réajuste les valeurs reçues afin qu'elles correspondent par la suite à la valeur nécessaire pour contrôler les signaux PWM contrôlant l'onduleur. On effectue donc une transformation linéaire pour passer d'une valeur entre 95 et 200 à une valeur entre 41 et 230.
+			$$ x\in [95;200];y\in [41;230] \Rightarrow y=1.8*x-130 $$
+			\label{picmain}
 			\item[$\bullet$] Si la valeur ne correspond à rien ou est un 0, le message ne sert juste à montrer que l'application est toujours connectée pour des raisons de sécurité, comme expliqué au paragraphe \ref{secu}.		
 			\end{itemize}			 
 			\insertcode{../../ENUM/Codes/mainpic.c}{111-142}{Réception Bluetooth sur le \pic}
@@ -426,21 +428,128 @@
   			\end{tcolorbox}
   			Le contrôle de l'onduleur, présenté paragraphe \ref{onduleur}, est effectué par le \dspic . Il s'agit donc de créer 6 signaux  PWM pour contrôler chaque transistor de la structure globale. De plus, ces signaux doivent être cadencé afin de créer un champ tournant mais aussi synchroniser avec la méthode de \textit{Back EMF}.
   			\paragraph{Mise en place des signaux PWM}
-  			La mise en place des signaux PWM sur le \dspic a été effectué en suivant le tutoriel \cite{PWMds}. 
-  			\insertcode{../../ENUM/Codes/maindspic.c}{78-101}{Mise en place des signaux PWM sur le \dspic}
-  			\begin{figure}
-	  			\includegraphics[width=0.9\textwidth]{../Illus/1eressaipwmSYNC.png}
+  			La mise en place des signaux PWM sur le \dspic a été effectué en suivant le tutoriel \cite{PWMds}. On obtient 6 signaux PWM. Les signaux sont liés 2 à 2, il y a un signal PWM et son complément. On a donc PWMxL et PWMxH pour chaque sortie 1,2 et 3.On retrouve cette répartition sur la figure \ref{imgPWM}.
+  			\begin{figure}[hb]\begin{center}
+	  			\includegraphics[width=0.9\textwidth]{../Illus/pwm100.png}
 	  			\caption{Simulation des signaux PWM}
+	  			\label{imgPWM}
+	  			\end{center}
   			\end{figure}
+  			L'onduleur doit être piloté avec des signaux de commandes d'une fréquence entre 16kHz et 20kHz. Aidons nous de la datasheet \cite{DatasheetDSPIC} pour calculer la fréquence de notre PWM. Nous avons notre générateur de PWM configuré en \textit{Free Running Mode}, on utilise donc la formule suivante:
+  			$$T_{PWM}=\frac{1}{F_{PWM}}=T_{CY}\times (PTPER+1)\times PTMR_{Prescaler}$$
+  			$$\frac{1}{16*10^{3}}=\frac{4}{7.37*10^6}\times (PTPER+1)\times 1$$
+  			$$PTPER=\frac{7.37*10^6}{4 \times 16*10^3}-1=114.15625 $$ 
+  			\insertcode{../../ENUM/Codes/maindspic.c}{78-101}{Mise en place des signaux PWM sur le \dspic}
+  			On peut maintenant calculer la résolution du PWM afin de savoir quel consigne devons nous lui donner. On utilise donc la formule de la datasheet:
+  			$$\frac{\log\left(2 \times \frac{F_{CY}}{F_{PWM}}\right)}{\log 2}=7.84$$
+  			On peut donc commander le signal PWM entre 0 et $2^7.84$ soit 230.
+			\paragraph{Contrôle depuis les informations du \pic}
+			Les informations en provenance du \pic sont entre 41 et 230. Elles sont mises en forme sur le \pic, voir paragraphe \ref{picmain}.
+			\paragraph{Relation entre PWM et pulsation}
+			%Voir si c'est ici ou dans la partie du BLDC	
+			$$ $$
   			\paragraph{Séquençage}
   			Afin de générer un champs tournant, on doit alterner l'activation et la désactivation des différentes sorties actifs à l'état haut ou à l'état bas. La séquence utilisée est décrite dans la note d'application \cite{AN857}.
   			\insertcode{../../ENUM/Codes/maindspic.c}{102-132}{Gestion de l'ordre des phases sur le \dspic}
-  			\paragraph{Relation entre PWM et pulsation}
+  			On obtient donc les signaux suivant:
+  			\begin{figure}[hb]\begin{center}
+	  			\includegraphics[width=0.9\textwidth]{../Illus/PWMCadence2015.png}
+	  			\caption{Simulation des signaux PWM cadencés}(L'échelle de temps n'est pas correcte, afin de pouvoir observer tous les signaux sur le simulateur)
+	  			\label{imgPWM}
+	  			\end{center}
+  			\end{figure}
+  			\paragraph{Fonctionnement général}
+  			L'algorithme simplifié du code du \dspic est représenté figure \ref{algodsPic}. On y retrouve les phases d'initialisations, d'interruption et la boucle principale comme pour dans le code \ref{algoPic} pour le \pic .
+  			\begin{figure}[!h]
+			\begin{picture}(210,85)
+			\tiny				
+			
+			\newsavebox{\diamon}
+				\savebox{\diamon}
+				  (20,15){% definition
+				  \put(-10,0){\line(5,2){10}}
+				  \put(-10,0){\line(5,-2){10}}
+				  \put(10,0){\line(-5,2){10}}
+				  \put(10,0){\line(-5,-2){10}}
+				}
+				%centre
+				\put(90,85){\oval(20,8)}
+				\put(86.5,84){Début}
+				
+				\put(90,81){\vector(0,-1){5}}
+				\put(80,68){\framebox(20,8)[c]{\shortstack{Initialisation\\(PWM,Timer,Com)}}}
+				
+				\put(90,68){\line(0,-1){15}}
+				%droite
+				\put(50,53){\line(1,0){120}}	
+						
+				\multiput(80,53)(30,0){4}{\vector(0,-1){4.75}}			
+				\multiput(80,37)(30,0){4}{\usebox{\diamon}}
+				\multiput(80,40.75)(30,0){4}{\vector(0,-1){4.75}}
+				\multiput(70,27.75)(30,0){4}{\framebox(20,8)[c]{}}
+				\multiput(80,27.75)(30,0){4}{\line(0,-1){7.75}}
+	
+				\put(185,60){\vector(-1,0){95}}
+				\put(185,60){\line(0,-1){50}}
+				
+				\put(80,20){\line(1,0){90}}
+				\put(125,20){\line(0,-1){10}}
+				\put(125,10){\line(1,0){60}}
+	
+				\put(12,43){\line(1,0){50}}	
+				\put(50,53){\line(0,-1){10}}		
+				
+				%gauche
+				\multiput(12,43)(30,0){2}{\vector(0,-1){4.75}}			
+				\multiput(12,27)(30,0){2}{\usebox{\diamon}}
+				\put(62,43){\line(0,-1){33}}
+				\multiput(12,30.75)(30,0){2}{\vector(0,-1){4.75}}
+				\multiput(2,17.75)(30,0){2}{\framebox(20,8)[c]{}}
+				\multiput(12,17.75)(30,0){2}{\line(0,-1){7.75}}
+				
+				\put(12,10){\line(1,0){50}}		
+				\put(0,0){\line(1,0){50}}			
+				\put(0,0){\line(0,1){65}}	
+				\put(0,65){\vector(1,0){90}}			
+				\put(50,10){\line(0,-1){10}}
+				
+				
+				%cadre
+				\multiput(65,49)(117,0){2}{
+					\multiput(0,0)(0,-3){9}{\line(0,-1){1.5}}			
+				}
+				\multiput(65,49)(0,-26){2}{
+					\multiput(0,0)(3,0){39}{\line(1,0){1.5}}			
+				}
+				%texte
+	
+				\put(35,33.25){\shortstack{power\\<PowerTarget}}
+				\put(6,33.25){\shortstack{power\\>PowerTarget}}
+				\put(37,20.5){\shortstack{power++}}
+				\put(7,20.5){\shortstack{power- -}}
+				
+				\put(75,42.5){\shortstack{Front sur\\entrée}}
+				\put(105,44){\shortstack{Timer 2}}
+				\put(135.5,42){\shortstack{Réception\\SPI}}
+				\put(166,44){\shortstack{Timer 3}}
+				\put(75,30){\shortstack{Changement\\ au secteur 0}}
+				\put(105,30){\shortstack{Changement \\de secteur}}
+				\put(132,30){\shortstack{Mise à jour \\de powerTarget }}
+				\put(163,30){\shortstack{Mise à jour de la\\ pulsation}}
+				
+				\put(67,24){Interruptions}
+			\end{picture}
+			\caption{Algorithme simplifié du code du \dspic }
+			\label{algodsPic}
+		\end{figure}
+		
+		\insertcode{../../ENUM/Codes/maindspic.c}{190-231}{Boucle principale sur le \dspic}
+		
 		\section{Réalisation}\label{real}
 			\begin{tcolorbox}[center,width=0.9\textwidth, colframe=red!90!orange, colback=orange!25, arc=3mm,boxrule=1mm, sharp corners=east,title=Note]
-			La réalisation a été faite avec les \textit{moyens du bord}. Cette section, présente quelques fonctionnalités fonctionnelles sur plaquette d'essais.
+			La réalisation a été faite avec les \textit{moyens du bord}. Cette section présente quelques fonctionnalités fonctionnelles sur plaquette d'essais.
   			\end{tcolorbox}
-  			\begin{figure}
+  			\begin{figure}[hb]
 				\begin{center}						
 				\includegraphics[width=0.5\textwidth]{../Illus/real.png}
 				\begin{picture}(0,0)
@@ -451,14 +560,14 @@
 					\put(-60,41){\framebox(12,4)}%BT
 				}
 				\textcolor{blue}{
-					\put(-27,36){\framebox(22,22)}%servo
-					\put(-11,2){\framebox(3,5)}%LED
+					\put(-29,36){\framebox(22,22)}%servo
+					\put(-13,2){\framebox(3,5)}%LED
 					\put(-54,28){\framebox(3,3)}%LED
-					\put(-60,8){\framebox(5,9)}%Fil AU
+					\put(-62,8){\framebox(5,9)}%Fil AU
 				}
 				\textcolor{green}{
-					\put(-35,10){\framebox(14,14)}%PWM
-					\put(-54,8){\framebox(5,9)}%Fil bat
+					\put(-37,10){\framebox(14,14)}%PWM
+					\put(-56,8){\framebox(5,9)}%Fil bat
 					\put(-90,49){\framebox(25,17)}%ARDuino				
 				}
 				\end{picture}
@@ -468,16 +577,17 @@
 		\end{figure}
   			Nous pouvons résumer en 2 catégories les composants sur la plaquette d'essais.
   			
-  			\begin{table}
-  			\begin{tabular}{c|c}
-  			Composants réelement présent & composant remplacé\\
-  			\hline
-  			\pic & PWM \\ 
-  			\dspic & Fil sous tension batterie\\
-  			 Servo & Fil d'arrêt d'urgence   \\
-  			 Module Bluetooth &\\ 
-  			 LEDs &\\
-  			  Arduino &\\
-  			
-  			\end{tabular}
+  			\begin{table}[hb]\begin{center}
+	  			\begin{tabular}{c|c}
+	  			Composants réellement présent & Composant Alternatif\\
+	  			\hline
+	  			\pic & PWM (jeux de LED) \\ 
+	  			\dspic & Fil sous tension batterie (Fil relié au VCC ou au GND)\\
+	  			 Servo &  Alimentation (Arduino) \\
+	  			 Module Bluetooth &\\ 
+	  			 LEDs &\\
+	  			 Fil d'arrêt d'urgence &\\
+	  			
+	  			\end{tabular}\end{center}
   			\end{table}
+ Ce montage permet de réaliser et de tester quelques fonctionnalités du projet. Vous pouvez consulter une vidéo de ce montage en fonctionnement ici: \url{youtube.com}
