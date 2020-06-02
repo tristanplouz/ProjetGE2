@@ -2,12 +2,12 @@
 	Le système est contrôlé par deux microcontrôleurs un \pic ainsi qu'un \dspic. Le \pic se charge de la communication avec le smartphone au travers du module Bluetooth, il utilise ensuite les informations reçues pour contrôler le servomoteur de direction et envoie les informations adéquates au \dspic. Celui ci gère la puissance du moteur Brushless, il pilote l'onduleur triphasé présenté ici: \ref{onduleur}.
 		\section{Communication}
 			\subsection{Vue d'ensemble}
-				Dans notre système, nous disposons de plusieurs appareils \textit{intelligent}, le \pic , le \dspic et le smartphone, afin que l'on puisse profiter au maximum des capacités de chacun, ces éléments doivent communiquer entre eux.
+				Dans notre système, nous disposons de plusieurs appareils \textit{intelligents}, le \pic , le \dspic et le smartphone, afin que l'on puisse profiter au maximum des capacités de chacun, ces éléments doivent communiquer entre eux.
 				\subsubsection{Technologies utilisées}
-				Nous utilisons plusieurs technologies de communication différentes entre chaque composant.
-				\paragraph{Entre le \textit{Smartphone} et le \textit{Module Bluetooth}} Une liaison \textit{Bluetooth Low Nergal} est établie entre le le module Bluetooth HC-05 et le smartphone. Dans notre cas, le téléphone est dit \textit{master} tandis que le module est dit \textit{slave}.
-				\paragraph{Entre le \textit{Module Bluetooth} et le \textit{\pic} } Pour communiquer entre le module Bluetooth HC-05 et le \pic, une liaison série est utilisé. Cette liaison utilise deux conducteurs de données appelés TX et RX. La communication s'effectue à un baud rate commun entre les deux appareils. Le port TX d'un appareil est connecté au port RX du second et inversement.
-				\paragraph{Entre le \textit{\dspic} et le \textit{\pic}} Entre ces deux composants, nous utilisons une connexion de type \textbf{SPI}. Cette liaison utilise 3 ou 4 conducteurs. Ils sont appelés SLCK (\textsf{Serial Clock}), MISO (\textsf{Master Input Slave Output}), MOSI (\textsf{Master Output Slave Input})  et SS (\textsf{Slave Select}). Le dernier n'étant utile uniquement si il y a plusieurs \textit{slave} dans le système. Dans notre cas, le \pic est \textit{master} et le \dspic est \textit{slave}
+				Nous utilisons des technologies de communication différentes entre chaque composant.
+				\paragraph{Entre le \textit{Smartphone} et le \textit{Module Bluetooth}} Une liaison \textit{Bluetooth Low Energy} est établie entre le module Bluetooth HC-05 et le smartphone. Dans notre cas, le téléphone est dit \textit{master} tandis que le module est dit \textit{slave}.
+				\paragraph{Entre le \textit{Module Bluetooth} et le \textit{\pic} } Pour communiquer entre le module Bluetooth HC-05 et le \pic, une liaison série est utilisée. Cette liaison utilise deux conducteurs de données appelés TX et RX. La communication s'effectue à un \textit{baud rate}, une vitesse de transfert, commun entre les deux appareils. Le port TX d'un appareil est connecté au port RX du second et inversement.
+				\paragraph{Entre le \textit{\dspic} et le \textit{\pic}} Entre ces deux composants, nous utilisons une connexion de type \textbf{SPI}. Cette liaison utilise 3 ou 4 conducteurs. Ils sont appelés SLCK (\textsf{Serial Clock}), MISO (\textsf{Master Input Slave Output}), MOSI (\textsf{Master Output Slave Input})  et SS (\textsf{Slave Select}). Le dernier n'étant utile uniquement si il y a plusieurs \textit{slave} dans le système. Dans notre cas, le \pic est \textit{master} et le \dspic est \textit{slave}.
 				
 				\setlength{\unitlength}{1mm}
 \begin{figure}
@@ -40,7 +40,7 @@
 	\caption{Diagramme de communication}
 \end{figure}
 				\subsubsection{Protocole}
-				Avant de mettre en place une communication, il faut définir le \textit{langage} dans le quel nous allons parler. Entre le Smartphone et le Module Bluetooth, nous envoyons un octet. Nous avons donc 256 valeurs pour échanger les informations de puissance, de direction et d'effets. Nous avons donc décidé qu'à chaque mise à jour des curseurs de contrôle, des boutons d'effet ou en cas d'overflow du timer de sécurité, un nombre entre 0 et 255 serait envoyé par Bluetooth. On peut donc résumer les différente significations dans le tableau \ref{protocol}.
+				Avant de mettre en place une communication, il faut définir le \textit{langage} dans le quel nous allons parler. Entre le Smartphone et le Module Bluetooth, nous envoyons un octet. Nous avons donc 256 valeurs pour échanger les informations de puissance, de direction et d'effets. Nous avons donc décidé qu'à chaque mise à jour des curseurs de contrôle, des boutons d'effet ou en cas d'overflow du timer de sécurité, un nombre entre 0 et 255 serait envoyé par Bluetooth. On peut donc résumer les différentes significations dans le tableau \ref{protocol}.
 \begin{table}[h]
 	\begin{center}
 	
@@ -58,23 +58,25 @@
 \end{table}
 
 			\subsection{Application}
-			Afin de pouvoir utiliser notre propre protocole, défini ci dessous, et d'avoir notre propre interface graphique nous avons décider de créer notre application de A à N. Pour cela, nous avons utilisé l'outil développer par le MIT, \href{http://ai2.appinventor.mit.edu/}{MIT App Inventor}. Cette outils en ligne permet de créer avec des blocs de simples applications pour smartphone.
-		\paragraph{Interface de connexion} Lorsque nous démarrons l'application, nous arrivons sur un écran qui scan et liste les différents périphériques Bluetooth Low Energy à proximité de notre smartphone. Cette vue reprend les éléments développés dans ce tutoriel \cite{tutoBLE} du MIT. Plusieurs options s'offrent à nous, le scan des périphérique ou la connexion à un des périphériques. Lorsque nous nous connectons à un périphérique, nous basculons sur l'écran de commande de l'aéroglisseur.
+			Afin de pouvoir utiliser notre propre protocole, défini ci dessous et d'avoir notre propre interface graphique, nous avons décider de créer notre application de A à N. Pour cela, nous avons utilisé l'outil développé par le MIT, \href{http://ai2.appinventor.mit.edu/}{ MIT App Inventor}. Cette outils en ligne permet de créer avec des blocs de simples applications pour smartphone.
+		\paragraph{Interface de connexion} Lorsque nous démarrons l'application, nous arrivons sur un écran (figure \ref{Connec}) qui scan et liste les différents périphériques \textit{Bluetooth Low Energy} à proximité de notre smartphone. Cette vue reprend les éléments développés dans ce tutoriel \cite{tutoBLE} du MIT. Plusieurs options s'offrent à nous, le scan des périphériques alentours ou la connexion à un des périphériques. Lorsque nous nous connectons à un périphérique, nous basculons sur l'écran de commande de l'Aéroglisseur.
 		\begin{figure}
 			\begin{center}
 				\includegraphics[width=0.3\textwidth]{../Illus/AppConnection.png}
 			\end{center}
 			\caption{Écran de connexion au périphérique Bluetooth}
+			\label{Connec}
 		\end{figure}
-			\paragraph{Interface de commande} L'écran de commande est composé de deux curseurs, celui de droite contrôlant la puissance et celui de gauche contrôlant la direction. En haut au milieu, il y a un bouton pour se déconnecter et revenir à l'écran d'accueil. En bas de l'écran, une série d'interrupteur permettant l'allumage de différents effets.
+			\paragraph{Interface de commande} L'écran de commande (figure \ref{Pilo}) est composé de deux curseurs, celui de droite contrôlant la puissance et celui de gauche contrôlant la direction. En haut au milieu, il y a un bouton pour se déconnecter et revenir à l'écran d'accueil. En bas de l'écran, une série d'interrupteur permettant l'allumage de différents effets.
 			\begin{figure}
 		\begin{center}
 			\includegraphics[width=0.6\textwidth]{../Illus/AppPilotage.png}
 		\end{center}
 			\caption{Écran de pilotage de l'aéroglisseur}
+			\label{Pilo}
 		\end{figure}
 		\paragraph{Programmation}
-		La programmation sur MIT App Inventor s'effectue avec des blocs. Chaque élément ajouté sur un écran est associé à des blocs fonctionnels. Cette manière de fonctionner ne permet pas de réaliser des applications extrêmement complexes mais permet de réaliser rapidement des interfaces sur smartphone. Notre application ne nécessite pas énormément de choses pour fonctionner, les écrans sont très simples. Nous pouvons résumer le fonctionnement de l'application avec le diagramme suivant: \ref{algoApp}
+		La programmation sur MIT App Inventor s'effectue avec des blocs. Chaque élément ajouté sur un écran est associé à des blocs fonctionnels. Cette manière de fonctionner ne permet pas de réaliser des applications extrêmement complexes mais permet de réaliser rapidement des interfaces sur smartphone. Notre application ne nécessite pas énormément de choses pour fonctionner, les écrans sont très simples. Nous pouvons résumer le fonctionnement de l'application avec le diagramme \ref{algoApp}.
 		\begin{figure}
 		\begin{picture}(230,120)
 		\scriptsize
@@ -101,7 +103,7 @@
 			\put(0,10){\line(0,1){65}}				
 			
 			\put(10,20){\framebox(25,10)[c]{\shortstack{Envoi de la valeur\\<2-20>}}}
-			\put(45,20){\framebox(25,10)[c]{\shortstack{Envoi de la valeur\\<100-200>}}}
+			\put(45,20){\framebox(25,10)[c]{\shortstack{Envoi de la valeur\\<95-200>}}}
 			\put(80,20){\framebox(25,10)[c]{\shortstack{Envoi de la valeur\\<201-255>}}}
 			\put(115,20){\framebox(25,10)[c]{\shortstack{Envoi de la valeur\\<0>}}}
 
@@ -127,11 +129,11 @@
 			\end{center}
 			\caption{Vues de MIT App Inventor}
 		\end{figure}
-		Nous pouvons voir les différents éléments constituant notre application, et un exemple de bloc qui réagit au changement de position du curseur pour l'envoyer le la liaison Bluetooth Low Energy.
-		\\Les sources du projet de l'application est disponible sur notre dépôt Github ici\cite{git}.
+		Nous pouvons voir les différents éléments constituant notre application, et un exemple de bloc qui réagit aux changements de position du curseur pour l'envoyer sur la liaison Bluetooth Low Energy.
+		\\Les sources du projet de l'application est disponible sur notre dépôt Github ici \cite{git}.
 			\subsection{Liaison Bluetooth}
 			Après avoir émis les informations de pilotage, il faut les récupérer pour les exploiter. Nous avons donc mis en place une liaison série entre le module Bluetooth HC-05 et le \pic. Cette liaison est déclarée à 9600 bauds.
-			\paragraph{Mise en place}La configuration du module \textit{UART} du \pic est réalisée en s'appuyant sur la documentation technique\cite{DatasheetPIC}. On décide les pins que l'on va utiliser, tous les pins utilisés sur les microcontrôleurs sont précisés dans les tableaux \ref{pinoutpic} et \ref{pinoutdspic}.
+			\paragraph{Mise en place}La configuration du module \textit{UART} du \pic est réalisée en s'appuyant sur la documentation technique \cite{DatasheetPIC}. On décide des pins que l'on va utiliser, tous les pins utilisés sur les microcontrôleurs sont précisés dans les tableaux \ref{pinoutpic} et \ref{pinoutdspic}.
 			
 			\insertcode{../../ENUM/Codes/mainpic.c}{73-83,180-182,186-192}{Initialisation de la liaison série sur le \pic}
 			
@@ -184,10 +186,10 @@
 		\caption{Fonctionnement du SPI}
 	\end{figure}
 			\subsubsection{Sur le \pic}
-			\paragraph{Mise en place}La configuration du module \textit{UART} du \pic est réalisée en s'appuyant sur la documentation technique\cite{DatasheetPIC}. On décide les pins que l'on va utiliser, tous les pins utilisés sur les microcontrôleurs sont précisés dans le tableau \ref{pinoutpic}.
+			\paragraph{Mise en place}La configuration du module \textit{SPI} du \pic est réalisée en s'appuyant sur la documentation technique \cite{DatasheetPIC}. On décide des pins que l'on va utiliser, tous les pins utilisés sur les microcontrôleurs sont précisés dans le tableau \ref{pinoutpic}.
 			\insertcode{../../ENUM/Codes/mainpic.c}{95-107}{Initialisation de la liaison SPI sur le \pic}
 			\subsubsection{Sur le \dspic}
-			\paragraph{Mise en place}La configuration du module \textit{UART} du \dspic est réalisée en s'appuyant sur la documentation technique \cite{DatasheetDSPIC} et \cite{DatasheetDSPIC30} . On décide les pins que l'on va utiliser, tous les pins utilisés sur les microcontrôleurs sont précisés dans le tableau \ref{pinoutdspic}.
+			\paragraph{Mise en place}La configuration du module \textit{SPI} du \dspic est réalisée en s'appuyant sur les documentations techniques \cite{DatasheetDSPIC} et \cite{DatasheetDSPIC30} . On décide des pins que l'on va utiliser, tous les pins utilisés sur les microcontrôleurs sont précisés dans le tableau \ref{pinoutdspic}.
 			\insertcode{../../ENUM/Codes/maindspic.c}{133-147}{Initialisation de la liaison SPI sur le \dspic}
 			
 		\section{Fonctionnement}
@@ -324,15 +326,15 @@
 			\caption{Algorithme simplifié du code du \pic}
 			\label{algoPic}
 		\end{figure}
-			\paragraph{Sur le \pic} Le déroulement du programme sur le \pic suit le schéma représenté sur le diagramme \ref{algoPic}. On peut y voir une phase d'initialisation, configurant les différents registres dont on a besoin. La boucle principale, représenté sur la gauche de l'algorithme, se charge de l'affichage et de la mise à jour de tous les procédés. (Position du servomoteur, Puissance de la propulsion au travers du \dspic, gestion des \textbf{effets non pyrotechnique} \emph{(les effets pyrotechniques étant interdits dans le cahier des charges)}). Cette boucle est interrompue par les fonctions \textit{d'interruptions} gérant l'arrivée de nouvelles informations ou de défauts, ces fonctions sont représentées à droite de l'algorithme. Le contenu ainsi que le fonctionnement des fonctions est détaillé fonction par fonction dans les paragraphes suivants.
+			\paragraph{Sur le \pic} Le déroulement du programme sur le \pic suit le schéma représenté sur le diagramme \ref{algoPic}. On peut y voir une phase d'initialisation, configurant les différents registres dont on a besoin. La boucle principale, représentée sur la gauche de l'algorithme, se charge de l'affichage et de la mise à jour de tous les processus. \textit{(Position du servomoteur, Puissance de la propulsion au travers du \dspic, gestion des \textbf{effets non pyrotechnique}} \emph{(les effets pyrotechniques étant interdits dans le cahier des charges)}). Cette boucle est interrompue par les fonctions \textit{d'interruptions} gérant l'arrivée de nouvelles informations ou de défauts, ces fonctions sont représentées à droite de l'algorithme. Le contenu ainsi que le fonctionnement des fonctions est détaillé fonction par fonction dans les paragraphes suivants.
 			%\paragraph{Sur le \dspic}
 			\subsection{Contrôle du servomoteur}
 				\paragraph{Fonctionnement}
-			Un servomoteur est un moteur asservi en position ou en vitesse. Grâce à un signal de commande caractérisé plus loin, le moteur rejoint une position angulaire ou une vitesse donnée. L'emploi de ce type d'actionneur est simple, une alimentation fixe en 0-5V et un signal de commande permet la réalisation simple de système contrôlé angulairement. Le mot "servo" ne vient pas de cerveau qui signifierait intelligent mais du latin \emph{servus} qui signifie esclave. Il s'agit donc d'un moteur esclave, plus précisément un moteur asservi.
+			Un servomoteur est un moteur asservi en position ou en vitesse. Grâce à un signal de commande caractérisé plus loin, le moteur rejoint une position angulaire ou une vitesse donnée. L'emploi de ce type d'actionneur est simple, une alimentation fixe en 0-5V et un signal de commande permet la réalisation simple de système contrôlé angulairement. Le mot \textit{"servo"} ne vient pas de cerveau qui signifierait intelligent mais du latin \emph{servus} qui signifie esclave. Il s'agit donc d'un moteur esclave, plus précisément un moteur asservi.
 			
-				\paragraph{Commande}Le signal de commande employé pour contrôlé les servomoteurs est un signal de type PWM (Power Width Modulation, Modulation à Largeur d'Impulsion). La largeur de l'impulsion correspond à une position donnée. Le signal est un signal électrique de période 20ms, toutes les 20ms, le moteur doit recevoir un signal de commande pour s'aligner correctement. La largeur de l'impulsion varie généralement entre 0.5 et 3ms. La largeur d'impulsion fait varier proportionnellement l'angle de sortie ou la vitesse. Par exemple, si une impulsion de 0.75ms correspond à un angle de $0^{\circ}$ et une impulsion de 2.25 à un angle de $180^{\circ}$. Pour obtenir un angle de $66^{\circ}$, il faut une impulsion de 1.3ms.  
+				\paragraph{Commande}Le signal de commande employé pour contrôler les servomoteurs est un signal de type PWM (Power Width Modulation, Modulation à Largeur d'Impulsion). La largeur de l'impulsion correspond à une position donnée. Le signal est un signal électrique de période 20ms, toutes les 20ms, le moteur doit recevoir un signal de commande pour s'aligner correctement. La largeur de l'impulsion varie généralement entre 0.5 et 3ms. La largeur d'impulsion fait varier proportionnellement l'angle de sortie ou la vitesse. Par exemple, si une impulsion de 0.75ms correspond à un angle de $0^{\circ}$ et une impulsion de 2.25 à un angle de $180^{\circ}$. Pour obtenir un angle de $66^{\circ}$, il faut une impulsion de 1.3ms.  
 			
-				\paragraph{Création du signal de commande} Afin de générer le signal de commande pour le servomoteur, nous allons utiliser le \pic. Ce composant programmable nous permettra de générer le signal comportant une impulsion de largeur variable toutes les 20ms. En jouant sur le rapport cyclique, nous jouons sur la largeur de l'impulsion. Cette largeur d'impulsion sera contrôlée par les information transmise sur la liaison \textit{Bluetooth}. Dans la datasheet du \pic \cite{DatasheetPIC}, on peut voir la formule suivante sur la période du PWM.
+				\paragraph{Création du signal de commande} Afin de générer le signal de commande pour le servomoteur, nous allons utiliser le \pic. Ce composant programmable nous permettra de générer le signal comportant une impulsion de largeur variable toutes les 20ms. En jouant sur le rapport cyclique, nous jouons sur la largeur de l'impulsion. Cette largeur d'impulsion sera contrôlée par les informations reçues sur la liaison \textit{Bluetooth}. Dans la datasheet du \pic \cite{DatasheetPIC}, on peut voir la formule suivante sur la période du PWM.
 				$$ PWM_{period}=(PR2+1)\times 4 \times T_{osc} \times TMR2_{prescaler}$$
 				$$ 20*10^{-3}=(PR2+1) \times 4 \times \frac{1}{4*10^{6}} \times 128$$
 				$$ PR2=\left(\frac{20*10^{-3}}{128*10^{-6}} \right)-1=155.25$$
@@ -358,13 +360,13 @@
 				\end{table}
 				Dans notre code nous n'utilisons pas le registre \texttt{PWM3DCL}, on se contente de charger une valeur entre 2 et 20 dans le registre \texttt{PWM3DCH}, on perd en précision mais cela ne pose pas de soucis. Nous arrivons tout de même à avoir suffisamment de niveau pour remplir le cahier des charges.
 				\begin{tcolorbox}[center,width=0.9\textwidth, colframe=red!90!orange, colback=orange!25, arc=3mm,boxrule=1mm, sharp corners=east,title=Note]
-			L'aéroglisseur n'ayant pas pu être réalisé, les valeurs maximum et minimum sont l'amplitude maximum du servo, celui ci balaie donc les 180$\deg$ de sa course. Dans le système réel il aurait fallu les limiter afin que la dérive ne rentre pas en butée contre la structure de l'aéroglisseur. Voir \ref{vues}.\\
+			L'aéroglisseur n'ayant pas pu être réalisé, les valeurs maximum et minimum sont l'amplitude maximum du servo, celui ci balaie donc les 180$^\circ$ de sa course. Dans le système réel il aurait fallu les limiter afin que la dérive ne rentre pas en butée contre la structure de l'aéroglisseur. Voir \ref{vues}.\\
 			Si il faut réduire l'amplitude de battement du servo, il est possible que l'on ai plus assez de niveaux en utilisant uniquement le registre \texttt{PWM3DCH} et il aurait fallut utiliser l'intégralité des registres.
   			\end{tcolorbox}
 			
 			\subsection{Contrôle des effets}
 			Afin d'ajouter un peu de beauté sur notre projet, nous avons décidé d'y ajouter quelques LEDs, c'est ce que nous appelons "effet". Contrôlé par l'application, à chaque réception du caractère associé à l'effet on "inverse" l'état de l'effet.
-			\insertcode{../../ENUM/Codes/mainpic.c}{130-143}{Contrôle des effets sur le \pic}
+			\insertcode{../../ENUM/Codes/mainpic.c}{130-142}{Contrôle des effets sur le \pic}
 			\begin{tcolorbox}[center,width=0.9\textwidth, colframe=red!90!orange, colback=orange!25, arc=3mm,boxrule=1mm, sharp corners=east,title=Note]
 			Les effets définis dans le code ne sont pas forcément les effets définitifs, ils sont ainsi car je n'avais pas plus de LEDs à disposition.
   			\end{tcolorbox}
@@ -373,20 +375,20 @@
 			Notre projet pouvant s'avérer devenir un objet glissant incontrôlé, il faut mettre en place différents organes de sécurité.
 			
 				\subsubsection{Batterie faible}
-				Comme décrit précédemment (voir \ref{UVBF}) une batterie de type Li-Po ne doit pas se décharger en dessous d'un certain seuil. Le circuit décrit permet de détecter le passage sous ce seuil, mais encore faut-il faire quelque chose. Lorsque le signal en provenance du circuit de protection des sous tensions est à l'état bas, nous empêchons toutes communications et nous déclenchons un effet visuel pour avertir l'utilisateur.
+				Comme décrit précédemment (voir \ref{UVBF}) une batterie de type Li-Po ne doit pas se décharger en dessous d'un certain seuil. Le circuit décrit permet de détecter le passage sous ce seuil, mais encore faut-il faire quelque chose. Lorsque le signal en provenance du circuit de protection de sous tensions est à l'état bas, nous empêchons toutes communications et nous déclenchons un effet visuel pour avertir l'utilisateur.
 				\insertcode{../../ENUM/Codes/mainpic.c}{226-231}{Gestion de la sous tension batterie sur le \pic}
 				\subsubsection{Perte de connexion}
-				La perte de connexion entre l'Aéroglisseur est le Smartphone peut être un problème dangereux, personne n'a envie de se confronter à un aéroglisseur fou avec une hélice tranchante en rotation. Pour éviter ce soucis, l'application Bluetooth envoie au minimum un caractère toutes les 100ms, voir paragraphe \ref{algoApp}, soit à cause d'une action de l'utilisateur, il envoi donc l'information, soit en cas d'overflow d'un timer, ce timer déclenche l'envoi d'un 0 toutes les 100ms. À chaque réception d'un nouveau caractère, un timer sur le \pic est réinitialisé. Si le timer déclaré sur le \pic overflow, une interruption est déclenchée, elle met la valeur de la puissance à 0, le servomoteur de direction droit et allume un effet visuel.
+				La perte de connexion entre l'Aéroglisseur est le Smartphone peut être un problème dangereux, personne n'a envie de se confronter à un aéroglisseur fou avec une hélice tranchante en rotation. Pour éviter ce soucis, l'application Bluetooth envoie au minimum un caractère toutes les 100ms, voir paragraphe \ref{algoApp}, soit par une action de l'utilisateur, l'information est envoyée, soit en cas d'overflow d'un timer sur l'application, ce timer déclenche l'envoi d'un 0 toutes les 100ms. À chaque réception d'un nouveau caractère, un timer sur le \pic est réinitialisé. Si le timer déclaré sur le \pic overflow, une interruption est déclenchée, elle met la valeur de la puissance à 0, le servomoteur de direction droit et allume un effet visuel.
 				\insertcode{../../ENUM/Codes/mainpic.c}{84-94,113-115,143-146}{Gestion de la perte de connexion sur le \pic}
 				
 				\subsubsection{Arrêt d'urgence}\label{AU}
-				Un arrêt d'urgence, sous la forme d'un \textbf{gros bouton rouge}, n'est pas envisageable pour notre système, car encore une fois devoir d'approcher d'un aéroglisseur fou n'est pas une partie de plaisir Nous avons donc pensé à une corde qui \textit{pend} à l'arrière de l'engin. En tirant sur cette corde, on active un système de bouton qui permet de mettre l'aéroglisseur en un mode de sécurité. Un jumper présent sur la carte permet de servir de commutateur. Sur un front descendant, nous déclenchons une interruption semblable à celle définie ci dessus.
+				Un arrêt d'urgence, sous la forme d'un \textbf{gros bouton rouge}, n'est pas envisageable pour notre système, car encore une fois devoir d'approcher d'un aéroglisseur fou n'est pas une partie de plaisir. Nous avons donc pensé à une corde qui \textit{pend} à l'arrière de l'engin. En tirant sur cette corde, on active un système de bouton qui permet de mettre l'aéroglisseur en un mode de sécurité. Un jumper présent sur la carte permet de servir de commutateur. Sur un front descendant, nous déclenchons une interruption semblable à celle définie ci dessus pour la perte de connexion.
 				
 				\insertcode{../../ENUM/Codes/mainpic.c}{152-156}{Gestion de l'arrêt d'urgence sur le \pic}
 				
 				\subsubsection{Hiérarchisation des "erreurs"}
-				Le traitement des erreurs a lieu en plusieurs phases. Il y a la phase de détection qui peut avoir lieu avec des interruptions ou pas. Les erreurs sont donc hiérarchisé comme dans le tableau suivant:
-				\begin{table}
+				Le traitement des erreurs a lieu en plusieurs phases. Il y a la phase de détection qui peut avoir lieu avec des interruptions ou pas. Les erreurs sont donc hiérarchisée comme dans le tableau \ref{hierar}.
+				\begin{table}[hb]
 				\begin{center}
 					\begin{tabular}{r|l}
 					Priorité&Type d'erreur\\
@@ -396,26 +398,28 @@
 					 3 & Perte de connexion Bluetooth	\\
 					 4 & Fonctionnement normal	\\
 					\end{tabular} 
+					\caption{Hiérarchisation des erreurs dans le code}
+					\label{hierar}
 					\end{center}
 				\end{table}
-				Nous traitons en premier lieu le \texttt{global fail} lié à l'arrêt d'urgence, puis la sous tension, la perte de connexion et enfin le fonctionnement sans erreur. Cette hiérarchisation ne pose pas de problèmes étant donné que les différences de traitement réside principalement dans la nature de l'effet avertissant l'utilisateur
+				Nous traitons en premier lieu le \texttt{global fail} lié à l'arrêt d'urgence, puis la sous tension, la perte de connexion et enfin le fonctionnement sans erreur. Cette hiérarchisation ne pose pas de problèmes étant donné que les différences de traitement résident principalement dans la nature de l'effet avertissant l'utilisateur
 			\subsection{Contrôle à partir des données Bluetooth}
-			Maintenant que chaque fonctionnalité a été présentée, nous pouvons tout réunir. Le fonctionnement global de notre code s'articule autour de deux parties de code: l'interruption déclenchée par l'arrivée d'information sur le module Bluetooth et la boucle principale.
-			\paragraph{Réception Bluetooth} La réception d'information provenant du module Bluetooth sur la liaison série déclenche une interruption. Lorsque cela arrive, le programme en cours est \textit{immédiatement} stoppé et exécute le contenu de la routine associée. Dans notre cas, la routine associée permet de récupérer la valeur reçue, cette valeur est \textit{décodée} en suivant le protocole défini ici: \ref{protocol}.
+			Maintenant que chaque fonctionnalité a été présentée, nous pouvons tout réunir. Le fonctionnement global de notre code s'articule autour de deux parties de code: l'interruption déclenchée par l'arrivée d'informations sur le module Bluetooth et la boucle principale.
+			\paragraph{Réception Bluetooth} La réception d'information provenant du module Bluetooth sur la liaison série déclenche une interruption. Lorsque cela arrive, le programme en cours est \textit{immédiatement} stoppé et exécute le contenu de la routine associée. Dans notre cas, la routine associée permet de récupérer la valeur reçue, cette valeur est \textit{décodée} en suivant le protocole défini précédemment, paragraphe \ref{protocol}.
 			\begin{itemize}
 			\item[$\bullet$] Si la valeur reçue correspond à une mise à jour des effets, les variables \texttt{eff1} et \texttt{eff2} sont mises à jour, ici complémentée. 
 			\item[$\bullet$] Si la valeur reçue correspond à une mise à jour de la direction, on met à jour la variable \texttt{ang}, qui représente la valeur à mettre dans le registre de gestion de la PWM. En effet, pour cette action, il n'y a aucun traitement à faire, c'est pour cela que les valeurs sont ainsi sur le curseur de l'application.
-			\item[$\bullet$] Si la valeur reçue correspond à une mise à jour de la puissance de propulsion, un traitement est effectué avant d'être envoyé dans la variable \texttt{puissance} qui sera envoyé sur le \textit{SPI}. On réajuste les valeurs reçues afin qu'elles correspondent par la suite à la valeur nécessaire pour contrôler les signaux PWM contrôlant l'onduleur. On effectue donc une transformation linéaire pour passer d'une valeur entre 95 et 200 à une valeur entre 41 et 230.
+			\item[$\bullet$] Si la valeur reçue correspond à une mise à jour de la puissance de propulsion, un traitement est effectué avant d'être envoyé dans la variable \texttt{puissance} qui sera envoyée sur le \textit{SPI}. On réajuste les valeurs reçues afin qu'elles correspondent par la suite à la valeur nécessaire pour contrôler les signaux PWM contrôlant l'onduleur. On effectue donc une transformation linéaire pour passer d'une valeur entre 95 et 200 à une valeur entre 41 et 230.
 			$$ x\in [95;200];y\in [41;230] \Rightarrow y=1.8*x-130 $$
 			\label{picmain}
-			\item[$\bullet$] Si la valeur ne correspond à rien ou est un 0, le message ne sert juste à montrer que l'application est toujours connectée pour des raisons de sécurité, comme expliqué au paragraphe \ref{secu}.		
+			\item[$\bullet$] Si la valeur ne correspond à rien ou est un 0, le message sert juste à montrer que l'application est toujours connectée pour des raisons de sécurité, comme expliqué au paragraphe \ref{secu}.		
 			\end{itemize}			 
 			\insertcode{../../ENUM/Codes/mainpic.c}{111-142}{Réception Bluetooth sur le \pic}
 			\paragraph{Boucle principale} Dans la boucle, on retrouve la gestion des modes. Notre système comporte quatre "modes":
 			\begin{itemize}
 			\item[$\bullet$] Le mode normal (\texttt{fail=0 et gfail=0}), il s'agit du mode par défaut et normal du système. Dans ce cas, la consigne en puissance est transmise au \dspic, la PWM contrôlant le servo et les effets sont mis à jour toutes les 10ms.
-			\item[$\bullet$] Le mode défaut (\texttt{fail=1 et gfail=0}), il s'agit du mode "sans connexion". Il n'y a aucune information qui est arrivé sur la liaison Bluetooth depuis trop longtemps. On met l'aéroglisseur en sécurité, la consigne de puissance est nulle et la dérive est dans une position droite et on fait clignoter un effet afin d'avertir l'utilisateur. Dès que la connexion Bluetooth est rétablie, le système peut repasser en mode normal. Un exemple de cette situation pourrait être que l'aéroglisseur est trop loin du pilote ou encore que le pilote a fermer l'application. Dans ce cas, l'aéroglisseur s'arrête automatiquement.
-			\item[$\bullet$] Le mode sous tension de batterie (signal bas sur \texttt{RC3}).Dans ce cas, la consigne en puissance est transmise au \dspic, la PWM contrôlant le servo et un effet averti l'utilisateur.
+			\item[$\bullet$] Le mode défaut (\texttt{fail=1 et gfail=0}), il s'agit du mode "sans connexion". Il n'y a aucune information qui est arrivée sur la liaison Bluetooth depuis trop longtemps. On met l'aéroglisseur en sécurité, la consigne de puissance est nulle et la dérive est dans une position droite et on fait clignoter un effet afin d'avertir l'utilisateur. Dès que la connexion Bluetooth est rétablie, le système peut repasser en mode normal. Un exemple de cette situation pourrait être que l'aéroglisseur est trop loin du pilote ou encore que le pilote a fermé l'application. Dans ce cas, l'aéroglisseur s'arrête automatiquement.
+			\item[$\bullet$] Le mode sous tension de batterie (signal à l'état bas sur \texttt{RC3}). On met l'aéroglisseur en position de sécurité et on avertit l'utilisateur, la batterie doit être rechargée.
 			\item[$\bullet$] Le mode défaut global (\texttt{fail=1 et gfail=1}), ce mode n'est activé que lorsque l'arrêt d'urgence a été activé, lorsque l'on a arraché le jumper de sécurité. On met l'aéroglisseur en sécurité, la consigne de puissance est nulle et la dérive est dans une position droite et on fait clignoter tous les effets afin d'avertir l'utilisateur qu'il s'agit d'un autre défaut que ci dessus. En revanche dans ce mode, le redémarrage est impossible. Il faut débrancher la batterie, remettre en place le jumper de sécurité et réalimenter le système. Dans ce mode, toutes nouvelles informations sont bloquées, plus aucun événement ne peut déclencher une interruption. 
 			\end{itemize}
 			\insertcode{../../ENUM/Codes/mainpic.c}{216-247}{Boucle principale du \pic}
@@ -424,11 +428,11 @@
 			\subsection{Contrôle de l'onduleur}			
 			\begin{tcolorbox}[center,width=0.9\textwidth, colframe=red!90!orange, colback=orange!25, arc=3mm,boxrule=1mm, sharp corners=east,title=Note]
 			Cette partie a été réalisée durant la période de fermeture de l'école. N'ayant pas eut un oscilloscope et un moteur brushless à disposition, les codes n'ont pas été testé sur système réel. Le projet a été simulé sur \textit{MPLABxIDE}. Malheureusement, ce simulateur présente de nombreux défauts comme un manque de stabilité et des visualisations de sortie très limitées, notamment sur la durée des simulations. Les valeurs calculées ne sont donc pas forcément adaptées\\
-  			Comme vous pourrez le voir dans la partie \ref{real}, un système de LED est ajoutée pour visualiser les sorties PWM. 
+  			Comme vous pourrez le voir dans la partie \ref{real}, un système de LED est ajouté pour visualiser les sorties PWM. 
   			\end{tcolorbox}
-  			Le contrôle de l'onduleur, présenté paragraphe \ref{onduleur}, est effectué par le \dspic . Il s'agit donc de créer 6 signaux  PWM pour contrôler chaque transistor de la structure globale. De plus, ces signaux doivent être cadencé afin de créer un champ tournant mais aussi synchroniser avec la méthode de \textit{Back EMF}.
+  			Le contrôle de l'onduleur, présenté paragraphe \ref{onduleur}, est effectué par le \dspic . Il s'agit donc de créer 6 signaux  PWM pour contrôler chaque transistor de la structure globale. De plus, ces signaux doivent être cadencés afin de créer un champ tournant mais aussi synchroniser avec la méthode de \textit{Back EMF}.
   			\paragraph{Mise en place des signaux PWM}
-  			La mise en place des signaux PWM sur le \dspic a été effectué en suivant le tutoriel \cite{PWMds}. On obtient 6 signaux PWM. Les signaux sont liés 2 à 2, il y a un signal PWM et son complément. On a donc PWMxL et PWMxH pour chaque sortie 1,2 et 3.On retrouve cette répartition sur la figure \ref{imgPWM}.
+  			La mise en place des signaux PWM sur le \dspic a été effectuée en suivant le tutoriel \cite{PWMds}. On obtient 6 signaux PWM. Les signaux sont liés 2 à 2, il y a un signal PWM et son complément. On a donc PWMxL et PWMxH pour chaque sortie 1,2 et 3. On retrouve cette répartition sur la figure \ref{imgPWM}.\\
   			\begin{figure}[hb]\begin{center}
 	  			\includegraphics[width=0.9\textwidth]{../Illus/pwm100.png}
 	  			\caption{Simulation des signaux PWM}
@@ -442,14 +446,52 @@
   			\insertcode{../../ENUM/Codes/maindspic.c}{78-101}{Mise en place des signaux PWM sur le \dspic}
   			On peut maintenant calculer la résolution du PWM afin de savoir quel consigne devons nous lui donner. On utilise donc la formule de la datasheet:
   			$$\frac{\log\left(2 \times \frac{F_{CY}}{F_{PWM}}\right)}{\log 2}=7.84$$
-  			On peut donc commander le signal PWM entre 0 et $2^7.84$ soit 230.
+  			On peut donc commander le signal PWM entre 0 et $2^{7.84}$ soit 230.
 			\paragraph{Contrôle depuis les informations du \pic}
 			Les informations en provenance du \pic sont entre 41 et 230. Elles sont mises en forme sur le \pic, voir paragraphe \ref{picmain}.
 			\paragraph{Relation entre PWM et pulsation}
 			%Voir si c'est ici ou dans la partie du BLDC	
+			Le BLDCM est un moteur synchrone, le champs tourne à la même vitesse et avec un déphasage constant avec le rotor de la machine. Pour faire varier la vitesse du moteur, nous devons faire varier la pulsation électrique. Or si le moteur accélère, lorsque la fréquence augmente, il a besoin de plus de puissance, la valeur efficace des tensions d'alimentation doit augmenter, donc la valeur du rapport cyclique du PWM. La relation liant la pulsation et la valeur efficace est donnée par.
+			$$V=K_v \omega_meca$$
+			Dans la datasheet du moteur \cite{moteur}, on peut voir un coefficient de 1100 donné en Tours par Minute par Volt.
+			Pour tourner à 1100rpm, il a besoin de 1V. La batterie permet de délivrer une tension nominale 11.1V, paragraphe \ref{batterie}. Le moteur tournera donc à 12 210 tours par minute. On peut convertir ça en tours par seconde, soit en Hertz. La fréquence de rotation mécanique est donc de 203.5Hz pour 11.1V et 10.333Hz pour 1V.
+			Le moteur dispose de 5 paires de pôles, on a donc une fréquence électrique 5 fois supérieure à la fréquence mécanique.
 			$$ $$
+			Nous devons configurer le timer qui compte ni trop vite ni trop lentement afin d'avoir un bon contrôle sur la précision du système.
+			\begin{table}[hb]
+			\begin{tabular}{|c|c|c|c|}
+			PWM <0-230> & U (V) & $F_{elec}$ & $F_{meca}$ \\ 
+			\hline 
+			0 & 0V & 0 Hz & 0 tr/s \\ 
+			20 & 0.965V &  88.45 Hz & 17.69 tr/s \\ 
+			50 & 2.41V &  220 Hz & 44 tr/s \\ 
+			115 & 5.55V & 508.75 Hz & 101.75 tr/s \\ 
+			230 & 11.1V & 1075 Hz & 203.5 tr/s \\ 
+			\end{tabular} 
+			\caption{Valeur de PWM, de fréquences et de Tension aux bornes du moteur}
+			\label{freqPWMVitesse}
+			\end{table}
+			Nous avons décidé de prendre un timer qui compte sur la fréquence instruction divisé par 8. On obtient donc le tableau \ref{per} en reprenant les éléments du tableau \ref{freqPWMVitesse}. On obtient une période d'une incrémentation du timer de $\frac{4}{7.37*10^6}=542.74ns$
+			\begin{table}[hb]
+			\begin{tabular}{|c|c|c|c|}
+			PWM <0-230> & U (V) & $F_{elec}$ & Période & Valeur timer \\ 
+			\hline 
+			0 & 0V & 0 Hz & $+\infty$ &  65 535\\ 
+			20 & 0.965V &  88.45 Hz & 11.306 ms & 20831\\ 
+			50 & 2.41V &  221 Hz & 4.545454 ms & 8 375\\ 
+			115 & 5.55V & 508.75 Hz & 1.9656 ms & 3 621\\ 
+			230 & 11.1V & 1075 Hz & 0.93023ms & 1 714\\ 
+			\end{tabular} 
+			\caption{Valeur de PWM, de fréquences et de Tension aux bornes du moteur}
+			\end{table}
+			On peut maintenant trouver une relation entre les valeurs de PWM et la valeur du timer. 
+			$$$$
+			Dans un second temps, afin de limiter les risques de décrochage, les variations de fréquence et de rapport cyclique se font sous la forme d'une rampe. On compare toutes les 40ms la valeurs de la puissance actuelle à la valeur de la consigne souhaitée. On incrémente ou décrémente la valeur actuelle pour converger vers la valeur souhaitée. Ainsi les accélérations et décélérations du champs tournant sont plus facilement suivies le rotor.
+			 \begin{tcolorbox}[center,width=0.9\textwidth, colframe=red!90!orange, colback=orange!25, arc=3mm,boxrule=1mm, sharp corners=east,title=Note]
+			La pente de cette rampe a été définie à 40ms afin d'avoir un effet visuel ni trop rapide ni trop lent lors des tests montrés partie \ref{real}. Cette valeur serait à ajuster sur le système réelle pour avoir un système le plus réactif possible sans avoir de décrochages involontaires.
+  			\end{tcolorbox}
   			\paragraph{Séquençage}
-  			Afin de générer un champs tournant, on doit alterner l'activation et la désactivation des différentes sorties actifs à l'état haut ou à l'état bas. La séquence utilisée est décrite dans la note d'application \cite{AN857}.
+  			Afin de générer un champs tournant, on doit alterner l'activation et la désactivation des différentes sorties actives à l'état haut ou à l'état bas. La séquence utilisée est décrite dans la note d'application \cite{AN857}.
   			\insertcode{../../ENUM/Codes/maindspic.c}{102-132}{Gestion de l'ordre des phases sur le \dspic}
   			On obtient donc les signaux suivant:
   			\begin{figure}[hb]\begin{center}
@@ -458,8 +500,9 @@
 	  			\label{imgPWM}
 	  			\end{center}
   			\end{figure}
+  			Une fois les signaux dans le bon ordre, il faut les déclencher au bon moment. Pour cela, nous utilisons le principe de la \textit{Back EMF}, le système déclenche une interruption qui permet de resynchroniser la séquence des phases au secteur où est actuellement le rotor.
   			\paragraph{Fonctionnement général}
-  			L'algorithme simplifié du code du \dspic est représenté figure \ref{algodsPic}. On y retrouve les phases d'initialisations, d'interruption et la boucle principale comme pour dans le code \ref{algoPic} pour le \pic .
+  			L'algorithme simplifié du code du \dspic est représenté figure \ref{algodsPic}. On y retrouve les phases d'initialisations, d'interruption et la boucle principale comme pour dans l'algorithme \ref{algoPic} pour le \pic . 
   			\begin{figure}[!h]
 			\begin{picture}(210,85)
 			\tiny				
@@ -573,7 +616,7 @@
 				\end{picture}
 			\end{center}
 			\caption{Prototype de travail pour le projet}
-			En rouge les microcontrôleurs et le Bluetooth. En bleu, les éléments réels qui serait tel quel sur le projet. En vert, les solutions alternatives.
+			En rouge, les microcontrôleurs et le Bluetooth. En bleu, les éléments réels qui serait tel quel sur le projet. En vert, les solutions alternatives.
 		\end{figure}
   			Nous pouvons résumer en 2 catégories les composants sur la plaquette d'essais.
   			
@@ -590,4 +633,4 @@
 	  			
 	  			\end{tabular}\end{center}
   			\end{table}
- Ce montage permet de réaliser et de tester quelques fonctionnalités du projet. Vous pouvez consulter une vidéo de ce montage en fonctionnement ici: \url{youtube.com}
+ Ce montage permet de réaliser et de tester quelques fonctionnalités du projet. Une vidéo valant 10000 explications, vous pouvez consulter la vidéo de ce montage en fonctionnement ici: \url{ https://youtu.be/o-fGEK0Z234}
