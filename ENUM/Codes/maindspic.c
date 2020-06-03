@@ -146,17 +146,16 @@ void initSPI(){
     SPI1STATbits.SPIROV=0;
 }
 void updateCons(){
-    if(powerTarg<=50){
+    if(powerTarg<=10){
         power=0;
         consOndu=65535;
     }
-    else if(power<=50){
+    else if(power<=10){
         consOndu=65535;
     }
-    else if(power>50&&power<231){
-        //targetCons=-332*power+81744;
-        consOndu=-83*power+20436;
-        consOndu*=4;
+    else if(power>10&&power<231){
+        consOndu=6825/power;
+        consOndu*=8;
     }
 }
 void __attribute__ ((interrupt(auto_psv))) _SPI1Interrupt(void){
@@ -168,7 +167,7 @@ void __attribute__ ((interrupt(auto_psv))) _INT1Interrupt( void )
     TMR2=0;
     TMR3=0;
     sect=1;
-    updateCons();
+    
     updatePWM();
     IFS1bits.INT1IF = 0;
 }
@@ -212,7 +211,7 @@ void main(void) {
     IEC0bits.SPI1IE=1;
     
 	while(1){
-        updateCons();//Ajustement de la pulsation électrique
+       
        if(power<powerTarg){
             LATBbits.LATB0=0;
             power++;
@@ -224,6 +223,7 @@ void main(void) {
         else if(power==powerTarg){
             LATBbits.LATB0=1;
         }
+        updateCons();//Ajustement de la pulsation électrique
        __delay_ms(40);//Rampe pour atteindre la vitesse
    
     }

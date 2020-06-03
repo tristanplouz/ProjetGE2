@@ -4,7 +4,7 @@
 			\subsection{Vue d'ensemble}
 				Dans notre système, nous disposons de plusieurs appareils \textit{intelligents}, le \pic , le \dspic et le smartphone, afin que l'on puisse profiter au maximum des capacités de chacun, ces éléments doivent communiquer entre eux.
 				\subsubsection{Technologies utilisées}
-				Nous utilisons des technologies de communication différentes entre chaque composant.
+				Nous utilisons des technologies de communication différentes entre chaque composant. Un résumé des communication est proposé figure \ref{com}.
 				\paragraph{Entre le \textit{Smartphone} et le \textit{Module Bluetooth}} Une liaison \textit{Bluetooth Low Energy} est établie entre le module Bluetooth HC-05 et le smartphone. Dans notre cas, le téléphone est dit \textit{master} tandis que le module est dit \textit{slave}.
 				\paragraph{Entre le \textit{Module Bluetooth} et le \textit{\pic} } Pour communiquer entre le module Bluetooth HC-05 et le \pic, une liaison série est utilisée. Cette liaison utilise deux conducteurs de données appelés TX et RX. La communication s'effectue à un \textit{baud rate}, une vitesse de transfert, commun entre les deux appareils. Le port TX d'un appareil est connecté au port RX du second et inversement.
 				\paragraph{Entre le \textit{\dspic} et le \textit{\pic}} Entre ces deux composants, nous utilisons une connexion de type \textbf{SPI}. Cette liaison utilise 3 ou 4 conducteurs. Ils sont appelés SLCK (\textsf{Serial Clock}), MISO (\textsf{Master Input Slave Output}), MOSI (\textsf{Master Output Slave Input})  et SS (\textsf{Slave Select}). Le dernier n'étant utile uniquement si il y a plusieurs \textit{slave} dans le système. Dans notre cas, le \pic est \textit{master} et le \dspic est \textit{slave}.
@@ -38,6 +38,7 @@
 	    \put(167,9){PWM}
 	\end{picture}
 	\caption{Diagramme de communication}
+	\label{com}
 \end{figure}
 				\subsubsection{Protocole}
 				Avant de mettre en place une communication, il faut définir le \textit{langage} dans le quel nous allons parler. Entre le Smartphone et le Module Bluetooth, nous envoyons un octet. Nous avons donc 256 valeurs pour échanger les informations de puissance, de direction et d'effets. Nous avons donc décidé qu'à chaque mise à jour des curseurs de contrôle, des boutons d'effet ou en cas d'overflow du timer de sécurité, un nombre entre 0 et 255 serait envoyé par Bluetooth. On peut donc résumer les différentes significations dans le tableau \ref{protocol}.
@@ -78,7 +79,7 @@
 		\paragraph{Programmation}
 		La programmation sur MIT App Inventor s'effectue avec des blocs. Chaque élément ajouté sur un écran est associé à des blocs fonctionnels. Cette manière de fonctionner ne permet pas de réaliser des applications extrêmement complexes mais permet de réaliser rapidement des interfaces sur smartphone. Notre application ne nécessite pas énormément de choses pour fonctionner, les écrans sont très simples. Nous pouvons résumer le fonctionnement de l'application avec le diagramme \ref{algoApp}.
 		\begin{figure}
-		\begin{picture}(230,120)
+		\begin{picture}(230,115)
 		\scriptsize
 			\put(10,50){\framebox(25,10)[c]{\shortstack{Mouvement du\\ curseur Direction}}}
 			\put(45,50){\framebox(25,10)[c]{\shortstack{Mouvement du\\ curseur Puissance}}}
@@ -142,7 +143,7 @@
 			La liaison SPI fonctionne comme un registre à décalage. Le \textit{master}, ici le \pic, échange son registre \texttt{SSP1BUF} avec le \textit{slave}, le \dspic, au rythme d'une horloge générée par le \textit{master}.
 	\begin{figure}[hb]
 		\begin{center}
-			\begin{picture}(125,35)
+			\begin{picture}(125,30)
 			\tiny
 			\multiput(0,10)(75,0){2}{
 				\multiput(5,0)(5,0){8}{\framebox(5,5){}}
@@ -188,13 +189,14 @@
 			\subsubsection{Sur le \pic}
 			\paragraph{Mise en place}La configuration du module \textit{SPI} du \pic est réalisée en s'appuyant sur la documentation technique \cite{DatasheetPIC}. On décide des pins que l'on va utiliser, tous les pins utilisés sur les microcontrôleurs sont précisés dans le tableau \ref{pinoutpic}.
 			\insertcode{../../ENUM/Codes/mainpic.c}{95-107}{Initialisation de la liaison SPI sur le \pic}
+			\paragraph{Utilisation} Pour envoyer la valeur souhaitée sur la liaison, on écrit dans le registre \texttt{SSP1BUFF}.
 			\subsubsection{Sur le \dspic}
 			\paragraph{Mise en place}La configuration du module \textit{SPI} du \dspic est réalisée en s'appuyant sur les documentations techniques \cite{DatasheetDSPIC} et \cite{DatasheetDSPIC30} . On décide des pins que l'on va utiliser, tous les pins utilisés sur les microcontrôleurs sont précisés dans le tableau \ref{pinoutdspic}.
 			\insertcode{../../ENUM/Codes/maindspic.c}{133-147}{Initialisation de la liaison SPI sur le \dspic}
-			
+			\paragraph{Utilisation} On ne souhaite pas envoyer de message depuis le \dspic. On se contente donc de réceptionner la donnée avec un interruption puis de la traiter.
 		\section{Fonctionnement}
 		Dans les tableaux \ref{pinoutdspic} et \ref{pinoutpic} sont réunis tous les pins utilisés sur chacun de nos microcontrôleurs. Cette répartition n'a pas forcément de logique et s'appuie sur les éléments contenus dans les datasheets ou sur des exemples trouvés sur internet.\\
-		\begin{table}[hb]
+		\begin{table}[h]
 			\begin{multicols}{2}
 			\begin{center}
 			
@@ -340,8 +342,8 @@
 				$$ PR2=\left(\frac{20*10^{-3}}{128*10^{-6}} \right)-1=155.25$$
 				On choisit donc une valeur de \texttt{PR2} de 155. Maintenant, il nous reste à déterminer les valeurs pour obtenir des impulsions de la bonne largeur.
 				$$ PulseWidth=[PWM3DCH:PWM3DCL<7-6>]\times T_{osc} \times TMR2_{prescaler}$$
-				$$ PulseWidth_{min}=[PWM3DCH:PWM3DCL<7-6>]\times \frac{1}{4*40^{6}} \times 128$$
-				$$ PulseWidth_{max}=[PWM3DCH:PWM3DCL<7-6>]\times \frac{1}{4*40^{6}} \times 128$$
+				$$ PulseWidth_{min}=0.25*10^{-3}=[PWM3DCH:PWM3DCL<7-6>]\times \frac{1}{4*40^{6}} \times 128$$
+				$$ PulseWidth_{max}=2.5*10^{-3}=[PWM3DCH:PWM3DCL<7-6>]\times \frac{1}{4*40^{6}} \times 128$$
 				En faisant des essais sur le servomoteur, on détermine expérimentalement les valeurs montrées dans le tableau \ref{PWMval}.
 				\begin{table}[h]
 				\begin{center}
@@ -349,9 +351,9 @@
 					
 					Angle du servo & Valeur de \texttt{PWM3DCH:PWMDCL} & Largeur de l'impulsion \\ 
 					\hline 
-					$0\deg$ & 8 & 0.256ms \\
-					$90\deg$ & 40 & 1.28ms \\
-					$180\deg$ & 80 & 2.56ms \\ 
+					$0^{\circ}$ & 8 & 0.256ms \\
+					$90^{\circ}$ & 40 & 1.28ms \\
+					$180^{\circ}$ & 80 & 2.56ms \\ 
 					
 					\end{tabular} 
 					\caption{Valeurs de la PWM}
@@ -409,8 +411,8 @@
 			\begin{itemize}
 			\item[$\bullet$] Si la valeur reçue correspond à une mise à jour des effets, les variables \texttt{eff1} et \texttt{eff2} sont mises à jour, ici complémentée. 
 			\item[$\bullet$] Si la valeur reçue correspond à une mise à jour de la direction, on met à jour la variable \texttt{ang}, qui représente la valeur à mettre dans le registre de gestion de la PWM. En effet, pour cette action, il n'y a aucun traitement à faire, c'est pour cela que les valeurs sont ainsi sur le curseur de l'application.
-			\item[$\bullet$] Si la valeur reçue correspond à une mise à jour de la puissance de propulsion, un traitement est effectué avant d'être envoyé dans la variable \texttt{puissance} qui sera envoyée sur le \textit{SPI}. On réajuste les valeurs reçues afin qu'elles correspondent par la suite à la valeur nécessaire pour contrôler les signaux PWM contrôlant l'onduleur. On effectue donc une transformation linéaire pour passer d'une valeur entre 95 et 200 à une valeur entre 41 et 230.
-			$$ x\in [95;200];y\in [41;230] \Rightarrow y=1.8*x-130 $$
+			\item[$\bullet$] Si la valeur reçue correspond à une mise à jour de la puissance de propulsion, un traitement est effectué avant d'être envoyé dans la variable \texttt{puissance} qui sera envoyée sur le \textit{SPI}. On réajuste les valeurs reçues afin qu'elles correspondent par la suite à la valeur nécessaire pour contrôler les signaux PWM contrôlant l'onduleur. On effectue donc une transformation linéaire pour passer d'une valeur entre 95 et 200 à une valeur entre 0 et 230.
+			$$ x\in [95;200];y\in [0;230] \Rightarrow y=2.19*x-208 $$
 			\label{picmain}
 			\item[$\bullet$] Si la valeur ne correspond à rien ou est un 0, le message sert juste à montrer que l'application est toujours connectée pour des raisons de sécurité, comme expliqué au paragraphe \ref{secu}.		
 			\end{itemize}			 
@@ -429,12 +431,13 @@
 			\begin{tcolorbox}[center,width=0.9\textwidth, colframe=red!90!orange, colback=orange!25, arc=3mm,boxrule=1mm, sharp corners=east,title=Note]
 			Cette partie a été réalisée durant la période de fermeture de l'école. N'ayant pas eut un oscilloscope et un moteur brushless à disposition, les codes n'ont pas été testé sur système réel. Le projet a été simulé sur \textit{MPLABxIDE}. Malheureusement, ce simulateur présente de nombreux défauts comme un manque de stabilité et des visualisations de sortie très limitées, notamment sur la durée des simulations. Les valeurs calculées ne sont donc pas forcément adaptées\\
   			Comme vous pourrez le voir dans la partie \ref{real}, un système de LED est ajouté pour visualiser les sorties PWM. 
+  			\\De plus, le système de Back EMF n'est pas réellement implémenté
   			\end{tcolorbox}
   			Le contrôle de l'onduleur, présenté paragraphe \ref{onduleur}, est effectué par le \dspic . Il s'agit donc de créer 6 signaux  PWM pour contrôler chaque transistor de la structure globale. De plus, ces signaux doivent être cadencés afin de créer un champ tournant mais aussi synchroniser avec la méthode de \textit{Back EMF}.
   			\paragraph{Mise en place des signaux PWM}
-  			La mise en place des signaux PWM sur le \dspic a été effectuée en suivant le tutoriel \cite{PWMds}. On obtient 6 signaux PWM. Les signaux sont liés 2 à 2, il y a un signal PWM et son complément. On a donc PWMxL et PWMxH pour chaque sortie 1,2 et 3. On retrouve cette répartition sur la figure \ref{imgPWM}.\\
-  			\begin{figure}[hb]\begin{center}
-	  			\includegraphics[width=0.9\textwidth]{../Illus/pwm100.png}
+  			La mise en place des signaux PWM sur le \dspic a été effectuée en suivant le tutoriel \cite{PWMds}. On obtient 6 signaux PWM. Les signaux sont liés 2 à 2, il y a un signal PWM et son complément. On a donc PWMxL et PWMxH pour chaque sortie 1, 2 et 3. On retrouve cette répartition sur la figure \ref{imgPWM}.\\
+  			\begin{figure}[h]\begin{center}
+	  			\includegraphics[width=0.8\textwidth]{../Illus/pwm100.png}
 	  			\caption{Simulation des signaux PWM}
 	  			\label{imgPWM}
 	  			\end{center}
@@ -448,56 +451,90 @@
   			$$\frac{\log\left(2 \times \frac{F_{CY}}{F_{PWM}}\right)}{\log 2}=7.84$$
   			On peut donc commander le signal PWM entre 0 et $2^{7.84}$ soit 230.
 			\paragraph{Contrôle depuis les informations du \pic}
-			Les informations en provenance du \pic sont entre 41 et 230. Elles sont mises en forme sur le \pic, voir paragraphe \ref{picmain}.
+			Les informations en provenance du \pic sont entre 0 et 230. Elles sont mises en forme sur le \pic, voir paragraphe \ref{picmain}. En revanche, on n'utilise pas la plage à 100\%, en effet, une bande morte est présente entre les valeurs 0 et 10 afin d'avoir une bande où la fréquence de rotation est faible afin que le moteur accroche.
 			\paragraph{Relation entre PWM et pulsation}
 			%Voir si c'est ici ou dans la partie du BLDC	
 			Le BLDCM est un moteur synchrone, le champs tourne à la même vitesse et avec un déphasage constant avec le rotor de la machine. Pour faire varier la vitesse du moteur, nous devons faire varier la pulsation électrique. Or si le moteur accélère, lorsque la fréquence augmente, il a besoin de plus de puissance, la valeur efficace des tensions d'alimentation doit augmenter, donc la valeur du rapport cyclique du PWM. La relation liant la pulsation et la valeur efficace est donnée par.
 			$$V=K_v \omega_meca$$
 			Dans la datasheet du moteur \cite{moteur}, on peut voir un coefficient de 1100 donné en Tours par Minute par Volt.
-			Pour tourner à 1100rpm, il a besoin de 1V. La batterie permet de délivrer une tension nominale 11.1V, paragraphe \ref{batterie}. Le moteur tournera donc à 12 210 tours par minute. On peut convertir ça en tours par seconde, soit en Hertz. La fréquence de rotation mécanique est donc de 203.5Hz pour 11.1V et 10.333Hz pour 1V.
+			Pour tourner à 1100rpm, il a besoin de 1V. La batterie permet de délivrer une tension nominale 11.1V, paragraphe \ref{batterie}. Le moteur tournera donc à 12 210 tours par minute. On peut convertir ça en tours par seconde, soit en Hertz. La fréquence de rotation mécanique est donc de 203.5 Hz pour 11.1V et 18.333 Hz pour 1V.\\
 			Le moteur dispose de 5 paires de pôles, on a donc une fréquence électrique 5 fois supérieure à la fréquence mécanique.
-			$$ $$
-			Nous devons configurer le timer qui compte ni trop vite ni trop lentement afin d'avoir un bon contrôle sur la précision du système.
-			\begin{table}[hb]
+			Nous devons configurer le timer qui compte ni trop vite ni trop lentement afin d'avoir un bon contrôle sur la précision du système.\\
+			\begin{table}[h]
+						\centering
 			\begin{tabular}{|c|c|c|c|}
 			PWM <0-230> & U (V) & $F_{elec}$ & $F_{meca}$ \\ 
 			\hline 
 			0 & 0V & 0 Hz & 0 tr/s \\ 
-			20 & 0.965V &  88.45 Hz & 17.69 tr/s \\ 
-			50 & 2.41V &  220 Hz & 44 tr/s \\ 
+			20 & 0.965V &  88.48 Hz & 17.69 tr/s \\ 
+			50 & 2.41V &  221.19 Hz & 44.2 tr/s \\ 
 			115 & 5.55V & 508.75 Hz & 101.75 tr/s \\ 
-			230 & 11.1V & 1075 Hz & 203.5 tr/s \\ 
+			230 & 11.1V & 1017.5 Hz & 203.5 tr/s \\ 
 			\end{tabular} 
 			\caption{Valeur de PWM, de fréquences et de Tension aux bornes du moteur}
 			\label{freqPWMVitesse}
 			\end{table}
-			Nous avons décidé de prendre un timer qui compte sur la fréquence instruction divisé par 8. On obtient donc le tableau \ref{per} en reprenant les éléments du tableau \ref{freqPWMVitesse}. On obtient une période d'une incrémentation du timer de $\frac{4}{7.37*10^6}=542.74ns$
-			\begin{table}[hb]
-			\begin{tabular}{|c|c|c|c|}
+			Nous avons décidé de prendre un timer qui compte sur la fréquence instruction divisé par 8. On obtient donc le tableau \ref{per} en reprenant les éléments du tableau \ref{freqPWMVitesse}. On obtient une période d'une incrémentation du timer de $\frac{8*4}{7.37*10^6}=4.3419 \mu s $ \\
+			\begin{table}[h]
+			\centering
+			\begin{center}
+			\begin{tabular}{|c|c|c|c|c|}
 			PWM <0-230> & U (V) & $F_{elec}$ & Période & Valeur timer \\ 
 			\hline 
-			0 & 0V & 0 Hz & $+\infty$ &  65 535\\ 
-			20 & 0.965V &  88.45 Hz & 11.306 ms & 20831\\ 
-			50 & 2.41V &  221 Hz & 4.545454 ms & 8 375\\ 
-			115 & 5.55V & 508.75 Hz & 1.9656 ms & 3 621\\ 
-			230 & 11.1V & 1075 Hz & 0.93023ms & 1 714\\ 
+			0 & 0V & 0 Hz & $+\infty$ &  [65 535]\\ 
+			20 & 0.965V &  88.45 Hz & 11.306 ms & 2604\\ 
+			50 & 2.41V &  221.19 Hz & 4.521 ms & 1041\\ 
+			115 & 5.55V & 508.75 Hz & 1.9656 ms & 452\\ 
+			230 & 11.1V & 1017.5 Hz & 0.9828 ms & 226\\ 
 			\end{tabular} 
+			\end{center}
 			\caption{Valeur de PWM, de fréquences et de Tension aux bornes du moteur}
+			\label{per}
 			\end{table}
-			On peut maintenant trouver une relation entre les valeurs de PWM et la valeur du timer. 
-			$$$$
+			On peut maintenant trouver une relation entre les valeurs de PWM et la valeur du timer. La relation est inversement proportionnelle. 
+			$$CMD_{Onduleur}=\frac{54600}{PWM}$$
+			\begin{figure}[h]
+			\centering
+				\begin{tikzpicture}
+					\begin{axis}[width=0.9\textwidth,height=0.502\textwidth,xmin = 0, xmax = 240, ymin = 0, ymax = 75000, xlabel = PWM, ylabel = {Timer},title={Relation entre la valeur du Timer et la valeur de la PWM}]
+					\addplot[domain = 0:230,samples = 460,legend pos=north west] {54600/x};
+					\addlegendentry{$\frac{54600}{PWM}$}
+					\addplot[domain = 10:230,samples = 460,legend pos=north west, color=red] {54600/x};
+					\addplot[domain = 0:10,samples = 2,legend pos=north west, color=red] {65535};
+					\addplot[color=red]coordinates {(10,65535) (10,5460)};
+					\addlegendentry{$Cmd^{reel}_{Onduleur}$}
+					\end{axis}
+				\end{tikzpicture}
+				\caption{Relation entre la valeur du Timer et la Valeur de la PWM}
+			\end{figure}	\\		
+			
 			Dans un second temps, afin de limiter les risques de décrochage, les variations de fréquence et de rapport cyclique se font sous la forme d'une rampe. On compare toutes les 40ms la valeurs de la puissance actuelle à la valeur de la consigne souhaitée. On incrémente ou décrémente la valeur actuelle pour converger vers la valeur souhaitée. Ainsi les accélérations et décélérations du champs tournant sont plus facilement suivies le rotor.
 			 \begin{tcolorbox}[center,width=0.9\textwidth, colframe=red!90!orange, colback=orange!25, arc=3mm,boxrule=1mm, sharp corners=east,title=Note]
 			La pente de cette rampe a été définie à 40ms afin d'avoir un effet visuel ni trop rapide ni trop lent lors des tests montrés partie \ref{real}. Cette valeur serait à ajuster sur le système réelle pour avoir un système le plus réactif possible sans avoir de décrochages involontaires.
   			\end{tcolorbox}
   			\paragraph{Séquençage}
-  			Afin de générer un champs tournant, on doit alterner l'activation et la désactivation des différentes sorties actives à l'état haut ou à l'état bas. La séquence utilisée est décrite dans la note d'application \cite{AN857}.
+  			Afin de générer un champs tournant, on doit alterner l'activation et la désactivation des différentes sorties actives à l'état haut ou à l'état bas. La séquence utilisée est décrite dans la note d'application \cite{AN857}. Afin de générer le changement de secteur, on utilise un second timer dont la période est égale à un sixième de la période du timer défini pour le tableau \ref{per}.
+  			\begin{table}[h]
+			\centering
+			\begin{center}
+			\begin{tabular}{|c|c|c|c|}
+			PWM <0-230> & Timer global & Timer Secteur &  Période secteur \\ 
+			\hline 
+			0 & [65 535]&[10 922]& 47 ms\\ 
+			20 &  2604 &434 &1.88ms\\ 
+			50 &  1041& 173&0.75ms\\ 
+			115 &  452& 75&0.32ms\\ 
+			230 &  226& 38&0.16ms\\ 
+			\end{tabular} 
+			\end{center}
+			\caption{Valeur de PWM, des timer et la période par secteur}
+			\end{table}
   			\insertcode{../../ENUM/Codes/maindspic.c}{102-132}{Gestion de l'ordre des phases sur le \dspic}
-  			On obtient donc les signaux suivant:
-  			\begin{figure}[hb]\begin{center}
+  			On obtient donc les signaux figure \ref{imgPWMCad}.
+  			\begin{figure}[h]\begin{center}
 	  			\includegraphics[width=0.9\textwidth]{../Illus/PWMCadence2015.png}
 	  			\caption{Simulation des signaux PWM cadencés}(L'échelle de temps n'est pas correcte, afin de pouvoir observer tous les signaux sur le simulateur)
-	  			\label{imgPWM}
+	  			\label{imgPWMCad}
 	  			\end{center}
   			\end{figure}
   			Une fois les signaux dans le bon ordre, il faut les déclencher au bon moment. Pour cela, nous utilisons le principe de la \textit{Back EMF}, le système déclenche une interruption qui permet de resynchroniser la séquence des phases au secteur où est actuellement le rotor.
@@ -634,3 +671,9 @@
 	  			\end{tabular}\end{center}
   			\end{table}
  Ce montage permet de réaliser et de tester quelques fonctionnalités du projet. Une vidéo valant 10000 explications, vous pouvez consulter la vidéo de ce montage en fonctionnement ici: \url{ https://youtu.be/o-fGEK0Z234}
+\begin{tcolorbox}[center,width=0.9\textwidth, colframe=red!90!orange, colback=orange!25, arc=3mm,boxrule=1mm, sharp corners=east,title=Note]
+			La vidéo a été réalisée avec une visualisation de la relation PWM-Période proportionnelle afin de voir au mieux les variations.
+  			\end{tcolorbox}
+  			%\section{Problèmes et poursuites}
+  			%Même si le système est plutôt fonctionnel, nous pouvons constater certains problèmes et des améliorations à apporter. 
+  			%\paragraph{Contrôle du moteur} L'implémentation de la Back EMF serait encore à faire

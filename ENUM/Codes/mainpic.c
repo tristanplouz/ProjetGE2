@@ -123,7 +123,7 @@ void __interrupt() td_int(void){
         }
         else if (datain>95&& datain<201){ //Commande de la puissance
              //traitement pour la puissance
-			puis=1.8*datain-130;
+			puis=2.19*datain-208;
         }
         else if (datain>201){ //Commandes des effets stylés
             switch(datain){
