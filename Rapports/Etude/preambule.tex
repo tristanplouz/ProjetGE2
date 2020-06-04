@@ -32,8 +32,15 @@
 	  	identifierstyle=\color{cobalt},
 	 	stringstyle=\color{orange},
 	 	consecutivenumbers=false,
-	 	multicols=2
+	 	moredelim=*[s][\color{apricot}]{0}{;},
+	 	multicols=2	 	
 	 	}
+	\lstdefinestyle{C}{
+    	language={C}, 
+    	moredelim=[s][\color{green!90!black}]{0b0}{;},
+    	moredelim=[s][\color{green!90!black}]{0b1}{;},
+    	morecomment=*[l][\color{black}]{; }
+	}
 	\renewcommand{\lstlistingname}{Code}
 	\renewcommand{\lstlistlistingname}{Table des extraits de code \\ \small Tous les codes sources sont disponibles sur Github: \url{https://github.com/tristanplouz/ProjetGE2} \cite{git}}
 	
@@ -55,7 +62,7 @@
 \newcommand{\insertcode}[3]{
 \begin{center}
 	\vbox{ #3
-		\lstinputlisting[language=C, linerange={#2},caption={[Code extrait de \lstname: Ligne #2] \textbf{ }}]{#1}
+		\lstinputlisting[style=C, linerange={#2},caption={[Code extrait de \lstname: Ligne #2] \textbf{}}]{#1}
 	}
 	\begin{tiny}
 	Il s'agit d'extraits discontinus du code source original. Certains résidus de débuggage peuvent être présent. Les numéros de ligne correspondent au fichier source. \cite{git}

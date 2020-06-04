@@ -1,5 +1,5 @@
 	\chapter{Contrôle}
-	Le système est contrôlé par deux microcontrôleurs un \pic ainsi qu'un \dspic. Le \pic se charge de la communication avec le smartphone au travers du module Bluetooth, il utilise ensuite les informations reçues pour contrôler le servomoteur de direction et envoie les informations adéquates au \dspic. Celui ci gère la puissance du moteur Brushless, il pilote l'onduleur triphasé présenté ici: \ref{onduleur}.
+	Le système est contrôlé par deux microcontrôleurs un \pic ainsi qu'un \dspic. Le \pic se charge de la communication avec le smartphone au travers du module Bluetooth, il utilise ensuite les informations reçues pour contrôler le servomoteur de direction et envoie les informations adéquates au \dspic. Celui ci gère la puissance du moteur Brushless, il pilote l'onduleur triphasé présenté au paragraphe \ref{onduleur}.
 		\section{Communication}
 			\subsection{Vue d'ensemble}
 				Dans notre système, nous disposons de plusieurs appareils \textit{intelligents}, le \pic , le \dspic et le smartphone, afin que l'on puisse profiter au maximum des capacités de chacun, ces éléments doivent communiquer entre eux.
@@ -134,7 +134,7 @@
 		\\Les sources du projet de l'application est disponible sur notre dépôt Github ici \cite{git}.
 			\subsection{Liaison Bluetooth}
 			Après avoir émis les informations de pilotage, il faut les récupérer pour les exploiter. Nous avons donc mis en place une liaison série entre le module Bluetooth HC-05 et le \pic. Cette liaison est déclarée à 9600 bauds.
-			\paragraph{Mise en place}La configuration du module \textit{UART} du \pic est réalisée en s'appuyant sur la documentation technique \cite{DatasheetPIC}. On décide des pins que l'on va utiliser, tous les pins utilisés sur les microcontrôleurs sont précisés dans les tableaux \ref{pinoutpic} et \ref{pinoutdspic}.
+			\paragraph{Mise en place}La configuration du module \textit{UART} du \pic est réalisée en s'appuyant sur la documentation technique \cite{DatasheetPIC}. On décide des pins que l'on va utiliser, tous les pins utilisés sur les microcontrôleurs sont précisés dans le tableau \ref{pinoutpic}.
 			
 			\insertcode{../../ENUM/Codes/mainpic.c}{73-83,180-182,186-192}{Initialisation de la liaison série sur le \pic}
 			
@@ -195,7 +195,7 @@
 			\insertcode{../../ENUM/Codes/maindspic.c}{133-147}{Initialisation de la liaison SPI sur le \dspic}
 			\paragraph{Utilisation} On ne souhaite pas envoyer de message depuis le \dspic. On se contente donc de réceptionner la donnée avec un interruption puis de la traiter.
 		\section{Fonctionnement}
-		Dans les tableaux \ref{pinoutdspic} et \ref{pinoutpic} sont réunis tous les pins utilisés sur chacun de nos microcontrôleurs. Cette répartition n'a pas forcément de logique et s'appuie sur les éléments contenus dans les datasheets ou sur des exemples trouvés sur internet.\\
+		Dans les tableaux \ref{pinoutdspic} et \ref{pinoutpic} sont réunis tous les pins utilisés sur chacun de nos microcontrôleurs. Cette répartition n'a pas forcément de logique et s'appuie principalement sur les éléments contenus dans les datasheets ou sur des exemples trouvés sur internet.\\
 		\begin{table}[h]
 			\begin{multicols}{2}
 			\begin{center}
@@ -225,7 +225,7 @@
 			\begin{footnotesize}
 				\begin{tabular}{r|ccc|l}
 				MCLR 	& 1 &    & 28 & AVDD 	\\ 
-				  		& 2 &    & 27 & AVCC 	\\ 
+				LED  	& 2 &    & 27 & AVCC 	\\ 
 				  		& 3 &    & 26 & PWM1H	\\
 				  		& 4 &    & 25 & PWM1L	\\ 
 				  		& 5 &    & 24 & PWM2H	\\ 
@@ -283,18 +283,18 @@
 				\put(140,20){\line(0,-1){10}}
 				\put(140,10){\line(1,0){45}}
 	
-				\put(20,43){\line(1,0){60}}	
+				\put(11,43){\line(1,0){66}}	
 				\put(50,53){\line(0,-1){10}}		
 				
 				%gauche
-				\multiput(20,43)(30,0){2}{\vector(0,-1){4.75}}			
-				\multiput(20,27)(30,0){2}{\usebox{\diamo}}
-				\put(80,43){\vector(0,-1){16.25}}
-				\multiput(20,30.75)(30,0){2}{\vector(0,-1){4.75}}
-				\multiput(10,17.75)(30,0){3}{\framebox(20,8)[c]{}}
-				\multiput(20,17.75)(30,0){3}{\line(0,-1){7.75}}
+				\multiput(11,43)(22,0){3}{\vector(0,-1){4.75}}			
+				\multiput(11,27)(22,0){3}{\usebox{\diamo}}
+				\put(77,43){\vector(0,-1){16.25}}
+				\multiput(11,30.75)(22,0){3}{\vector(0,-1){4.75}}
+				\multiput(1,17.75)(22,0){4}{\framebox(20,8)[c]{}}
+				\multiput(11,17.75)(22,0){4}{\line(0,-1){7.75}}
 				
-				\put(20,10){\line(1,0){60}}		
+				\put(11,10){\line(1,0){66}}		
 				\put(0,0){\line(1,0){50}}			
 				\put(0,0){\line(0,1){65}}	
 				\put(0,65){\vector(1,0){90}}			
@@ -310,11 +310,13 @@
 				}
 				%texte
 	
-				\put(42,33.5){\shortstack{Mode\\Arrêt d'Urgence?}}
-				\put(15,33.5){\shortstack{Mode\\Défaut BT?}}
-				\put(45,18.5){\shortstack{Effet 1\\Puissance 0\\Servo droit}}
-				\put(15,18.5){\shortstack{Effet 2\\Puissance 0\\Servo droit}}
-				\put(72,18){\shortstack{Mise à jour Effet\\Envoi Puissance\\Mise à jour Servo}}
+				\put(46,33.5){\shortstack{Mode\\Arrêt d'Urgence?}}
+				\put(6,33.5){\shortstack{Mode\\Défaut BT?}}
+				\put(29,33){\shortstack{Batterie\\ Faible?}}
+				\put(50,18.5){\shortstack{Effet 1\\Puissance 0\\Servo droit}}
+				\put(28,18.5){\shortstack{Effet 2\\Puissance 0\\Servo droit}}
+				\put(6,18.5){\shortstack{Effet 3\\Puissance 0\\Servo droit}}
+				\put(70,18){\shortstack{Mise à jour Effet\\Envoi Puissance\\Mise à jour Servo}}
 				
 				\put(102,44){\shortstack{Arrêt d'Urgence}}
 				\put(135.5,42){\shortstack{Réception\\BT}}
@@ -362,7 +364,7 @@
 				\end{table}
 				Dans notre code nous n'utilisons pas le registre \texttt{PWM3DCL}, on se contente de charger une valeur entre 2 et 20 dans le registre \texttt{PWM3DCH}, on perd en précision mais cela ne pose pas de soucis. Nous arrivons tout de même à avoir suffisamment de niveau pour remplir le cahier des charges.
 				\begin{tcolorbox}[center,width=0.9\textwidth, colframe=red!90!orange, colback=orange!25, arc=3mm,boxrule=1mm, sharp corners=east,title=Note]
-			L'aéroglisseur n'ayant pas pu être réalisé, les valeurs maximum et minimum sont l'amplitude maximum du servo, celui ci balaie donc les 180$^\circ$ de sa course. Dans le système réel il aurait fallu les limiter afin que la dérive ne rentre pas en butée contre la structure de l'aéroglisseur. Voir \ref{vues}.\\
+			L'aéroglisseur n'ayant pas pu être réalisé, les valeurs maximum et minimum sont l'amplitude maximum du servo, celui ci balaie donc les 180$^\circ$ de sa course. Dans le système réel il aurait fallu les limiter afin que la dérive ne rentre pas en butée contre la structure de l'aéroglisseur. Voir figure \ref{vues}.\\
 			Si il faut réduire l'amplitude de battement du servo, il est possible que l'on ai plus assez de niveaux en utilisant uniquement le registre \texttt{PWM3DCH} et il aurait fallut utiliser l'intégralité des registres.
   			\end{tcolorbox}
 			
@@ -377,7 +379,7 @@
 			Notre projet pouvant s'avérer devenir un objet glissant incontrôlé, il faut mettre en place différents organes de sécurité.
 			
 				\subsubsection{Batterie faible}
-				Comme décrit précédemment (voir \ref{UVBF}) une batterie de type Li-Po ne doit pas se décharger en dessous d'un certain seuil. Le circuit décrit permet de détecter le passage sous ce seuil, mais encore faut-il faire quelque chose. Lorsque le signal en provenance du circuit de protection de sous tensions est à l'état bas, nous empêchons toutes communications et nous déclenchons un effet visuel pour avertir l'utilisateur.
+				Comme décrit précédemment (voir paragraphe \ref{UVBF}) une batterie de type Li-Po ne doit pas se décharger en dessous d'un certain seuil. Le circuit décrit permet de détecter le passage sous ce seuil, mais encore faut-il faire quelque chose. Lorsque le signal en provenance du circuit de protection de sous tensions est à l'état bas, nous empêchons toutes communications et nous déclenchons un effet visuel pour avertir l'utilisateur.
 				\insertcode{../../ENUM/Codes/mainpic.c}{226-231}{Gestion de la sous tension batterie sur le \pic}
 				\subsubsection{Perte de connexion}
 				La perte de connexion entre l'Aéroglisseur est le Smartphone peut être un problème dangereux, personne n'a envie de se confronter à un aéroglisseur fou avec une hélice tranchante en rotation. Pour éviter ce soucis, l'application Bluetooth envoie au minimum un caractère toutes les 100ms, voir paragraphe \ref{algoApp}, soit par une action de l'utilisateur, l'information est envoyée, soit en cas d'overflow d'un timer sur l'application, ce timer déclenche l'envoi d'un 0 toutes les 100ms. À chaque réception d'un nouveau caractère, un timer sur le \pic est réinitialisé. Si le timer déclaré sur le \pic overflow, une interruption est déclenchée, elle met la valeur de la puissance à 0, le servomoteur de direction droit et allume un effet visuel.
@@ -389,7 +391,7 @@
 				\insertcode{../../ENUM/Codes/mainpic.c}{152-156}{Gestion de l'arrêt d'urgence sur le \pic}
 				
 				\subsubsection{Hiérarchisation des "erreurs"}
-				Le traitement des erreurs a lieu en plusieurs phases. Il y a la phase de détection qui peut avoir lieu avec des interruptions ou pas. Les erreurs sont donc hiérarchisée comme dans le tableau \ref{hierar}.
+				Le traitement des erreurs a lieu en plusieurs phases. Il y a la phase de détection qui peut avoir lieu avec des interruptions ou pas. Les erreurs sont donc hiérarchisée comme dans le tableau \ref{hierar}.\\
 				\begin{table}[hb]
 				\begin{center}
 					\begin{tabular}{r|l}
@@ -431,7 +433,7 @@
 			\begin{tcolorbox}[center,width=0.9\textwidth, colframe=red!90!orange, colback=orange!25, arc=3mm,boxrule=1mm, sharp corners=east,title=Note]
 			Cette partie a été réalisée durant la période de fermeture de l'école. N'ayant pas eut un oscilloscope et un moteur brushless à disposition, les codes n'ont pas été testé sur système réel. Le projet a été simulé sur \textit{MPLABxIDE}. Malheureusement, ce simulateur présente de nombreux défauts comme un manque de stabilité et des visualisations de sortie très limitées, notamment sur la durée des simulations. Les valeurs calculées ne sont donc pas forcément adaptées\\
   			Comme vous pourrez le voir dans la partie \ref{real}, un système de LED est ajouté pour visualiser les sorties PWM. 
-  			\\De plus, le système de Back EMF n'est pas réellement implémenté
+  			\\De plus, le système de Back EMF n'est pas réellement implémenté.
   			\end{tcolorbox}
   			Le contrôle de l'onduleur, présenté paragraphe \ref{onduleur}, est effectué par le \dspic . Il s'agit donc de créer 6 signaux  PWM pour contrôler chaque transistor de la structure globale. De plus, ces signaux doivent être cadencés afin de créer un champ tournant mais aussi synchroniser avec la méthode de \textit{Back EMF}.
   			\paragraph{Mise en place des signaux PWM}
@@ -533,7 +535,7 @@
   			On obtient donc les signaux figure \ref{imgPWMCad}.
   			\begin{figure}[h]\begin{center}
 	  			\includegraphics[width=0.9\textwidth]{../Illus/PWMCadence2015.png}
-	  			\caption{Simulation des signaux PWM cadencés}(L'échelle de temps n'est pas correcte, afin de pouvoir observer tous les signaux sur le simulateur)
+	  			\caption{Simulation des signaux PWM cadencés}\small(L'échelle de temps n'est pas correcte, afin de pouvoir observer tous les signaux sur le simulateur)
 	  			\label{imgPWMCad}
 	  			\end{center}
   			\end{figure}
