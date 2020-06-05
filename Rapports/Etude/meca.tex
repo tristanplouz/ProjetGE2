@@ -15,25 +15,40 @@
 		Toutes les modifications que nous avons apporté au modèle ont été réalisé sur le logiciel de \textit{Conception Assistée par Ordinateur} \href{https://freecadweb.org/}{FreeCAD} en re-modélisant les pièces du modèle originel et en modélisant de nouvelles.
 			\subsection{Dimension}
 				\paragraph{Matériau}Dans un premier temps, il faut prendre en compte le changement d'épaisseur du matériau. Le polystyrène expansé n'a pas la même épaisseur que le carton plume, il faut donc changer la largeur de toutes les encoches.
-				\paragraph{Logement de l'électronique} Dans un second temps, nous devons repenser la \textit{cabine} qui contient l'électronique. nous avons décider de créer une \textit{cabane} sur le dessus de notre aéroglisseur. Nous pouvons voir sur la vue 3D ci dessous que nos empreintes de cartes occupent un espace optimisé dans l'intérieur de notre aéroglisseur.
+				\paragraph{Logement de l'électronique} Dans un second temps, nous devons repenser la \textit{cabine} qui contient l'électronique. nous avons décider de créer une \textit{cabane} sur le dessus de notre aéroglisseur. Nous pouvons voir sur la vue 3D ci dessous que nos empreintes de cartes occupent un espace optimisé dans l'intérieur de notre aéroglisseur et ne dépasse pas.
 				\begin{figure}[h]
 					\begin{center}
-						\includegraphics[width=0.85\textwidth]{../Illus/vueInterne.png}
-%A METTRE A JOUR
-					\end{center}
+						\includegraphics[width=0.3\textwidth]{../Illus/vueInterne.png}
+						\includegraphics[width=0.3\textwidth]{../Illus/vueInterne2.png}
+						\includegraphics[width=0.3\textwidth]{../Illus/vueInterne1.png}
 					\caption{Intérieur de notre aéroglisseur avec les empreintes des cartes}
-					\small Les modèles 3D de certain composant sont récupérés sur le site de partage de fichier GrabCAD\cite{grabcad}
-					\label{MEPnous}
+					\begin{footnotesize}
+					 Les modèles 3D de certain composant sont récupérés sur le site de partage de fichier GrabCAD\cite{grabcad}
+					 \end{footnotesize} 
+					\label{int}
+					\end{center}
+				\end{figure}
+				On peut donc voir sur la figure \ref{cable} les différents liens entre les cartes et les autres composants.
+				\begin{figure}[h]
+					\begin{center}
+						\includegraphics[width=0.45\textwidth]{../Illus/vueInterneFil.png}
+							
+					\caption{Plan de connexion entre les cartes}
+					\begin{footnotesize}
+					 En rose, l'alimentation et la communication entre carte. En rouge, l'alimentation 11V. En vert, la connexion au servo. En jaune/vert, les connexions des effets. En bleu, le jumper de sécurité.
+					 \end{footnotesize} 
+					\label{cable}
+					\end{center}
 				\end{figure}
 			\subsection{Ventilation}
 			Afin de garantir un meilleur refroidissement de l'électronique, nous avons aménagé une série de trous d'aération permettant la circulation de l'air au travers de l'électronique. Ces évents sont situés juste derrière l'hélice.
 			\subsection{Sécurité} Une cordelette pend derrière l'aéroglisseur. En tirant sur cette cordelette, on débranche un jumper, qui désactive le moteur de propulsion. Cette fonctionnalité est définie dans le paragraphe \ref{AU}, dans la partie contrôle. De plus, un grillage est prévu autour de l'hélice pour en assurer la protection.
 			\begin{figure}[h]
 					\begin{center}
-						\includegraphics[width=0.9\textwidth]{../Illus/AeroProt.png}
+						\includegraphics[width=0.8\textwidth]{../Illus/AeroProt.png}
 					
 					\caption{Vue avec le grillage}
-					\small L'hélice représentée est plus petite que l'hélice réelle.
+					 {\footnotesize L'hélice représentée est plus petite que l'hélice réelle.}
 					\end{center}
 				\end{figure}
 			\subsection{Modèle final}
