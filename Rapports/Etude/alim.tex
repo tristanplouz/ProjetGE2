@@ -169,8 +169,22 @@ d'alimentation.
 			Nous allons devoir dimensionner les composants du montage ci-dessus
 			de manière à répondre à la problématique particulière de notre 
 			système. 
-			La première étape de fixer les valeurs des résistances afin 
-			d'obtenir la tension de coupure 
+			Il faut notamment fixer les valeurs des résistances afin 
+			d'obtenir la tension de coupure désirées, à savoir $V_{cutoff}=10$V.
+			Sachant que la tension $V_{ref}$ du régulateur shunt TLV431
+			est $V_{ref}=1.24$V et donnée la relation :
+			
+			\begin{equation}
+			V_{cutoff}=\frac{R_2}{R_1+R_2}\cdot V_{ref}
+			\end{equation}
+			
+			On en déduit :
+			
+			\begin{equation}
+			R_1 = 330k\Omega
+			\quad\text{et}\quad
+			R_2 = 47k\Omega
+			\end{equation}
 	
 	\newpage		
 			
@@ -261,8 +275,7 @@ d'alimentation.
 					\hline
 					\textbf{NOM}	& \textbf{NO.}	& \textbf{TYPE}	& \textbf{DESCRIPTION}	& \textbf{FONCTIONNALITÉS} \\
 					\hline										
-					BOOT			&	1			& 	Entrée		& 	Entrée de bootstrap	&	Accès au 
-																								potentiel de la 
+					BOOT			&	1			& 	Entrée		& 	Entrée de bootstrap	&	Accès à la
 																								\textit{gate} du NFET	\\
 					EN				&	5			&	Entrée		& 	Mise en marche		& 	Contrôle de
 																								l'allumage du régulateur\\
@@ -578,9 +591,6 @@ d'alimentation.
 					\omega_{P3} = \frac{1}{R_3C_3}
 				\end{equation}
 					
-				Une synthèse de ces pulsations peut être faite sur le diagramme de 
-				Bode montré en Figure 					
-					
 				\paragraph{Détermination des composants du modèle}
 				
 				Il est maintenant temps de déterminer les éléments particuliers 
@@ -601,22 +611,37 @@ d'alimentation.
 					
 				La \textsc{Figure \ref{comp_gain}} nous permet de déterminer de 
 				nombreuses informations sur le compensateur, et notamment les 
-				valeurs des différentes fréquences de cassure du système. En accord
-				avec l'allure typique d'un diagramme de Bode de compensateur de 
-				type III donné en Figure , la lecture de la Figure nous permet de 
-				déterminer les valeurs des zéros et pôles de la fonction de 
-				transfert (). Les valeurs des zéros sont données en 
-				(\ref{freq_III_zero}) et les valeurs des pôles sont données en 
-				(\ref{freq_III_pole})
+				valeurs des différentes fréquences de cassure du système. 
+				On a en particulier :
 										
 				\begin{equation}
-					F_{Z1} = 
-					\label{freq_III_zero}
+					F_{Z1} = 1.5kHz
+					\quad
+					F_{Z2} = 15kHz
+					\quad
+					F_{P2} = 150kHz
+					\quad
+					F_{P3} = 250kHz 
 				\end{equation}
 				
-				Il sera notamment à garder en mémoire lors de 
-					
-				\paragraph{Simulation fréquentielle}  
+				Ce qui nous mène finalement aux valeurs de résistances 
+				et de condensateurs du modèle du compensateur de type III :
+				
+				\begin{equation}
+				R_1 = 16.67k\Omega
+				\quad
+				R_2 = 110.28k\Omega
+				\quad
+				R_3 = 1k\Omega
+				\end{equation}
+				
+				\begin{equation}
+				C_1 = 9.62pF
+				\quad
+				C_2 = 0.96nF
+				\quad
+				C_3 = 0.64nF
+				\end{equation}
 					
 				\begin{figure}[h]
 					\begin{center}
@@ -644,207 +669,151 @@ d'alimentation.
 						\end{tikzpicture}
 					\end{center}
 					\label{bode_comp_III}
-					\caption{Diagramme de Bode du compensateur de type III : 
-					\textcolor{blue}{théorique} et 
-					\textcolor{orange}{modèle PSIM}}
+					\caption{Diagramme de Bode du compensateur de type III
+					obtenu avec la modèle PSIM}
 				\end{figure}
 					
-		\subsection{Dimensionnement des composants externes}
+%		\subsection{Dimensionnement des composants externes}
+%			
+%			\subsubsection{Capacité de soft-start}
+%			\label{sec:dim_soft_start}
+%			
+%			La documentation technique indique que ce temps de montée 
+%				
+%			L'équation approximative du temps de soft-start peut être estimé 
+%			à partir de l'équation () donnée dans la datasheet constructeur.
+%			
+%			\cite{Soft_Start}
+%				
+%			\begin{equation}
+%				T_{SS}\sim 26\times 10^3\cdot C_{SS}
+%			\end{equation}
+%				
+%			\subsubsection{Dimensionnement des composants}
+%				
+%				\paragraph{Diode Schottky}
+%					
+%				La diode Schottky de sortie retenue pour le montage est la 
+%				\textbf{SL22-E3/52T} du constructeur \textit{Vishay}. 
+%				Elle est notamment adaptée à des applications de convertisseurs
+%				DC/DC comme le montage que nous souhaitons dimensionner. 
+%				La \textsc{Table \ref{charact_schottky}} \cite{SL22}.
+%					
+%				\begin{table}
+%					\begin{center}
+%						\begin{tabular}{|l|c|c|c}
+%							\hline
+%							Paramètre & Symbole & Valeur & Unité \\
+%							\hline						
+%							Tension maximale inverse & $V_{RRM}$ & 20 & V \\
+%							\hline						
+%							Tension maximale efficace & $V_{RMS}$ & 14 & V \\
+%							\hline						
+%							Courant maximal direct & $I_{F}$ & 2.0 & A \\
+%							\hline						
+%						\end{tabular}					
+%					\end{center}
+%					\caption{}
+%					\label{charact_schottky}
+%				\end{table}
+%				
+%				\paragraph{Condensateurs d'entrée}
+%					
+%				Comme dans tout dimensionnement de convertisseur, une attention 
+%				particulière doit être portée au choix des condensateurs d'entrée
+%				du montage. Leur but principal est notamment de 
+%				\textbf{réduire l'ondulation sur l'entrée du convertisseur}. 
+%				Une bonne pratique est de choisir des 
+%				\textbf{condensateurs céramiques} ayant des 
+%				\textbf{valeurs d'ESR très faible} afin de réaliser cette fonction. 
+%				Ils doivent notamment être placés au plus proche de l'entrée du 
+%				convertisseur pour obtenir le meilleur effet possible \cite{A055}.
+%								
+%					\subparagraph{Paramètres influents le dimensionnement}
+%					Les différents paramètres intervenant dans le dimensionnement des condensateurs d'entrée du montage sont en particulier :
+%						
+%						\begin{itemize}
+%							\item[$\bullet$] le courant $I_{S}$ nominal dans la charge ;
+%							\item[$\bullet$] le rapport cyclique  $\alpha_{nom}$ au point nominal de fonctionnement ;
+%							\item[$\bullet$] la fréquence $F$ de commutation du convertisseur.	
+%						\end{itemize}
+%						
+%						La relation (\ref{c_in_th}) permet de déterminer pratiquement la valeur minimale de la capacité à placer en entrée en considérant tous les paramètres énoncés ci-dessus.
+%						\begin{equation}
+%							C_{min} = \frac{I_S\cdot\alpha\cdot(1-\alpha)\cdot 1000}{F\cdot V_P}
+%							\label{c_in_th}
+%						\end{equation}
+%						
+%						\subparagraph{Calcul de la capacité d'entrée nécessaire}
+%						
+%						En vue d'appliquer la relation (\ref{c_in_th}), on prendra les valeurs d'application numérique suivantes :		
+%						\begin{equation}
+%							F = 575.061\text{kHz} 
+%							\quad\text{;}\quad
+%							\alpha = 0.44201
+%							\quad\text{;}\quad
+%							I_S = 1\text{A}
+%						\end{equation}
+%						
+%						\subparagraph{Pertes dans les condensateurs d'entrée}
+%						
+%						Les pertes dans les condensateurs suivent la relation de Joule :
+%						
+%						\begin{equation}
+%							P = R \cdot I^2
+%						\end{equation}
+%						
+%						où R est la valeur de l'ESR de
+%						
+%								
+%							\paragraph{Condensateurs de sortie}
+%							
+%							Tout comme les condensateurs d'entrée, les condensateurs de sortie d'un convertisseur font l'objet d'un dimensionnement particulier. Cependant leur rôle est tout autre : ils doivent, en association avec l'inductance de sortie \cite{A055}.	
 			
-			\subsubsection{Capacité de soft-start}
-			\label{sec:dim_soft_start}
-			
-			La documentation technique indique que ce temps de montée 
-				
-			L'équation approximative du temps de soft-start peut être estimé 
-			à partir de l'équation () donnée dans la datasheet constructeur.
-			
-			\cite{Soft_Start}
-				
-			\begin{equation}
-				T_{SS}\sim 26\times 10^3\cdot C_{SS}
-			\end{equation}
-				
-			\subsubsection{Dimensionnement des composants}
-				
-				\paragraph{Diode Schottky}
-					
-				La diode Schottky de sortie retenue pour le montage est la 
-				\textbf{SL22-E3/52T} du constructeur \textit{Vishay}. 
-				Elle est notamment adaptée à des applications de convertisseurs
-				DC/DC comme le montage que nous souhaitons dimensionner. 
-				La \textsc{Table \ref{charact_schottky}} \cite{SL22}.
-					
-				\begin{table}
-					\begin{center}
-						\begin{tabular}{|l|c|c|c}
-							\hline
-							Paramètre & Symbole & Valeur & Unité \\
-							\hline						
-							Tension maximale inverse & $V_{RRM}$ & 20 & V \\
-							\hline						
-							Tension maximale efficace & $V_{RMS}$ & 14 & V \\
-							\hline						
-							Courant maximal direct & $I_{F}$ & 2.0 & A \\
-							\hline						
-						\end{tabular}					
-					\end{center}
-					\caption{}
-					\label{charact_schottky}
-				\end{table}
-				
-				\paragraph{Condensateurs d'entrée}
-					
-				Comme dans tout dimensionnement de convertisseur, une attention 
-				particulière doit être portée au choix des condensateurs d'entrée
-				du montage. Leur but principal est notamment de 
-				\textbf{réduire l'ondulation sur l'entrée du convertisseur}. 
-				Une bonne pratique est de choisir des 
-				\textbf{condensateurs céramiques} ayant des 
-				\textbf{valeurs d'ESR très faible} afin de réaliser cette fonction. 
-				Ils doivent notamment être placés au plus proche de l'entrée du 
-				convertisseur pour obtenir le meilleur effet possible \cite{A055}.
-								
-					\subparagraph{Paramètres influents le dimensionnement}
-					Les différents paramètres intervenant dans le dimensionnement des condensateurs d'entrée du montage sont en particulier :
-						
-						\begin{itemize}
-							\item[$\bullet$] le courant $I_{S}$ nominal dans la charge ;
-							\item[$\bullet$] le rapport cyclique  $\alpha_{nom}$ au point nominal de fonctionnement ;
-							\item[$\bullet$] la fréquence $F$ de commutation du convertisseur.	
-						\end{itemize}
-						
-						La relation (\ref{c_in_th}) permet de déterminer pratiquement la valeur minimale de la capacité à placer en entrée en considérant tous les paramètres énoncés ci-dessus.
-						\begin{equation}
-							C_{min} = \frac{I_S\cdot\alpha\cdot(1-\alpha)\cdot 1000}{F\cdot V_P}
-							\label{c_in_th}
-						\end{equation}
-						
-						\subparagraph{Calcul de la capacité d'entrée nécessaire}
-						
-						En vue d'appliquer la relation (\ref{c_in_th}), on prendra les valeurs d'application numérique suivantes :		
-						\begin{equation}
-							F = 575.061\text{kHz} 
-							\quad\text{;}\quad
-							\alpha = 0.44201
-							\quad\text{;}\quad
-							I_S = 1\text{A}
-						\end{equation}
-						
-						\subparagraph{Pertes dans les condensateurs d'entrée}
-						
-						Les pertes dans les condensateurs suivent la relation de Joule :
-						
-						\begin{equation}
-							P = R \cdot I^2
-						\end{equation}
-						
-						où R est la valeur de l'ESR de
-						
-								
-							\paragraph{Condensateurs de sortie}
-							
-							Tout comme les condensateurs d'entrée, les condensateurs de sortie d'un convertisseur font l'objet d'un dimensionnement particulier. Cependant leur rôle est tout autre : ils doivent, en association avec l'inductance de sortie \cite{A055}.	
-				
-				
-			
-			\subsubsection{Ajustement de la fréquence de commutation}
-			
-			Le composant LM22672 est capable de fonctionner 
-			
-			\subsection{Simulation du convertisseur}
-			
-			Le dimensionnement précédent
-			
-				\subsubsection{Modélisation du convertisseur sous \textit{LTSpice}}
-				
-				\subsubsection{Essais de charge}
-				
-				\begin{figure}[h]
-\begin{center}
-\begin{tikzpicture}
-\begin{axis}[
-	x=500cm,
-	y=0.9mm,
-	axis x line=middle,
-	axis y line=middle,
-	xmin = 0, xmax = 0.001,
-	ymin = 0, ymax=20,
-	grid=both,
-	xlabel=Temps (s),
-	ylabel=$V_{OUT}$ (V)
-]
-
-\addplot[color=blue]
-table[x expr=\thisrowno{0}*1000,y={V(v_out)}]
-{data/load_transient.txt};
-
-\addplot[color=orange]
-table[x={time},y={I(I1)}]
-{data/load_transient.txt};
-
-\end{axis}
-\end{tikzpicture}
-\end{center}
-\label{filtre_th}
-\caption{Diagramme de Bode en module de la fonction de transfert théorique $H_{Th}(p)$}
-\end{figure}
-				
-				\subsubsection{•}
-				
-			
-			\subsection{Dimensionnement thermique}
-			
-			Tous les montages électroniques qui contiennent des semi-conducteurs, condensateurs ou d'autres composants vulnérables à l'action thermique vont avoir une durée de vie largement limitée si on ne prend pas en compte les aspects thermiques lors du dimensionnement. Aussi vital soit-il pour améliorer , le dimensionnement thermique est rarement facile 	
-			
-			La puissance dissipée par le convertisseur, $P_D$, peut être déterminée facilement.
-			
-			\begin{equation}
-				P_D = V_{OUT}\cdot I_{OUT}\cdot\left(\frac{1}{\eta}-1\right)
-			\end{equation}	
-			
-			\begin{equation}
-				P_D  = 5V\cdot
-			\end{equation}							
-			
-			% AN-2020 TI
-			
+			\newpage
 			
 			\subsection{Routage du convertisseur}
 			
 				\subsubsection{Synthèse des composants}
 				
-				La \textsc{Table \ref{synth_composants}} résume l'ensemble des composants à intégrer au PCB pour réaliser le convertisseur 12V vers 5V. Elle précise notamment les références des sites \textit{RS} et \textit{Farnell} afin de faciliter l'étape de commande de composants. Sont aussi répertoriés les boîtiers des composants afin de préparer toutes les empreintes nécessaires à la réalisation du PCB.
+				La \textsc{Table \ref{synth_composants}} résume l'ensemble
+				des composants à intégrer au PCB pour réaliser le convertisseur
+				12V vers 5V. Elle précise notamment les références du site \textit{RS}
+				afin de faciliter l'étape de commande de composants. 
+				Sont aussi répertoriés les boîtiers des composants afin de préparer
+				toutes les empreintes nécessaires à la réalisation du PCB.
 				
-				\begin{table}
+				\begin{table}[h]
 					\begin{center}
 						\begin{tabular}{|c|c|c|c|c|}
 						\hline
-						\textbf{Ref Schéma} & Ref. \textit{RS} & Ref. \textit{Farnell} & Ref Fabricant & Boîtier \\ 
+						\textbf{Ref Schéma} & Ref. \textit{RS} & Ref Fabricant & Boîtier \\ 
 						\hline
-						C\_BOOT & 461-4013 & & C0805KRX7R9BB103 & 0805 \\
+						C\_BOOT & 461-4013 & C0805KRX7R9BB103 & 0805 \\
 						\hline
-						C\_IN & 434-8126 & & C0805KRX7R9BB103 & 0805 \\
+						C\_IN & 434-8126 & C0805KRX7R9BB103 & 0805 \\
 						\hline
-						C\_IN2 & 451-5770 & & C0805KRX7R9BB103 & 0805 \\
+						C\_IN2 & 451-5770 & C0805KRX7R9BB103 & 0805 \\
 						\hline
-						C\_OUT & 795-5691 & & C0805KRX7R9BB103 & 0805 \\
+						C\_OUT & 795-5691 & C0805KRX7R9BB103 & 0805 \\
 						\hline
-						C\_SS & 698-3425 & & C0805KRX7R9BB103 & 0805 \\
+						C\_SS & 698-3425 & C0805KRX7R9BB103 & 0805 \\
 						\hline
-						D\_1 & 184-1516 & & C0805KRX7R9BB103 & 0805 \\
+						D\_1 & 184-1516 & C0805KRX7R9BB103 & 0805 \\
 						\hline
-						L\_1 & 813-5684 & & C0805KRX7R9BB103 & 0805 \\
+						L\_1 & 813-5684 & C0805KRX7R9BB103 & 0805 \\
 						\hline
-						LM22672 & 761-5450 & & C0805KRX7R9BB103 & 0805 \\
+						LM22672 & 761-5450 & C0805KRX7R9BB103 & 0805 \\
 						\hline
-						RT & 123-3056 & & C0805KRX7R9BB103 & 0805 \\
+						RT & 123-3056 & C0805KRX7R9BB103 & 0805 \\
 						\hline
 						\end{tabular}
 					\end{center}
 					\caption{Synthèse des composants du convertisseur 12V vers 5V sur le PCB d'alimentation}
 					\label{synth_composants}
 				\end{table}
+				
+				\vspace{-2em}
 				
 				\subsubsection{Optimisation du placement des composants}
 				
@@ -863,11 +832,11 @@ table[x={time},y={I(I1)}]
 				entre la disposition indiquée dans la datasheet et la disposition
 				réalisée sur le PCB d'alimentation de notre projet.
 				
-				\begin{figure}
+				\begin{figure}[h]
 					\begin{center}
 						\begin{tabular}{c c}
-							\includegraphics[scale=0.40]{../Illus/plct_lm_data.png}	&
-							\includegraphics[scale=0.40]{../Illus/plct_lm_reel.png}	\\
+							\includegraphics[scale=0.3]{../Illus/plct_lm_data.png}	&
+							\includegraphics[scale=0.3]{../Illus/plct_lm_reel.png}	\\
 							(a) & (b) \\
 						\end{tabular}
 					\end{center}
@@ -1016,3 +985,13 @@ table[x={time},y={I(I1)}]
 	La conception de l'interface d'alimentation du système est une
 	partie du projet très complète faisant appel à de nombreuses notions
 	dans les domaines de l'electronique de puissance.
+	
+	Le dimensionnement d'une alimentation à découpage pour assurer
+	la conversion tension batterie vers 5V repose sur la modélisation
+	d'un schéma interne complexe qui n'a finalement pas pû être
+	correctement mis en oeuvre sous \textit{PSIM}.
+	
+	La carte d'interface d'alimentation finalement proposée permet
+	tout de même d'obtenir toutes les tensions nécessaires au fonctionnement
+	de l'aéroglisseur tout en assurant une surveillance de la sous-tension
+	batterie.
