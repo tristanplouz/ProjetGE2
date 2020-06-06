@@ -225,13 +225,13 @@
 			\begin{footnotesize}
 				\begin{tabular}{r|ccc|l}
 				MCLR 	& 1 &    & 28 & AVDD 	\\ 
-				LED  	& 2 &    & 27 & AVCC 	\\ 
-				  		& 3 &    & 26 & PWM1H	\\
-				  		& 4 &    & 25 & PWM1L	\\ 
-				  		& 5 &    & 24 & PWM2H	\\ 
-				  		& 6 &    & 23 & PWM2L  	\\ 
-				 		& 7 &    & 22 & PWM3H  	\\ 
-				GND 	& 8 &    & 21 & PWM3L  	\\ 
+				LED  	& 2 &    & 27 & AVSS 	\\ 
+				  		& 3 &    & 26 & PWM1L	\\
+				  		& 4 &    & 25 & PWM1H	\\ 
+				  		& 5 &    & 24 & PWM2L	\\ 
+				  		& 6 &    & 23 & PWM2H  	\\ 
+				 		& 7 &    & 22 & PWM3L  	\\ 
+				GND 	& 8 &    & 21 & PWM3H  	\\ 
 				  		& 9 &    & 20 & VDD 	\\ 
 				  		& 10 &   & 19 & GND 	\\ 
 				  		& 11 &   & 18 & SDI 	\\ 
@@ -494,8 +494,8 @@
 			\label{per}
 			\end{table}
 			On peut maintenant trouver une relation entre les valeurs de PWM et la valeur du timer. La relation est inversement proportionnelle. 
-			$$CMD_{Onduleur}=\frac{54600}{PWM}$$
-			\begin{figure}[h]
+			$$CMD_{Onduleur}=\frac{54600}{PWM}$$\\
+			\begin{figure}[!h]
 			\centering
 				\begin{tikzpicture}
 					\begin{axis}[width=0.9\textwidth,height=0.502\textwidth,xmin = 0, xmax = 240, ymin = 0, ymax = 75000, xlabel = PWM, ylabel = {Timer},title={Relation entre la valeur du Timer et la valeur de la PWM}]
@@ -508,8 +508,8 @@
 					\end{axis}
 				\end{tikzpicture}
 				\caption{Relation entre la valeur du Timer et la Valeur de la PWM}
-			\end{figure}	\\		
-			
+			\end{figure}		
+			\newpage
 			Dans un second temps, afin de limiter les risques de décrochage, les variations de fréquence et de rapport cyclique se font sous la forme d'une rampe. On compare toutes les 40ms la valeurs de la puissance actuelle à la valeur de la consigne souhaitée. On incrémente ou décrémente la valeur actuelle pour converger vers la valeur souhaitée. Ainsi les accélérations et décélérations du champs tournant sont plus facilement suivies le rotor.
 			 \begin{tcolorbox}[center,width=0.9\textwidth, colframe=red!90!orange, colback=orange!25, arc=3mm,boxrule=1mm, sharp corners=east,title=Note]
 			La pente de cette rampe a été définie à 40ms afin d'avoir un effet visuel ni trop rapide ni trop lent lors des tests montrés partie \ref{real}. Cette valeur serait à ajuster sur le système réelle pour avoir un système le plus réactif possible sans avoir de décrochages involontaires.
@@ -655,7 +655,7 @@
 				\end{picture}
 			\end{center}
 			\caption{Prototype de travail pour le projet}
-			En rouge, les microcontrôleurs et le Bluetooth. En bleu, les éléments réels qui serait tel quel sur le projet. En vert, les solutions alternatives.
+			{\footnotesize En rouge, les microcontrôleurs et le Bluetooth. En bleu, les éléments réels qui serait tel quel sur le projet. En vert, les solutions alternatives.}
 		\end{figure}
   			Nous pouvons résumer en 2 catégories les composants sur la plaquette d'essais.
   			
@@ -672,7 +672,7 @@
 	  			
 	  			\end{tabular}\end{center}
   			\end{table}
- Ce montage permet de réaliser et de tester quelques fonctionnalités du projet. Une vidéo valant 10000 explications, vous pouvez consulter la vidéo de ce montage en fonctionnement ici: \url{ https://youtu.be/o-fGEK0Z234}
+ Ce montage permet de réaliser et de tester quelques fonctionnalités du projet. Une vidéo valant 10000 explications, vous pouvez consulter la vidéo de ce montage en fonctionnement ici: \url{ https://youtu.be/wEylhykiFZk}
 \begin{tcolorbox}[center,width=0.9\textwidth, colframe=red!90!orange, colback=orange!25, arc=3mm,boxrule=1mm, sharp corners=east,title=Note]
 			La vidéo a été réalisée avec une visualisation de la relation PWM-Période proportionnelle afin de voir au mieux les variations.
   			\end{tcolorbox}

@@ -85,7 +85,7 @@ void init_TX(){
  Initialisation du module TIMER4 pour le système de sécurité de déconnection BT
  */
 void init_TMR4(){
-	T4CLKCON=0;//Selection de Fosc/4
+    T4CLKCON=0;//Selection de Fosc/4
     T4CONbits.CKPS=0b111;// Prédiviseur de 128
     T4CONbits.OUTPS=0b1001; //Post diviseur de 10
     PR4=160;//Calcul de la période 4*Tosc*Presc*Postsc*x=T
@@ -101,7 +101,7 @@ void init_SPI(){
     SSP1CONbits.CKP=0;
     SSP1STATbits.CKE=0;
     SSP1CON1bits.SSPM=0b0010;
-	PIR1bits.SSP1IF=0; //Reset the flag
+    PIR1bits.SSP1IF=0; //Reset the flag
     SSP1CON1bits.SSPEN=1;//Enable  the connection
 }
 
@@ -109,33 +109,33 @@ char puis=10,ang=10,fail=0,gfail=0,eff1=0,eff2=0;
 
 //Vecteur d'interruption
 void __interrupt() td_int(void){
-	if(PIR1bits.RCIF){ //QQch arrive sur le BT
-		char datain = RC1REG; //On lit la donnée
+    if(PIR1bits.RCIF){ //QQch arrive sur le BT
+        char datain = RC1REG; //On lit la donnée
         PIR1bits.RCIF=0; //reset du flag
         TMR4=0; //reset du TIMER de sécurité
         //Début du traitement
         if(datain == 0){
             //ce caractère est envoyé toutes les 100ms par l'application
-			fail=0; //Ne se met pas en mode erreur
+            fail=0; //Ne se met pas en mode erreur
         }
         else if (datain<22&& datain>2){ //Commande de direction
             ang=datain; //Valeur directement correct pour le PWM du servo
         }
         else if (datain>95&& datain<201){ //Commande de la puissance
-             //traitement pour la puissance
-			puis=2.19*datain-208;
+            //traitement pour la puissance
+            puis=2.19*datain-208;
         }
         else if (datain>201){ //Commandes des effets stylés
             switch(datain){
                 case 202:
                     eff1^=1;
                     break;
-				case 203:
+                case 203:
                     eff2^=1;
                     break;
-				case 204:
+                case 204:
                     eff2^=1;
-					eff1^=1;
+                    eff1^=1;
                     break;
             }
         }
@@ -149,10 +149,10 @@ void __interrupt() td_int(void){
         datain=SSP1BUF; //On lit le buffer
         PIR1bits.SSP1IF=0;//On reset le flag
     }
-	else if(INTCONbits.INTF){
+    else if(INTCONbits.INTF){
         fail=1;//On set un failflag
-		gfail=1;////On set un global failflag
-		//LATBbits.LATB6^=1;
+        gfail=1;////On set un global failflag
+        //LATBbits.LATB6^=1;
         INTCONbits.INTF=0;//On reset le flag
 	}
 }

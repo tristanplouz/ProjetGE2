@@ -76,7 +76,7 @@ void initTimer(){
     TMR3=0;
 }
 void initPWM(){ //0-230
-    PTCONbits.PTOPS=0;
+	PTCONbits.PTOPS=0;
 	PTCONbits.PTCKPS=0;
 	PTCONbits.PTMOD=0;
 	
@@ -95,12 +95,12 @@ void initPWM(){ //0-230
 	PWMCON1bits.PEN1L=1;
 	PWMCON1bits.PEN2L=1;
 	PWMCON1bits.PEN3L=1;
-    PDC1=power;
+	PDC1=power;
 	PDC2=power;
 	PDC3=power;
 }
 void updatePWM(){
-    PDC1=power;
+	PDC1=power;
 	PDC2=power;
 	PDC3=power;
     switch(sect){
@@ -188,29 +188,29 @@ void __attribute__ ((interrupt(auto_psv))) _T3Interrupt( void )
 
 void main(void) {
 	TRISE=0;
-    TRISB=0;
+	TRISB=0;
 	PORTE=0;
 	TRISDbits.TRISD0=1;
             
 	initPWM();
 	initTimer();
-    initSPI();
+	initSPI();
 	
 	PTCONbits.PTEN=1;
 
 	IFS0=0;
-    INTCON2bits.INT1EP=1;
-    IPC4bits.INT1IP=0b111;
-    IPC2bits.SPI1IP=0b111;
+	INTCON2bits.INT1EP=1;
+	IPC4bits.INT1IP=0b111;
+	IPC2bits.SPI1IP=0b111;
    
-    SPI1STATbits.SPIEN=1;//Enable Communication port
+	SPI1STATbits.SPIEN=1;//Enable Communication port
 
-    IEC0bits.T2IE=1;
-    IEC0bits.T3IE=1;
-    IEC1bits.INT1IE = 1;
-    IEC0bits.SPI1IE=1;
+	IEC0bits.T2IE=1;
+	IEC0bits.T3IE=1;
+	IEC1bits.INT1IE = 1;
+	IEC0bits.SPI1IE=1;
     
-	while(1){
+    while(1){
        
        if(power<powerTarg){
             LATBbits.LATB0=0;
