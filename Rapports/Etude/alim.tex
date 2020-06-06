@@ -201,9 +201,9 @@ d'alimentation.
 		Buck performant \cite{LM22672}. Il est disponible en deux versions 
 		de tension de sortie :
 		\begin{itemize}
-			\item[$\bullet$]	\texttt{-ADJ} à tension réglable jusqu'à un minimum
+			\item[$\bullet$]	\texttt{ADJ} à tension réglable jusqu'à un minimum
 							 	de 1.285V ;
-			\item[$\bullet$]	\texttt{-5.0} à tension de sortie fixe 5V.			 
+			\item[$\bullet$]	\texttt{5.0} à tension de sortie fixe 5V.			 
 		\end{itemize}
 		Nous retiendrons dans notre cadre d'application la seconde version
 		nous permettant d'obtenir facilement un niveau de tension 5V.
@@ -213,7 +213,7 @@ d'alimentation.
 			La documentation technique du composant nous permet d'accéder aux
 			caractéristiques électriques importantes du composant. Elles sont
 			synthétisées dans la \textsc{Table \ref{carac_elec_lm22672}}.
-			Les caractéristiques y sont données pour la version \texttt{-5.0}
+			Les caractéristiques y sont données pour la version \texttt{5.0}
 			du composant.
 			
 			\begin{table}[h]
@@ -496,7 +496,7 @@ d'alimentation.
 				de type III. Ce compensateur joue un rôle clé dans la stabilité 
 				de la sortie notamment dans le cas des convertisseurs Buck comme
 				c'est ici le cas. Certains montages Buck peuvent se satisfaire 
-				d'un simple contrôleur PI 
+				d'un simple contrôleur PI. 
 				La structure générique d'un compensateur de type III est donnée 
 				en \textsc{Figure \ref{comp_III_gen}}.
 				
@@ -848,14 +848,171 @@ table[x={time},y={I(I1)}]
 				
 				\subsubsection{Optimisation du placement des composants}
 				
-	\section{Carte d'interface d'alimentation}
+				Le placement des composants est une étape critique pour
+				obtenir un bon fonctionnement d'une alimentation à
+				découpage. Dans un premier temps, le plan de masse 
+				doit être suffisamment grand afin de permettre une bonne
+				dissipation thermique. Dans un second temps, des indications
+				particulières doivent être respectées afin de limiter
+				au maximum le bruit dû aux effets de la commutation. 
+				
+				En vue de limiter les effets parasites développés ci-dessus,
+				nous avons tenté de reproduire au mieux l'exemple de disposition
+				donnée dans la datasheet du composant \texttt{LM22672}.
+				La \textsc{Figure \ref{placement_lm}} montre la comparaison
+				entre la disposition indiquée dans la datasheet et la disposition
+				réalisée sur le PCB d'alimentation de notre projet.
+				
+				\begin{figure}
+					\begin{center}
+						\begin{tabular}{c c}
+							\includegraphics[scale=0.40]{../Illus/plct_lm_data.png}	&
+							\includegraphics[scale=0.40]{../Illus/plct_lm_reel.png}	\\
+							(a) & (b) \\
+						\end{tabular}
+					\end{center}
+					\caption{Comparaison entre (a) le placement proposé dans la documentation
+							et (b) le placement réel sur notre carte d'alimentation}
+					\label{placement_lm}
+				\end{figure}
+				
+	\newpage
+				
+	\section{Conversion 5V vers 3.3V}
 	
-	Les étapes précédentes nous ont permis d'envisager au mieux la 
-	réalisation du schéma
+	La dernière fonction à mettre en oeuvre sur la carte
+	d'interface d'alimentation est la conversion 5V vers 3.3V.
+	Pour réaliser cette fonction, il a été retenu le composant
+	\texttt{MCP1826S-3302E/EB}, qui est un régulateur linéaire
+	à sortie fixe 3.3V. Il accepte des tensions d'entrée dans une
+	plage allant jusqu'à 6V, ce qui permettra notamment d'attaquer
+	ce régulateur avec la tension 5V produite avec le système
+	présenté précédemment.
+	
+	Dans sa version 3 broches, le composant présente une entrée
+	\texttt{VIN}, une sortie \texttt{VOUT} ainsi qu'une liaison 
+	à la masse \texttt{GND}, également réalisée avec le pad 
+	thermique sous le composant. Les seuls éléments de dimensionnement
+	pour ce convertisseur ont été les condensateurs d'entrée et de sortie.
+	
+		\subsection{Condensateur d'entrée}
+		
+		Une impédance d'entrée faible est nécessaire pour obtenir
+		un bon fonctionnement du régulateur linéaire. Dans notre cas
+		d'application où la source de tension est relativement
+		éloignée du régulateur linéaire, le placement d'un condensateur
+		en entrée prend toute son importance. Une capacité minimale
+		allant de $1.0\mu$F à $4.7\mu$F est en général recommandée pour
+		une telle application. Nous retiendrons en particulier un
+		condensateur d'entrée de type X7R de valeur $4.7\mu$F.
+		
+		\subsection{Condensateur de sortie}
+		
+		Le composant \texttt{MCP1826S} requiert une capacité
+		minimale de sortie de $1.0\mu$F pour obtenir une tension
+		de sortie stable. Un condensateur céramique est en général
+		retenu dans ce cas, et nous retiendrons ici un condensateur
+		de type X7R. Pour la valeur, nous choisirons un condensateur
+		de valeur $2.2\mu$F.
+		
+		\subsection{Schéma de mise en oeuvre}
+		
+		La mise en oeuvre du régulateur linéaire est finalement
+		synthétisée par le schéma de la \textsc{Figure \ref{LDO_scheme}}.
+		
+		\begin{figure}[h]
+			\begin{center}
+				\includegraphics[scale=0.5]{../Illus/LDO_scheme.png}
+			\end{center}
+			\caption{Schéma de mise en oeuvre du régulateur linéaire \texttt{MCP1826S}}
+			\label{LDO_scheme}
+		\end{figure}
+		
+	\newpage
+				
+	\section{Carte d'interface d'alimentation}
 	
 		\subsection{Schéma global de l'interface d'alimentation}
 		
+		Le schéma global de l'interface d'alimentation est finalement
+		donné en \textsc{Figure \ref{supply_gen_scheme}}. 
+		Il reprend les différentes fonctions développées ci-dessus, 
+		de la gestion de la tension batterie à la conversion 3.3V en
+		passant par la conversion 5V. Ce schéma montre également
+		la distribution des tensions vers le carte de commande 
+		principale et la carte de l'onduleur à l'aide de connecteurs
+		dédiés.
 		
 		\subsection{Routage global de l'interface d'alimentation}
 		
+		Une fois le schéma terminé, nous avons poursuivi la conception
+		de la carte d'interface d'alimentation en réalisant son routage.
+		Le routage de cette carte est présenté en 
+		\textsc{Figure \ref{supply_gen_routing}}.
+		
+		Le routage d'une telle carte doit prendre en compte de nombreuses
+		problématiques, que ce soit la minimisation des bruits de commutation
+		sur l'alimentation à découpage ou encore le dimensionnement des
+		pistes permettant de drainer un courant important pour la
+		carte de l'onduleur contrôlant le moteur \textit{brushless}. 
+		Nous avons notamment différencié sur cette carte la masse des
+		éléments générant les tensions de commande de la masse allant
+		vers l'onduleur.
+		
+		\subsection{Vue 3D de l'interface d'alimentation}
+		
+		En vue de proposer un modèle 3D de notre système, nous
+		avons réalisé un objet 3D de la carte d'interface d'alimentation
+		à l'aide de \texttt{Proteus}.
+		
+		Il s'agissait notamment d'obtenir les modèles 3D de tous les
+		composants implantés sur la carte afin de proposer un modèle
+		3D le plus fidèle possible à la réalité physique de cette carte
+		telle qu'elle l'aurait été une fois soudée.
+		
+		Finalement, le modèle a été exporté sous un format \texttt{STEP} 
+		(\texttt{.stp}) afin d'être inclus à la CAO globale du système.
+		La \textsc{Figure \ref{supply_gen_3dview}} présente la vue 3D
+		de la carte finalement conçue.
+		
+		\newpage
+		
+		\begin{landscape}
+		
+		\begin{figure}
+			\begin{center}
+				\includegraphics[scale=0.6]{../Illus/supply_gen_scheme.png}
+			\end{center}
+			\caption{Schéma global de la carte d'interface d'alimentation}
+			\label{supply_gen_scheme}
+		\end{figure}
+		
+		\newpage
+
+		\begin{figure}
+			\begin{center}
+				\includegraphics[scale=0.55]{../Illus/supply_gen_routing.png}
+			\end{center}
+			\caption{Routage global de la carte d'interface d'alimentation}
+			\label{supply_gen_routing}
+		\end{figure}
+		
+		\newpage
+		
+		\begin{figure}
+			\begin{center}
+				\includegraphics[scale=1.4]{../Illus/supply_gen_3dview.png}
+			\end{center}
+			\caption{Vue 3D de la carte d'interface d'alimentation}
+			\label{supply_gen_3dview}
+		\end{figure}
+		
+		\end{landscape}	 
+		
+		\newpage
+		
 	\section{Conclusions sur l'interface d'alimentation du système}
+	
+	La conception de l'interface d'alimentation du système est une
+	partie du projet très complète faisant appel à de nombreuses notions
+	dans les domaines de l'electronique de puissance.
